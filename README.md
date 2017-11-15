@@ -4,13 +4,13 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
 
 ## Approach
 
-- [X] read timelog.txt
-  - [X] from known location
+- [x] read timelog.txt
+  - [x] from known location
   - [ ] later: configure location?
   - [ ] later: auto-detect location?
 - [ ] parse out last day
-  - [ ] especially start/end-times for each entry
-  - [ ] date - ticket - description
+  - [x] especially start/end-times for each entry
+  - [x] date - ticket - description
   - [ ] later: parse out specific day
 - [ ] open N browser instances with the time entry data
   - [ ] without selected account

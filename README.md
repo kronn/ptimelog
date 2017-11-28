@@ -12,8 +12,8 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
   - [x] especially start/end-times for each entry
   - [x] date - ticket - description
   - [ ] later: parse out specific day
-- [ ] open N browser instances with the time entry data
-  - [ ] without selected account
+- [x] open N browser instances with the time entry data
+  - [x] without selected account
 - [ ] infer time-account from ticket-format
 - [ ] ticket->account mappings from configuration
 - [ ] complete login/entry automation

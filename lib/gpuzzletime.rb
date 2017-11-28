@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 require 'pathname'
+require 'erb'
 
 # Wrapper for everything
 class Gpuzzletime
-  def initialize(*_); end
+  def initialize(*_);
+    @base_url = 'https://time.puzzle.ch'
+  end
 
   def run
     parse(read).each do |date, entries|
@@ -22,16 +25,34 @@ class Gpuzzletime
             start, '-', finish,
             [entry[:ticket], entry[:description]].compact.join(': '),
           ].compact.join(' ')
+          open_browser(start, entry)
         end
 
         start = finish # store previous ending for nice display of next entry
       end
       puts
     end
+
     nil
   end
 
   private
+
+  def open_browser(start, entry)
+    system "gnome-open '#{@base_url}/ordertimes/new?#{url_options(start, entry)}'"
+  end
+
+  def url_options(start, entry)
+    {
+      work_date:                    entry[:date],
+      'ordertime[ticket]':          entry[:ticket],
+      'ordertime[description]':     entry[:description],
+      'ordertime[from_start_time]': start,
+      'ordertime[to_end_time]':     entry[:time],
+    }.map { |key, value|
+      [key, ERB::Util.url_encode(value)].join('=')
+    }.join('&')
+  end
 
   def read
     Pathname.new('~/.local/share/gtimelog/timelog.txt').expand_path.read

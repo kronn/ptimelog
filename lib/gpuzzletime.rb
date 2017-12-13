@@ -5,9 +5,10 @@ require 'erb'
 
 # Wrapper for everything
 class Gpuzzletime
-  def initialize(*_);
+  def initialize(args)
     @base_url = 'https://time.puzzle.ch'
-    @date     = :all
+    @command  = args[0] || :show
+    @date     = args[1] || :all
   end
 
   def run

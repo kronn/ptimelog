@@ -7,12 +7,15 @@ require 'erb'
 class Gpuzzletime
   def initialize(*_);
     @base_url = 'https://time.puzzle.ch'
+    @date     = :all
   end
 
   def run
     parse(read).each do |date, entries|
       # this is mixing preparation, assembly and output, but it gets the job done
-      next unless date        # guard
+      next unless date                             # guard against the machine
+      next unless (@date == :all || @date == date) # limit to one day if one is passed
+
       puts date, '----------' # date start
       start = nil             # at the start of the day, we have no previous end
 

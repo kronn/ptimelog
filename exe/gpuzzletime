@@ -3,4 +3,4 @@
 
 require './lib/gpuzzletime'
 
-puts Gpuzzletime.new(ARGV).run
+Gpuzzletime.new(ARGV).run

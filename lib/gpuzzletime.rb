@@ -12,12 +12,14 @@ class Gpuzzletime
   end
 
   def run
+    @entries = {}
+
     parse(read).each do |date, entries|
       # this is mixing preparation, assembly and output, but it gets the job done
       next unless date                             # guard against the machine
       next unless (@date == :all || @date == date) # limit to one day if one is passed
+      @entries[date] = []
 
-      puts date, '----------' # date start
       start = nil             # at the start of the day, we have no previous end
 
       entries.each do |entry|
@@ -25,19 +27,30 @@ class Gpuzzletime
         hidden = entry[:description].match(/\*\*$/) # hide lunch and breaks
 
         if start && !hidden
-          puts [
-            start, '-', finish,
-            [entry[:ticket], entry[:description]].compact.join(': '),
-          ].compact.join(' ')
-          open_browser(start, entry)
+          case @command # assemble data according to command
+          when :show
+            @entries[date] << [
+              start, '-', finish,
+              [entry[:ticket], entry[:description]].compact.join(': '),
+            ].compact.join(' ')
+          end
         end
 
         start = finish # store previous ending for nice display of next entry
       end
-      puts
     end
 
-    nil
+    case @command
+    when :show
+      @entries.each do |date, entries|
+
+        puts date, '----------'
+        entries.each do |entry|
+          puts entry
+        end
+        puts nil
+      end
+    end
   end
 
   private

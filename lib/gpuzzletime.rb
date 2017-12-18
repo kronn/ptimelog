@@ -7,7 +7,10 @@ require 'erb'
 class Gpuzzletime
   def initialize(args)
     @base_url = 'https://time.puzzle.ch'
-    @command  = args[0] || :show
+
+    @command  = (args[0] || :show).to_sym  # show, upload
+    raise ArgumentError unless %i(show upload).include?(@command)
+
     @date     = args[1] || :all
   end
 
@@ -33,6 +36,8 @@ class Gpuzzletime
               start, '-', finish,
               [entry[:ticket], entry[:description]].compact.join(': '),
             ].compact.join(' ')
+          when :upload
+            @entries[date] << [start, entry]
           end
         end
 
@@ -49,6 +54,13 @@ class Gpuzzletime
           puts entry
         end
         puts nil
+      end
+    when :upload
+      @entries.each do |date, entries|
+        puts "Uploading #{date}"
+        entries.each do |start, entry|
+          open_browser(start, entry)
+        end
       end
     end
   end

@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-require 'pathname'
 require 'date'
 require 'erb'
+require 'pathname'
 
 # Wrapper for everything
 class Gpuzzletime
   def initialize(args)
     @base_url = 'https://time.puzzle.ch'
 
-    @command  = (args[0] || :show).to_sym  # show, upload
-    raise ArgumentError unless %i(show upload).include?(@command)
+    @command = (args[0] || :show).to_sym # show, upload
+    raise ArgumentError unless %i[show upload].include?(@command)
 
     @date = named_dates(args[1]) || :all
   end
@@ -69,7 +69,8 @@ class Gpuzzletime
   private
 
   def open_browser(start, entry)
-    system "gnome-open '#{@base_url}/ordertimes/new?#{url_options(start, entry)}'"
+    url = "#{@base_url}/ordertimes/new?#{url_options(start, entry)}"
+    system "gnome-open '#{url}'"
   end
 
   def url_options(start, entry)

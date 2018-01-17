@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'pathname'
+require 'date'
 require 'erb'
 
 # Wrapper for everything
@@ -11,7 +12,7 @@ class Gpuzzletime
     @command  = (args[0] || :show).to_sym  # show, upload
     raise ArgumentError unless %i(show upload).include?(@command)
 
-    @date     = args[1] || :all
+    @date = named_dates(args[1]) || :all
   end
 
   def run
@@ -81,6 +82,17 @@ class Gpuzzletime
     }.map { |key, value|
       [key, ERB::Util.url_encode(value)].join('=')
     }.join('&')
+  end
+
+  def named_dates(date)
+    case date
+    when 'yesterday'
+      Date.today.prev_day.to_s
+    when 'today'
+      Date.today.to_s
+    else
+      date
+    end
   end
 
   def read

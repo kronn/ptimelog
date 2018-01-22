@@ -35,7 +35,7 @@ class Gpuzzletime
           when :show
             @entries[date] << [
               start, '-', finish,
-              [entry[:ticket], entry[:description]].compact.join(' → '),
+              [entry[:ticket], entry[:description], entry[:tags]].compact.join(' ∴ '),
             ].compact.join(' ')
           when :upload
             @entries[date] << [start, entry]
@@ -110,9 +110,10 @@ class Gpuzzletime
     re_date = /(?<date>\d{4}-\d{2}-\d{2})/
     re_time = /(?<time>\d{2}:\d{2})/
     re_tick = /(?:(?<ticket>.*?): )/
-    re_desc = /(?<description>.*)/
+    re_desc = /(?<description>.*?)/
+    re_tags = /(?: -- (?<tags>.*)?)/
 
-    regexp = /^#{re_date} #{re_time}: #{re_tick}?#{re_desc}/
+    regexp = /^#{re_date} #{re_time}: #{re_tick}?#{re_desc}#{re_tags}?$/
     line.match(regexp)
   end
 end

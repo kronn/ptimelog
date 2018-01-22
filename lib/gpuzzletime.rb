@@ -35,7 +35,7 @@ class Gpuzzletime
           when :show
             @entries[date] << [
               start, '-', finish,
-              [entry[:ticket], entry[:description]].compact.join(': '),
+              [entry[:ticket], entry[:description]].compact.join(' → '),
             ].compact.join(' ')
           when :upload
             @entries[date] << [start, entry]
@@ -109,7 +109,7 @@ class Gpuzzletime
   end
 
   def tokenize(line)
-    regexp = /(?<date>\d{4}-\d{2}-\d{2}) (?<time>\d{2}:\d{2}): (?:(?<ticket>.*): )?(?<description>.*)/
+    regexp = /(?<date>\d{4}-\d{2}-\d{2}) (?<time>\d{2}:\d{2}): (?:(?<ticket>.*?): )?(?<description>.*)/
     line.match(regexp)
   end
 end

@@ -49,7 +49,6 @@ class Gpuzzletime
     case @command
     when :show
       @entries.each do |date, entries|
-
         puts date, '----------'
         entries.each do |entry|
           puts entry

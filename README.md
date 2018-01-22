@@ -11,7 +11,7 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
 - [ ] parse out last day
   - [x] especially start/end-times for each entry
   - [x] date - ticket - description
-  - [ ] later: parse out specific day
+  - [x] later: parse out specific day
 - [x] open N browser instances with the time entry data
   - [x] without selected account
 - [ ] infer time-account from ticket-format
@@ -34,7 +34,25 @@ Install it with:
 
 ## Usage
 
-    $ gpuzzletime
+    $ gpuzzletime ACTION DATE
+
+### Actions
+
+Currently supported actions are
+
+- show
+- upload
+
+### Date-Identifier
+
+To handle a specific date, the format YYYY-MM-DD is expected, e.g. 2017-12-25. Please note that you should not work on that day, unless you bring presents.
+
+For reusability in a shell-history the following keywords are supported:
+
+- today
+- yesterday
+
+If nothing is specified, the action is applied to all entries.
 
 ## Development
 

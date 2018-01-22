@@ -79,9 +79,9 @@ class Gpuzzletime
       'ordertime[description]':     entry[:description],
       'ordertime[from_start_time]': start,
       'ordertime[to_end_time]':     entry[:time],
-    }.map { |key, value|
-      [key, ERB::Util.url_encode(value)].join('=')
-    }.join('&')
+    }
+      .map { |key, value| [key, ERB::Util.url_encode(value)].join('=') }
+      .join('&')
   end
 
   def named_dates(date)
@@ -100,15 +100,19 @@ class Gpuzzletime
   end
 
   def parse(data)
-    data.split("\n").map do |line|
-      tokenize(line)
-    end.group_by do |match|
-      match && match[:date]
-    end.to_a
+    data.split("\n")
+        .map { |line| tokenize(line) }
+        .group_by { |match| match && match[:date] }
+        .to_a
   end
 
   def tokenize(line)
-    regexp = /(?<date>\d{4}-\d{2}-\d{2}) (?<time>\d{2}:\d{2}): (?:(?<ticket>.*?): )?(?<description>.*)/
+    re_date = /(?<date>\d{4}-\d{2}-\d{2})/
+    re_time = /(?<time>\d{2}:\d{2})/
+    re_tick = /(?:(?<ticket>.*?): )/
+    re_desc = /(?<description>.*)/
+
+    regexp = /^#{re_date} #{re_time}: #{re_tick}?#{re_desc}/
     line.match(regexp)
   end
 end

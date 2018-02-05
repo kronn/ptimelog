@@ -69,7 +69,7 @@ class Gpuzzletime
 
   def open_browser(start, entry)
     url = "#{@base_url}/ordertimes/new?#{url_options(start, entry)}"
-    system "gnome-open '#{url}'"
+    system "gnome-open '#{url}' > /dev/null 2> /dev/null"
   end
 
   def url_options(start, entry)

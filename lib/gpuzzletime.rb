@@ -87,12 +87,9 @@ class Gpuzzletime
 
   def named_dates(date)
     case date
-    when 'yesterday'
-      Date.today.prev_day.to_s
-    when 'today'
-      Date.today.to_s
-    else
-      date
+    when 'yesterday' then Date.today.prev_day.to_s
+    when 'today'     then Date.today.to_s
+    else                  date
     end
   end
 

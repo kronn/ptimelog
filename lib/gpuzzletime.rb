@@ -79,6 +79,7 @@ class Gpuzzletime
       'ordertime[description]':     entry[:description],
       'ordertime[from_start_time]': start,
       'ordertime[to_end_time]':     entry[:time],
+      'ordertime[account_id]':      infer_account(entry),
     }
       .map { |key, value| [key, ERB::Util.url_encode(value)].join('=') }
       .join('&')
@@ -115,5 +116,14 @@ class Gpuzzletime
 
     regexp = /^#{re_date} #{re_time}: #{re_tick}?#{re_desc}#{re_tags}?$/
     line.match(regexp)
+  end
+
+  def infer_account(entry)
+    parser = Pathname.new("~/.config/gpuzzletime/parsers/#{entry[:tags]}")
+                     .expand_path
+
+    return unless parser.exist?
+
+    `#{parser} "#{entry[:ticket]}" "#{entry[:description]}"`.chomp
   end
 end

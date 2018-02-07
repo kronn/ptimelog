@@ -116,6 +116,8 @@ class Gpuzzletime
   end
 
   def infer_account(entry)
+    return unless entry[:tags]
+
     parser = Pathname.new("~/.config/gpuzzletime/parsers/#{entry[:tags]}")
                      .expand_path
 

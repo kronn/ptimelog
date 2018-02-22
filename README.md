@@ -17,6 +17,7 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
 - [x] infer time-account from ticket-format
   - [x] support user-supplied ticket-parsers
   - [x] get ticket-parser from tags
+- [ ] merge equal adjacent entries into one
 - [ ] complete login/entry automation
   - [ ] login
   - [ ] store cookie
@@ -25,6 +26,7 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
 - [ ] avoid duplicate entries
   - [ ] start/end time as indicator?
 - [ ] offer rounding times to the next 5, 10 or 15 minutes
+- [ ] allow to add entries from the command-line
 
 
 ## Installation

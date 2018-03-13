@@ -20,4 +20,7 @@ describe Gpuzzletime do
   it 'can limit entries to one day'
 
   it 'can load custom mappers for the ordertime_account'
+
+  it 'can open the timelog in an editor'
+  xit 'can open a parser-script in an editor'
 end

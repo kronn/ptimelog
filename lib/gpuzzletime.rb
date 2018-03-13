@@ -9,13 +9,15 @@ class Gpuzzletime
   def initialize(args)
     @base_url = 'https://time.puzzle.ch'
 
-    @command = (args[0] || :show).to_sym # show, upload
-    raise ArgumentError unless %i[show upload].include?(@command)
+    @command = (args[0] || :show).to_sym
+    raise ArgumentError unless %i[show upload edit].include?(@command)
 
     @date = named_dates(args[1]) || :all
   end
 
   def run
+    launch_editor if @command == :edit
+
     @entries = {}
 
     parse(read).each do |date, entries|
@@ -76,6 +78,12 @@ class Gpuzzletime
     system "gnome-open '#{url}' > /dev/null 2> /dev/null"
   end
 
+  def launch_editor
+    editor = `which $EDITOR`.chomp
+
+    exec "#{editor} #{timelog_txt}"
+  end
+
   def url_options(start, entry)
     {
       work_date:                    entry[:date],
@@ -97,8 +105,12 @@ class Gpuzzletime
     end
   end
 
+  def timelog_txt
+    Pathname.new('~/.local/share/gtimelog/timelog.txt').expand_path
+  end
+
   def read
-    Pathname.new('~/.local/share/gtimelog/timelog.txt').expand_path.read
+    timelog_txt.read
   end
 
   def parse(data)

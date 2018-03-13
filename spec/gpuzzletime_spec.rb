@@ -7,7 +7,7 @@ describe Gpuzzletime do
     expect(Gpuzzletime::VERSION).not_to be nil
   end
 
-  it 'has a configurable puzzletime-domain'
+  xit 'has a configurable puzzletime-domain'
 
   it 'can parse log-entries'
   it 'omits entries ending in two stars'

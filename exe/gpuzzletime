@@ -3,4 +3,4 @@
 
 require_relative '../lib/gpuzzletime'
 
-Gpuzzletime.new(ARGV).run
+Gpuzzletime::App.new(ARGV).run

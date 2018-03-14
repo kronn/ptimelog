@@ -11,9 +11,15 @@ module Gpuzzletime
       @base_url = 'https://time.puzzle.ch'
 
       @command = (args[0] || :show).to_sym
-      raise ArgumentError unless %i[show upload edit].include?(@command)
 
-      @date = named_dates(args[1]) || :all
+      case @command
+      when :show, :upload
+        @date = named_dates(args[1]) || :all
+      when :edit
+        @file = args[1]
+      else
+        raise ArgumentError, "Unsupported Command #{@command}"
+      end
     end
 
     def run
@@ -82,7 +88,9 @@ module Gpuzzletime
     def launch_editor
       editor = `which $EDITOR`.chomp
 
-      exec "#{editor} #{timelog_txt}"
+      file = @file.nil? ? timelog_txt : parser_file(@file)
+
+      exec "#{editor} #{file}"
     end
 
     def url_options(start, entry)
@@ -132,18 +140,22 @@ module Gpuzzletime
       line.match(regexp)
     end
 
+    def parser_file(parser_name)
+      Pathname.new("~/.config/gpuzzletime/parsers/#{parser_name}") # security-hole, prevent relative paths!
+              .expand_path
+    end
+
     def infer_account(entry)
       return unless entry[:tags]
 
       tags = entry[:tags].split
       parser_name = tags.shift
 
-      parser = Pathname.new("~/.config/gpuzzletime/parsers/#{parser_name}")
-        .expand_path
+      parser = parser_file(parser_name)
 
       return unless parser.exist?
 
-      `#{parser} "#{entry[:ticket]}" "#{entry[:description]}" #{tags}`.chomp
+      `#{parser} "#{entry[:ticket]}" "#{entry[:description]}" #{tags}`.chomp # maybe only execute if parser is in correct dir?
     end
   end
 end

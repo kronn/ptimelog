@@ -48,6 +48,7 @@ module Gpuzzletime
                   entry[:ticket],
                   entry[:description],
                   entry[:tags],
+                  infer_account(entry),
                 ].compact.join(' ∴ '),
               ].compact.join(' ')
             when :upload

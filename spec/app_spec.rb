@@ -52,7 +52,9 @@ describe Gpuzzletime::App do
     expect { subject.run }.not_to output(/break/).to_stdout
   end
 
-  # it 'knows some dates by relative names'
+  # it 'knows today by name'
+  # it 'knows yesterday by name'
+  # it 'knows the last day by name'
 
   # it 'can show parsed entries'
   # it 'can upload parsed entries'

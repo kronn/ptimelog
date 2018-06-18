@@ -111,6 +111,7 @@ module Gpuzzletime
       case date
       when 'yesterday' then Date.today.prev_day.to_s
       when 'today'     then Date.today.to_s
+      when 'last'      then parse(read).to_h.keys.compact.sort[-2] || Date.today.prev_day.to_s
       else                  date
       end
     end

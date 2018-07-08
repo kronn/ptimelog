@@ -27,6 +27,11 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
   - [ ] start/end time as indicator?
 - [ ] offer rounding times to the next 5, 10 or 15 minutes
 - [ ] allow to add entries from the command-line
+- [ ] handle time-account and billable better
+  - [ ] import time-accounts from ptime
+  - [ ] automatically prefill billable
+  - [ ] allow to have a list of "favourite" time-accounts
+  - [ ] select best-matching time-account according to tags, possibly limited to the favourites
 
 
 ## Installation

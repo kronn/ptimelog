@@ -40,4 +40,24 @@ describe Ptimelog::Day do
       end
     end
   end
+
+  context 'adjacent simliar entries' do
+    let(:timelog) do
+      Ptimelog::Timelog.instance.parse <<~TIMELOG
+        2018-03-03 14:00: start
+        2018-03-03 15:34: 23456: debug -- network
+        2018-03-03 16:45: 23456: debug -- network
+      TIMELOG
+    end
+
+    let(:date) { '2018-03-03' }
+
+    it 'are joined' do
+      entries = subject.entries
+
+      expect(entries.keys.size).to eq 1 # day
+      expect(entries.first[1].size).to eq 1 # entry
+      expect(entries.first[1]).to match(/23456: debug/)
+    end
+  end
 end

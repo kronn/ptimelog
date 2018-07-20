@@ -28,8 +28,12 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
 - [ ] offer rounding times to the next 5, 10 or 15 minutes
 - [ ] allow to add entries from the command-line
 - [ ] handle time-account and billable better
-  - [ ] import time-accounts from ptime
+  - [ ] import time-accounts from ptime (https://time.puzzle.ch/work_items/search.json?q=search%20terms)
+    - [ ] with a dedicated cli?
+    - [ ] from a REST-Endpoint of PTime?
   - [ ] automatically prefill billable
+    - [ ] from time-accounts
+    - [ ] from *-notation
   - [ ] allow to have a list of "favourite" time-accounts
   - [ ] select best-matching time-account according to tags, possibly limited to the favourites
 
@@ -50,6 +54,7 @@ Currently supported actions are
 
 - show
 - upload
+- edit
 
 ### Date-Identifier
 
@@ -59,8 +64,17 @@ For reusability in a shell-history the following keywords are supported:
 
 - today
 - yesterday
+- last
 
 If nothing is specified, the action is applied to all entries.
+
+### Edit-Identifier
+
+When the action is "edit", the next argument is treated as script that shoudl be edited.
+
+If nothing is passed, the main timelog.txt is loaded.
+
+Otherwise, a script to determine the time-account is loaded.
 
 ## Development
 

@@ -20,7 +20,7 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
 - [ ] merge equal adjacent entries into one
 - [ ] complete login/entry automation
   - [ ] handle authentication
-    - [ ] login and store cookie
+    - [ ] login and store cookie (https://stackoverflow.com/questions/12399087/curl-to-access-a-page-that-requires-a-login-from-a-different-page#12399176)
     - [ ] send user and pwd with every request
   - [ ] make entries
   - [ ] open day in browser for review

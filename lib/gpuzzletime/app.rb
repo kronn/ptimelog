@@ -88,8 +88,23 @@ module Gpuzzletime
     end
 
     def open_browser(start, entry)
-      url = "#{@base_url}/ordertimes/new?#{url_options(start, entry)}"
-      system "gnome-open '#{url}' > /dev/null 2> /dev/null"
+      xdg_open "'#{@base_url}/ordertimes/new?#{url_options(start, entry)}'", silent: true
+    end
+
+    def xdg_open(args, silent: false)
+      opener   = 'xdg-open'
+      silencer = '> /dev/null 2> /dev/null'
+
+      if system("which #{opener} #{silencer}")
+        system "#{opener} #{args} #{silencer if silent}"
+      else
+        abort <<~ERRORMESSAGE
+          #{opener} not found
+
+          This binary is needed to launch a webbrowser and open the page
+          to enter the worktime-entry into puzzletime.
+        ERRORMESSAGE
+      end
     end
 
     def launch_editor

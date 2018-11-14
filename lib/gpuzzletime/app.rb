@@ -116,13 +116,15 @@ module Gpuzzletime
     end
 
     def url_options(start, entry)
+      account = infer_account(entry)
       {
         work_date:                    entry[:date],
         'ordertime[ticket]':          entry[:ticket],
         'ordertime[description]':     entry[:description],
         'ordertime[from_start_time]': start,
         'ordertime[to_end_time]':     entry[:time],
-        'ordertime[account_id]':      infer_account(entry),
+        'ordertime[account_id]':      account,
+        'ordertime[billable]':        infer_billable(account),
       }
         .map { |key, value| [key, ERB::Util.url_encode(value)].join('=') }
         .join('&')
@@ -180,6 +182,14 @@ module Gpuzzletime
 
       cmd = %(#{parser} "#{entry[:ticket]}" "#{entry[:description]}" #{tags.map(&:inspect).join(' ')})
       `#{cmd}`.chomp # maybe only execute if parser is in correct dir?
+    end
+
+    def infer_billable(account)
+      script = Pathname.new('~/.config/gpuzzletime/billable').expand_path
+
+      return 1 unless script.exist?
+
+      `#{script} #{account}`.chomp == 'true' ? 1 : 0
     end
   end
 end

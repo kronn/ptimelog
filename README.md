@@ -32,7 +32,7 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
     - [ ] with a dedicated cli?
     - [ ] from a REST-Endpoint of PTime?
   - [ ] automatically prefill billable
-    - [ ] from time-accounts
+    - [x] from time-accounts
     - [ ] from *-notation
   - [ ] allow to have a list of "favourite" time-accounts
   - [ ] select best-matching time-account according to tags, possibly limited to the favourites

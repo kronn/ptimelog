@@ -64,7 +64,7 @@ module Gpuzzletime
 
         entries[date] = []
 
-        start = nil             # at the start of the day, we have no previous end
+        start = nil # at the start of the day, we have no previous end
 
         lines.each do |entry|
           finish = round_time(entry[:time], @rounding_interval) # we use that twice

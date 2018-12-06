@@ -8,8 +8,9 @@ module Gpuzzletime
   class App
     def initialize(args)
       @config_dir = Pathname.new('~/.config/gpuzzletime').expand_path
-      @base_url = 'https://time.puzzle.ch'
-      @rounding_interval = 15
+      load_config
+      @base_url = @configs[:base_url]
+      @rounding_interval = @configs[:rounding_interval]
 
       @command = (args[0] || :show).to_sym
 
@@ -48,6 +49,20 @@ module Gpuzzletime
     end
 
     private
+
+    def load_config
+      config_fn = @config_dir.join('config')
+      user_config = if config_fn.exist?
+                      YAML.load_file(config_fn)
+                    else
+                      {}
+                    end
+
+      @configs = {
+        base_url: 'https://time.puzzle.ch',
+        rounding_interval: 15,
+      }.merge(user_config)
+    end
 
     def entries
       @entries ||= {}

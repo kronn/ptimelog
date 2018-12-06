@@ -8,6 +8,7 @@ module Gpuzzletime
   class App
     def initialize(args)
       @base_url = 'https://time.puzzle.ch'
+      @rounding_interval = 15
 
       @command = (args[0] || :show).to_sym
 
@@ -66,7 +67,7 @@ module Gpuzzletime
         start = nil             # at the start of the day, we have no previous end
 
         lines.each do |entry|
-          finish = entry[:time] # we use that twice
+          finish = round_time(entry[:time], @rounding_interval) # we use that twice
           hidden = entry[:description].match(/\*\*$/) # hide lunch and breaks
 
           if start && !hidden
@@ -89,6 +90,17 @@ module Gpuzzletime
           start = finish # store previous ending for nice display of next entry
         end
       end
+    end
+
+    def round_time(time, interval)
+      hour, minute = time.split(':')
+      minute = (minute.to_i / interval.to_f).round * interval.to_i
+
+      if minute == 60
+        [hour.succ, 0]
+      else
+        [hour, minute]
+      end.map { |part| part.to_s.rjust(2, '0') }.join(':')
     end
 
     def open_browser(start, entry)

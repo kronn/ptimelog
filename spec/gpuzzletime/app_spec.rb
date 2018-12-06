@@ -79,4 +79,19 @@ describe Gpuzzletime::App do
 
   # it 'can open the timelog in an editor'
   # it 'can open a parser-script in an editor'
+
+  context 'just looking at one day, it' do
+    let(:command) { :show }
+    let(:argument) { '2018-03-02' }
+
+    it 'rounds entry times to nearest 15 minutes' do
+      expect(subject).to receive(:read).at_least(:once).and_return(timelog)
+
+      expect { subject.run }.to output(/09:45 - 11:45/).to_stdout # rounding 9:41, 11:40 outwards
+      expect { subject.run }.to output(/12:30 - 13:15/).to_stdout # rounding 12:25 up
+      expect { subject.run }.to output(/14:30 - 16:00/).to_stdout # leaving round values as is
+      expect { subject.run }.to output(/16:00 - 17:15/).to_stdout # rounding 17:18 down
+      expect { subject.run }.to output(/19:00 - 20:15/).to_stdout # case of 18:60 -> 19:00
+    end
+  end
 end

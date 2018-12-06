@@ -7,6 +7,7 @@ module Gpuzzletime
   # Wrapper for everything
   class App
     def initialize(args)
+      @config_dir = Pathname.new('~/.config/gpuzzletime').expand_path
       @base_url = 'https://time.puzzle.ch'
       @rounding_interval = 15
 
@@ -156,7 +157,7 @@ module Gpuzzletime
     end
 
     def parser_file(parser_name)
-      Pathname.new("~/.config/gpuzzletime/parsers/#{parser_name}") # FIXME: security-hole, prevent relative paths!
+      @config_dir.join("parsers/#{parser_name}") # FIXME: security-hole, prevent relative paths!
               .expand_path
     end
 
@@ -175,7 +176,7 @@ module Gpuzzletime
     end
 
     def infer_billable(account)
-      script = Pathname.new('~/.config/gpuzzletime/billable').expand_path
+      script = @config_dir.join('billable')
 
       return 1 unless script.exist?
 

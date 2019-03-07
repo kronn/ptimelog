@@ -6,7 +6,7 @@ describe Gpuzzletime::App do
   subject { described_class.new([command, argument].compact) }
 
   let(:command) { 'show' }
-  let(:argument) { nil }
+  let(:argument) { 'all' }
   let(:timelog) do
     <<~TIMELOG
       2018-03-02 09:51: start
@@ -55,6 +55,7 @@ describe Gpuzzletime::App do
   # it 'knows today by name'
   # it 'knows yesterday by name'
   # it 'knows the last day by name'
+  # it 'defaults to "last day"'
 
   # it 'can show parsed entries'
   # it 'can upload parsed entries'

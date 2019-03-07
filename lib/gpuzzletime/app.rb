@@ -14,7 +14,7 @@ module Gpuzzletime
 
       case @command
       when :show, :upload
-        @date = named_dates(args[1]) || :all
+        @date = named_dates(args[1] || 'last') || :all
       when :edit
         @file = args[1]
       else
@@ -132,10 +132,10 @@ module Gpuzzletime
 
     def named_dates(date)
       case date
-      when 'yesterday' then Date.today.prev_day.to_s
-      when 'today'     then Date.today.to_s
-      when 'last'      then parse(read).to_h.keys.compact.sort[-2] || Date.today.prev_day.to_s
-      else                  date
+      when 'yesterday'         then Date.today.prev_day.to_s
+      when 'today'             then Date.today.to_s
+      when 'last'              then parse(read).to_h.keys.compact.sort[-2] || Date.today.prev_day.to_s
+      when /(\d{2}-){2}-\d{4}/ then date
       end
     end
 

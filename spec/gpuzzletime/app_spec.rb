@@ -9,7 +9,7 @@ describe Gpuzzletime::App do
   let(:argument) { 'all' }
   let(:timelog) do
     <<~TIMELOG
-      2018-03-02 09:51: start
+      2018-03-02 09:51: start **
       2018-03-02 11:40: 12345: prepare deployment -- webapp
       2018-03-02 12:25: lunch **
       2018-03-02 13:15: 12345: prepare deployment -- webapp
@@ -19,11 +19,13 @@ describe Gpuzzletime::App do
       2018-03-02 18:58: break **
       2018-03-02 20:08: 12345: prepare deployment -- webapp
 
-      2018-03-03 14:00: start
+      2018-03-03 14:00: start **
       2018-03-03 15:34: 23456: debug -- network
       2018-03-03 18:46: studying
       2018-03-03 20:08: dinner **
       2018-03-03 21:36: 12345: prepare deployment -- webapp
+
+      2018-03-05 09:00: start **
     TIMELOG
   end
 
@@ -52,9 +54,34 @@ describe Gpuzzletime::App do
     expect { subject.run }.not_to output(/break/).to_stdout
   end
 
-  # it 'knows today by name'
-  # it 'knows yesterday by name'
-  # it 'knows the last day by name'
+  it 'knows today by name' do
+    today = '2018-03-03'
+
+    Timecop.travel(today) do
+      expect(subject.send(:named_dates, 'today')).to eq(today)
+    end
+  end
+
+  it 'knows yesterday by name' do
+    today     = '2018-03-03'
+    yesterday = '2018-03-02'
+
+    Timecop.travel(today) do
+      expect(subject.send(:named_dates, 'yesterday')).to eq(yesterday)
+    end
+  end
+
+  it 'knows the last day by name' do
+    expect(subject).to receive(:read).at_least(:once).and_return(timelog)
+    last_day = '2018-03-03' # dependent on test-data of timelog above
+
+    expect(subject.send(:named_dates, 'last')).to eq(last_day)
+  end
+
+  it 'understands and accepts dates in YYYY-MM-DD format' do
+    date = '1970-01-01'
+    expect(subject.send(:named_dates, date)).to be date
+  end
   # it 'defaults to "last day"'
 
   # it 'can show parsed entries'

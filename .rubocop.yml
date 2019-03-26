@@ -7,6 +7,11 @@ Style/TrailingCommaInArrayLiteral:
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma
 
+Layout/AlignHash:
+  EnforcedHashRocketStyle: table
+  EnforcedColonStyle: table
+  EnforcedLastArgumentHashStyle: always_inspect # default
+
 Metrics/BlockLength:
   Exclude:
     - spec/**/*

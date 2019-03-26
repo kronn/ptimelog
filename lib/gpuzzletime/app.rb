@@ -57,6 +57,7 @@ module Gpuzzletime
         # this is mixing preparation, assembly and output, but gets the job done
         next unless date                           # guard against the machine
         next unless @date == :all || @date == date # limit to one day if passed
+
         entries[date] = []
 
         start = nil             # at the start of the day, we have no previous end

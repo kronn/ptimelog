@@ -2,7 +2,6 @@
 
 require 'date'
 require 'erb'
-require 'pathname'
 
 module Gpuzzletime
   # Wrapper for everything
@@ -52,8 +51,12 @@ module Gpuzzletime
       @entries ||= {}
     end
 
+    def timelog
+      Timelog.load
+    end
+
     def fill_entries(purpose)
-      parse(read).each do |date, lines|
+      timelog.each do |date, lines|
         # this is mixing preparation, assembly and output, but gets the job done
         next unless date                           # guard against the machine
         next unless @date == :all || @date == date # limit to one day if passed
@@ -135,35 +138,9 @@ module Gpuzzletime
       case date
       when 'yesterday'        then Date.today.prev_day.to_s
       when 'today'            then Date.today.to_s
-      when 'last'             then parse(read).to_h.keys.compact.sort[-2] || Date.today.prev_day.to_s
+      when 'last'             then timelog.to_h.keys.compact.sort[-2] || Date.today.prev_day.to_s
       when /\d{4}(-\d{2}){2}/ then date
       end
-    end
-
-    def timelog_txt
-      Pathname.new('~/.local/share/gtimelog/timelog.txt').expand_path
-    end
-
-    def read
-      timelog_txt.read
-    end
-
-    def parse(data)
-      data.split("\n")
-          .map { |line| tokenize(line) }
-          .group_by { |match| match && match[:date] }
-          .to_a
-    end
-
-    def tokenize(line)
-      re_date = /(?<date>\d{4}-\d{2}-\d{2})/
-      re_time = /(?<time>\d{2}:\d{2})/
-      re_tick = /(?:(?<ticket>.*?): )/
-      re_desc = /(?<description>.*?)/
-      re_tags = /(?: -- (?<tags>.*)?)/
-
-      regexp = /^#{re_date} #{re_time}: #{re_tick}?#{re_desc}#{re_tags}?$/
-      line.match(regexp)
     end
 
     def parser_file(parser_name)

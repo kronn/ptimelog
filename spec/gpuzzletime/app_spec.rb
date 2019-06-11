@@ -85,7 +85,7 @@ describe Gpuzzletime::App do
     let(:argument) { '2018-03-02' }
 
     it 'rounds entry times to nearest 15 minutes' do
-      expect(subject).to receive(:read).at_least(:once).and_return(timelog)
+      expect(subject).to receive(:timelog).at_least(:once).and_return(timelog)
 
       expect { subject.run }.to output(/09:45 - 11:45/).to_stdout # rounding 9:41, 11:40 outwards
       expect { subject.run }.to output(/12:30 - 13:15/).to_stdout # rounding 12:25 up

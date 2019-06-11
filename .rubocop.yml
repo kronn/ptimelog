@@ -17,7 +17,3 @@ Layout/AlignHash:
   EnforcedHashRocketStyle: table
   EnforcedColonStyle: table
   EnforcedLastArgumentHashStyle: always_inspect # default
-
-Metrics/BlockLength:
-  Exclude:
-    - spec/**/*

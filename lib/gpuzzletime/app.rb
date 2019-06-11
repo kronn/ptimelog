@@ -6,11 +6,13 @@ require 'erb'
 module Gpuzzletime
   # Wrapper for everything
   class App
+    CONFIGURATION_DEFAULTS = {
+      base_url:          'https://time.puzzle.ch',
+      rounding_interval: 15,
+    }.freeze
+
     def initialize(args)
-      @config_dir = Pathname.new('~/.config/gpuzzletime').expand_path
-      load_config
-      @base_url = @configs[:base_url]
-      @rounding_interval = @configs[:rounding_interval]
+      load_config(Pathname.new('~/.config/gpuzzletime').expand_path)
 
       @command = (args[0] || :show).to_sym
 
@@ -50,18 +52,15 @@ module Gpuzzletime
 
     private
 
-    def load_config
-      config_fn = @config_dir.join('config')
+    def load_config(config_dir)
+      config_fn = config_dir.join('config')
       user_config = if config_fn.exist?
                       YAML.load_file(config_fn)
                     else
                       {}
                     end
 
-      @configs = {
-        base_url: 'https://time.puzzle.ch',
-        rounding_interval: 15,
-      }.merge(user_config)
+      @config = CONFIGURATION_DEFAULTS.merge(dir: config_dir).merge(user_config)
     end
 
     def entries
@@ -83,7 +82,7 @@ module Gpuzzletime
         start = nil # at the start of the day, we have no previous end
 
         lines.each do |entry|
-          finish = round_time(entry[:time], @rounding_interval) # we use that twice
+          finish = round_time(entry[:time], @config[:rounding_interval]) # we use that twice
           hidden = entry[:description].match(/\*\*$/) # hide lunch and breaks
 
           if start && !hidden
@@ -120,7 +119,7 @@ module Gpuzzletime
     end
 
     def open_browser(start, entry)
-      xdg_open "'#{@base_url}/ordertimes/new?#{url_options(start, entry)}'", silent: true
+      xdg_open "'#{@config[:base_url]}/ordertimes/new?#{url_options(start, entry)}'", silent: true
     end
 
     def xdg_open(args, silent: false)
@@ -172,8 +171,8 @@ module Gpuzzletime
     end
 
     def parser_file(parser_name)
-      @config_dir.join("parsers/#{parser_name}") # FIXME: security-hole, prevent relative paths!
-              .expand_path
+      @config[:dir].join("parsers/#{parser_name}") # FIXME: security-hole, prevent relative paths!
+                   .expand_path
     end
 
     def infer_account(entry)
@@ -191,7 +190,7 @@ module Gpuzzletime
     end
 
     def infer_billable(account)
-      script = @config_dir.join('billable')
+      script = @config[:dir].join('billable')
 
       return 1 unless script.exist?
 

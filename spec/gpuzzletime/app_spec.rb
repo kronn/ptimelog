@@ -29,8 +29,6 @@ describe Gpuzzletime::App do
     TIMELOG
   end
 
-  # xit 'has a configurable puzzletime-domain'
-
   it 'omits entries ending in two stars' do
     expect(subject).to receive(:timelog).at_least(:once).and_return(timelog)
 
@@ -87,6 +85,19 @@ describe Gpuzzletime::App do
         base_url: 'https://puzzletime.example.net',
         dir:      Pathname.new('./spec/fixtures/configuration').expand_path,
       }
+    end
+
+    context 'with a custom puzzletime-domain, so it' do
+      let(:command) { :upload }
+      let(:argument) { '2018-03-02' }
+
+      it 'opens a browser with that domain' do
+        subject.send(:instance_variable_set, '@config', config)
+        expect(subject).to receive(:timelog).at_least(:once).and_return(timelog)
+
+        expect(subject).to receive(:xdg_open).at_least(:once).and_return(true)
+        pending
+      end
     end
 
     context 'to not round the time-entries, so it' do

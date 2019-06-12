@@ -103,6 +103,8 @@ module Gpuzzletime
     end
 
     def round_time(time, interval)
+      return time unless interval
+
       hour, minute = time.split(':')
       minute = (minute.to_i / interval.to_f).round * interval.to_i
 

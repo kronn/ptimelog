@@ -9,11 +9,11 @@ module Gpuzzletime
     CONFIGURATION_DEFAULTS = {
       base_url:          'https://time.puzzle.ch',
       rounding_interval: 15,
+      dir:               Pathname.new('~/.config/gpuzzletime').expand_path,
     }.freeze
 
     def initialize(args)
-      load_config(Pathname.new('~/.config/gpuzzletime').expand_path)
-
+      @config  = load_config(CONFIGURATION_DEFAULTS[:dir].join('config'))
       @command = (args[0] || :show).to_sym
 
       case @command
@@ -52,15 +52,10 @@ module Gpuzzletime
 
     private
 
-    def load_config(config_dir)
-      config_fn = config_dir.join('config')
-      user_config = if config_fn.exist?
-                      YAML.load_file(config_fn)
-                    else
-                      {}
-                    end
+    def load_config(config_fn)
+      user_config = config_fn.exist? ? YAML.load_file(config_fn) : {}
 
-      @config = CONFIGURATION_DEFAULTS.merge(dir: config_dir).merge(user_config)
+      CONFIGURATION_DEFAULTS.merge(user_config)
     end
 
     def entries

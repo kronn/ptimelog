@@ -8,9 +8,9 @@ module Gpuzzletime
   # Wrapper for everything
   class App
     CONFIGURATION_DEFAULTS = {
-      base_url:          'https://time.puzzle.ch',
-      rounding_interval: 15,
-      dir:               Pathname.new('~/.config/gpuzzletime').expand_path,
+      base_url: 'https://time.puzzle.ch',
+      rounding: 15,
+      dir:      Pathname.new('~/.config/gpuzzletime').expand_path,
     }.freeze
 
     def initialize(args)
@@ -78,7 +78,7 @@ module Gpuzzletime
         start = nil # at the start of the day, we have no previous end
 
         lines.each do |entry|
-          finish = round_time(entry[:time], @config[:rounding_interval]) # we use that twice
+          finish = round_time(entry[:time], @config[:rounding]) # we use that twice
           hidden = entry[:description].match(/\*\*$/) # hide lunch and breaks
 
           if start && !hidden

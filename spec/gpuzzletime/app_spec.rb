@@ -93,10 +93,13 @@ describe Gpuzzletime::App do
 
       it 'opens a browser with that domain' do
         subject.send(:instance_variable_set, '@config', config)
-        expect(subject).to receive(:timelog).at_least(:once).and_return(timelog)
+        expect(subject).to receive(:timelog).once.and_return(timelog)
 
-        expect(subject).to receive(:xdg_open).at_least(:once).and_return(true)
-        pending
+        expect(subject).to receive(:xdg_open).with(
+          %r{https://puzzletime.example.net}, silent: true
+        ).exactly(5).times.and_return(true)
+
+        subject.run
       end
     end
 

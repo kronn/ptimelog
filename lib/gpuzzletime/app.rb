@@ -2,6 +2,7 @@
 
 require 'date'
 require 'erb'
+require 'pathname'
 
 module Gpuzzletime
   # Wrapper for everything

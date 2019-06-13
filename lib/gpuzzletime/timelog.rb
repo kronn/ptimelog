@@ -6,7 +6,11 @@ module Gpuzzletime
   # Load and tokenize the data from gtimelog
   class Timelog
     def self.load
-      new.parse(read)
+      new.load
+    end
+
+    def load
+      parse(read)
     end
 
     def timelog_txt

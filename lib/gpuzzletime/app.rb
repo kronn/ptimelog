@@ -154,7 +154,7 @@ module Gpuzzletime
         'ordertime[ticket]':          entry[:ticket],
         'ordertime[description]':     entry[:description],
         'ordertime[from_start_time]': start,
-        'ordertime[to_end_time]':     entry[:time],
+        'ordertime[to_end_time]':     round_time(entry[:time], @config[:rounding]),
         'ordertime[account_id]':      account,
         'ordertime[billable]':        infer_billable(account),
       }

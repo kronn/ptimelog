@@ -120,7 +120,7 @@ module Gpuzzletime
     end
 
     def xdg_open(args, silent: false)
-      opener   = 'xdg-open'
+      opener   = 'xdg-open' # could be configurable, but is already a proxy
       silencer = '> /dev/null 2> /dev/null'
 
       if system("which #{opener} #{silencer}")
@@ -131,6 +131,9 @@ module Gpuzzletime
 
           This binary is needed to launch a webbrowser and open the page
           to enter the worktime-entry into puzzletime.
+
+          If this needs to be configurable, please open an issue at
+          https://github.com/kronn/gpuzzletime/issues/new
         ERRORMESSAGE
       end
     end

@@ -142,7 +142,7 @@ module Gpuzzletime
     def launch_editor
       editor = `which $EDITOR`.chomp
 
-      file = @file.nil? ? timelog_txt : parser_file(@file)
+      file = @file.nil? ? Timelog.timelog_txt : parser_file(@file)
 
       exec "#{editor} #{file}"
     end

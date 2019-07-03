@@ -41,6 +41,14 @@ describe Gpuzzletime::Timelog do
     expect(parsed_array[0][1]).to all be_a(MatchData)
   end
 
+  it 'provides a shorthand' do
+    expect(described_class).to receive(:new).and_return(subject)
+    expect(subject).to receive(:read).and_return(timelog)
+
+    expect(described_class).to respond_to :load
+    expect(described_class.load).to be_an Array
+  end
+
   # it 'omits entries ending in two stars' do
   #   expect(subject).to receive(:read).at_least(:once).and_return(timelog)
   #

@@ -29,8 +29,6 @@ describe Gpuzzletime::App do
     TIMELOG
   end
 
-  # xit 'has a configurable puzzletime-domain'
-
   it 'omits entries ending in two stars' do
     expect(subject).to receive(:timelog).at_least(:once).and_return(timelog)
 
@@ -79,4 +77,61 @@ describe Gpuzzletime::App do
 
   # it 'can open the timelog in an editor'
   # it 'can open a parser-script in an editor'
+
+  context 'can be configured' do
+    let(:config) do
+      {
+        rounding: false,
+        base_url: 'https://puzzletime.example.net',
+        dir:      Pathname.new('./spec/fixtures/configuration').expand_path,
+      }
+    end
+
+    context 'with a custom puzzletime-domain, so it' do
+      let(:command) { :upload }
+      let(:argument) { '2018-03-02' }
+
+      it 'opens a browser with that domain' do
+        subject.send(:instance_variable_set, '@config', config)
+        expect(subject).to receive(:timelog).once.and_return(timelog)
+
+        expect(subject).to receive(:xdg_open).with(
+          %r{https://puzzletime.example.net}, silent: true
+        ).exactly(5).times.and_return(true)
+
+        subject.run
+      end
+    end
+
+    context 'to not round the time-entries, so it' do
+      let(:command) { :show }
+      let(:argument) { '2018-03-02' }
+
+      it 'leaves them as they were' do
+        subject.send(:instance_variable_set, '@config', config)
+        expect(subject).to receive(:timelog).at_least(:once).and_return(timelog)
+
+        expect { subject.run }.to output(/09:51 - 11:40/).to_stdout
+        expect { subject.run }.to output(/12:25 - 13:15/).to_stdout
+        expect { subject.run }.to output(/14:30 - 16:00/).to_stdout
+        expect { subject.run }.to output(/16:00 - 17:18/).to_stdout
+        expect { subject.run }.to output(/18:58 - 20:08/).to_stdout
+      end
+    end
+  end
+
+  context 'just looking at one day, it' do
+    let(:command) { :show }
+    let(:argument) { '2018-03-02' }
+
+    it 'rounds entry times to nearest 15 minutes' do
+      expect(subject).to receive(:timelog).at_least(:once).and_return(timelog)
+
+      expect { subject.run }.to output(/09:45 - 11:45/).to_stdout # rounding 9:41, 11:40 outwards
+      expect { subject.run }.to output(/12:30 - 13:15/).to_stdout # rounding 12:25 up
+      expect { subject.run }.to output(/14:30 - 16:00/).to_stdout # leaving round values as is
+      expect { subject.run }.to output(/16:00 - 17:15/).to_stdout # rounding 17:18 down
+      expect { subject.run }.to output(/19:00 - 20:15/).to_stdout # case of 18:60 -> 19:00
+    end
+  end
 end

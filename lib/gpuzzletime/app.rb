@@ -2,13 +2,19 @@
 
 require 'date'
 require 'erb'
+require 'pathname'
 
 module Gpuzzletime
   # Wrapper for everything
   class App
-    def initialize(args)
-      @base_url = 'https://time.puzzle.ch'
+    CONFIGURATION_DEFAULTS = {
+      base_url: 'https://time.puzzle.ch',
+      rounding: 15,
+      dir:      Pathname.new('~/.config/gpuzzletime').expand_path,
+    }.freeze
 
+    def initialize(args)
+      @config  = load_config(CONFIGURATION_DEFAULTS[:dir].join('config'))
       @command = (args[0] || :show).to_sym
 
       case @command
@@ -47,6 +53,12 @@ module Gpuzzletime
 
     private
 
+    def load_config(config_fn)
+      user_config = config_fn.exist? ? YAML.load_file(config_fn) : {}
+
+      CONFIGURATION_DEFAULTS.merge(user_config)
+    end
+
     def entries
       @entries ||= {}
     end
@@ -63,10 +75,10 @@ module Gpuzzletime
 
         entries[date] = []
 
-        start = nil             # at the start of the day, we have no previous end
+        start = nil # at the start of the day, we have no previous end
 
         lines.each do |entry|
-          finish = entry[:time] # we use that twice
+          finish = round_time(entry[:time], @config[:rounding]) # we use that twice
           hidden = entry[:description].match(/\*\*$/) # hide lunch and breaks
 
           if start && !hidden
@@ -91,12 +103,25 @@ module Gpuzzletime
       end
     end
 
+    def round_time(time, interval)
+      return time unless interval
+
+      hour, minute = time.split(':')
+      minute = (minute.to_i / interval.to_f).round * interval.to_i
+
+      if minute == 60
+        [hour.succ, 0]
+      else
+        [hour, minute]
+      end.map { |part| part.to_s.rjust(2, '0') }.join(':')
+    end
+
     def open_browser(start, entry)
-      xdg_open "'#{@base_url}/ordertimes/new?#{url_options(start, entry)}'", silent: true
+      xdg_open "'#{@config[:base_url]}/ordertimes/new?#{url_options(start, entry)}'", silent: true
     end
 
     def xdg_open(args, silent: false)
-      opener   = 'xdg-open'
+      opener   = 'xdg-open' # could be configurable, but is already a proxy
       silencer = '> /dev/null 2> /dev/null'
 
       if system("which #{opener} #{silencer}")
@@ -107,6 +132,9 @@ module Gpuzzletime
 
           This binary is needed to launch a webbrowser and open the page
           to enter the worktime-entry into puzzletime.
+
+          If this needs to be configurable, please open an issue at
+          https://github.com/kronn/gpuzzletime/issues/new
         ERRORMESSAGE
       end
     end
@@ -114,7 +142,7 @@ module Gpuzzletime
     def launch_editor
       editor = `which $EDITOR`.chomp
 
-      file = @file.nil? ? timelog_txt : parser_file(@file)
+      file = @file.nil? ? Timelog.timelog_txt : parser_file(@file)
 
       exec "#{editor} #{file}"
     end
@@ -126,7 +154,7 @@ module Gpuzzletime
         'ordertime[ticket]':          entry[:ticket],
         'ordertime[description]':     entry[:description],
         'ordertime[from_start_time]': start,
-        'ordertime[to_end_time]':     entry[:time],
+        'ordertime[to_end_time]':     round_time(entry[:time], @config[:rounding]),
         'ordertime[account_id]':      account,
         'ordertime[billable]':        infer_billable(account),
       }
@@ -144,8 +172,8 @@ module Gpuzzletime
     end
 
     def parser_file(parser_name)
-      Pathname.new("~/.config/gpuzzletime/parsers/#{parser_name}") # FIXME: security-hole, prevent relative paths!
-              .expand_path
+      @config[:dir].join("parsers/#{parser_name}") # FIXME: security-hole, prevent relative paths!
+                   .expand_path
     end
 
     def infer_account(entry)
@@ -163,7 +191,7 @@ module Gpuzzletime
     end
 
     def infer_billable(account)
-      script = Pathname.new('~/.config/gpuzzletime/billable').expand_path
+      script = @config[:dir].join('billable')
 
       return 1 unless script.exist?
 

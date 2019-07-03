@@ -25,7 +25,7 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
   - [ ] open day in browser for review
 - [ ] avoid duplicate entries
   - [ ] start/end time as indicator?
-- [ ] offer rounding times to the next 5, 10 or 15 minutes
+- [x] offer rounding times to the next 5, 10 or 15 minutes
 - [ ] allow to add entries from the command-line
 - [ ] handle time-account and billable better
   - [ ] import time-accounts from ptime (https://time.puzzle.ch/work_items/search.json?q=search%20terms)
@@ -83,18 +83,26 @@ Otherwise, a script to determine the time-account is loaded.
 gpuzzletime can prefill the account-number and billable-state of an entry.
 
 The tags are used to determine a script that helps infer the time-account.
-These scripts should be located in ~/.config/gpuzzletime/parsers/ and be named
+These scripts should be located in `~/.config/gpuzzletime/parsers/` and be named
 like the first tag used. The script gets the ticket, the description and all
 remaining tags passed as arguments. The output of the script should only be the
 ID of the time-account.
 
 In order to infer the billable-state of an entry, a script
-~/.config/gpuzzletime/billable is called. It only gets the previously infered
+`~/.config/gpuzzletime/billable` is called. It only gets the previously infered
 account-id as argument and is expected to output "true" or "false".
 
 Since these script are called a lot, it is better to write them in a compiled
 language. If you only like ruby, take a look at crystal. For such simple
 scripts, the code is almost identical and "just" needs to be compiled.
+
+## Configuration
+
+A config-file is read from `$HOME/.config/gpuzzletime/config`. It is expected
+to be a YAML-file. Currently, it supports the following keys:
+
+	- rounding: [integer or false, default 15]
+	- base_url: [url to your puzzletime-installation, default https://time.puzzle.ch]
 
 ## Development
 

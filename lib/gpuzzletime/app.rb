@@ -16,6 +16,7 @@ module Gpuzzletime
     def initialize(args)
       @config  = load_config(CONFIGURATION_DEFAULTS[:dir].join('config'))
       @command = (args[0] || :show).to_sym
+      @script  = Script.new(@config[:dir])
 
       case @command
       when :show, :upload
@@ -142,7 +143,7 @@ module Gpuzzletime
     def launch_editor
       editor = `which $EDITOR`.chomp
 
-      file = @file.nil? ? Timelog.timelog_txt : parser_file(@file)
+      file = @file.nil? ? Timelog.timelog_txt : @script.parser(@file)
 
       exec "#{editor} #{file}"
     end
@@ -171,18 +172,13 @@ module Gpuzzletime
       end
     end
 
-    def parser_file(parser_name)
-      @config[:dir].join("parsers/#{parser_name}") # FIXME: security-hole, prevent relative paths!
-                   .expand_path
-    end
-
     def infer_account(entry)
       return unless entry[:tags]
 
       tags = entry[:tags].split
       parser_name = tags.shift
 
-      parser = parser_file(parser_name)
+      parser = @script.parser(parser_name)
 
       return unless parser.exist?
 
@@ -191,7 +187,7 @@ module Gpuzzletime
     end
 
     def infer_billable(account)
-      script = @config[:dir].join('billable')
+      script = @script.billable
 
       return 1 unless script.exist?
 

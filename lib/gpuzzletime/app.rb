@@ -14,42 +14,29 @@ module Gpuzzletime
     }.freeze
 
     def initialize(args)
-      @config  = load_config(CONFIGURATION_DEFAULTS[:dir].join('config'))
-      @command = (args[0] || :show).to_sym
-      @script  = Script.new(@config[:dir])
+      @config = load_config(CONFIGURATION_DEFAULTS[:dir].join('config'))
+      command = (args[0] || :show).to_sym
 
-      case @command
-      when :show, :upload
-        @date = named_dates(args[1] || 'last') || :all
-      when :edit
-        @file = args[1]
-      else
-        raise ArgumentError, "Unsupported Command #{@command}"
-      end
+      @date = named_dates(args[1] || 'last') || :all
+      @command = case command
+                 when :show
+                   Gpuzzletime::Command::Show.new(@config)
+                 when :upload
+                   Gpuzzletime::Command::Upload.new(@config)
+                 when :edit
+                   Gpuzzletime::Command::Edit.new(@config, args[1])
+                 else
+                   raise ArgumentError, "Unsupported Command #{@command}"
+                 end
     end
 
     def run
-      case @command
-      when :show
-        fill_entries(@command)
-        entries.each do |date, entries|
-          puts date, '----------'
-          entries.each do |entry|
-            puts entry
-          end
-          puts nil
-        end
-      when :upload
-        fill_entries(@command)
-        entries.each do |date, entries|
-          puts "Uploading #{date}"
-          entries.each do |start, entry|
-            open_browser(start, entry)
-          end
-        end
-      when :edit
-        launch_editor
+      if @command.needs_entries?
+        fill_entries
+        @command.entries = entries
       end
+
+      @command.run
     end
 
     private
@@ -65,102 +52,27 @@ module Gpuzzletime
     end
 
     def timelog
-      Timelog.load
+      Gpuzzletime::Timelog.load
     end
 
-    def fill_entries(purpose)
+    def fill_entries
       timelog.each do |date, lines|
         # this is mixing preparation, assembly and output, but gets the job done
         next unless date                           # guard against the machine
         next unless @date == :all || @date == date # limit to one day if passed
 
         entries[date] = []
-
         start = nil # at the start of the day, we have no previous end
 
-        lines.each do |entry|
-          finish = round_time(entry[:time], @config[:rounding]) # we use that twice
-          hidden = entry[:description].match(/\*\*$/) # hide lunch and breaks
+        lines.each do |line|
+          entry = Entry.from_timelog(@config, line)
+          entry.start_time = start
 
-          if start && !hidden
-            case purpose # assemble data according to command
-            when :show
-              entries[date] << [
-                start, '-', finish,
-                [
-                  entry[:ticket],
-                  entry[:description],
-                  entry[:tags],
-                  infer_account(entry),
-                ].compact.join(' ∴ '),
-              ].compact.join(' ')
-            when :upload
-              entries[date] << [start, entry]
-            end
-          end
+          entries[date] << entry if entry.valid?
 
-          start = finish # store previous ending for nice display of next entry
+          start = entry.finish_time # store previous ending for nice display of next entry
         end
       end
-    end
-
-    def round_time(time, interval)
-      return time unless interval
-
-      hour, minute = time.split(':')
-      minute = (minute.to_i / interval.to_f).round * interval.to_i
-
-      if minute == 60
-        [hour.succ, 0]
-      else
-        [hour, minute]
-      end.map { |part| part.to_s.rjust(2, '0') }.join(':')
-    end
-
-    def open_browser(start, entry)
-      xdg_open "'#{@config[:base_url]}/ordertimes/new?#{url_options(start, entry)}'", silent: true
-    end
-
-    def xdg_open(args, silent: false)
-      opener   = 'xdg-open' # could be configurable, but is already a proxy
-      silencer = '> /dev/null 2> /dev/null'
-
-      if system("which #{opener} #{silencer}")
-        system "#{opener} #{args} #{silencer if silent}"
-      else
-        abort <<~ERRORMESSAGE
-          #{opener} not found
-
-          This binary is needed to launch a webbrowser and open the page
-          to enter the worktime-entry into puzzletime.
-
-          If this needs to be configurable, please open an issue at
-          https://github.com/kronn/gpuzzletime/issues/new
-        ERRORMESSAGE
-      end
-    end
-
-    def launch_editor
-      editor = `which $EDITOR`.chomp
-
-      file = @file.nil? ? Timelog.timelog_txt : @script.parser(@file)
-
-      exec "#{editor} #{file}"
-    end
-
-    def url_options(start, entry)
-      account = infer_account(entry)
-      {
-        work_date:                    entry[:date],
-        'ordertime[ticket]':          entry[:ticket],
-        'ordertime[description]':     entry[:description],
-        'ordertime[from_start_time]': start,
-        'ordertime[to_end_time]':     round_time(entry[:time], @config[:rounding]),
-        'ordertime[account_id]':      account,
-        'ordertime[billable]':        infer_billable(account),
-      }
-        .map { |key, value| [key, ERB::Util.url_encode(value)].join('=') }
-        .join('&')
     end
 
     def named_dates(date)
@@ -170,28 +82,6 @@ module Gpuzzletime
       when 'last'             then timelog.to_h.keys.compact.sort[-2] || Date.today.prev_day.to_s
       when /\d{4}(-\d{2}){2}/ then date
       end
-    end
-
-    def infer_account(entry)
-      return unless entry[:tags]
-
-      tags = entry[:tags].split
-      parser_name = tags.shift
-
-      parser = @script.parser(parser_name)
-
-      return unless parser.exist?
-
-      cmd = %(#{parser} "#{entry[:ticket]}" "#{entry[:description]}" #{tags.map(&:inspect).join(' ')})
-      `#{cmd}`.chomp # maybe only execute if parser is in correct dir?
-    end
-
-    def infer_billable(account)
-      script = @script.billable
-
-      return 1 unless script.exist?
-
-      `#{script} #{account}`.chomp == 'true' ? 1 : 0
     end
   end
 end

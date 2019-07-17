@@ -87,22 +87,6 @@ describe Gpuzzletime::App do
       }
     end
 
-    context 'with a custom puzzletime-domain, so it' do
-      let(:command) { :upload }
-      let(:argument) { '2018-03-02' }
-
-      it 'opens a browser with that domain' do
-        subject.send(:instance_variable_set, '@config', config)
-        expect(subject).to receive(:timelog).once.and_return(timelog)
-
-        expect(subject).to receive(:xdg_open).with(
-          %r{https://puzzletime.example.net}, silent: true
-        ).exactly(5).times.and_return(true)
-
-        subject.run
-      end
-    end
-
     context 'to not round the time-entries, so it' do
       let(:command) { :show }
       let(:argument) { '2018-03-02' }

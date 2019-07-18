@@ -5,6 +5,7 @@ $LOAD_PATH.unshift File.dirname(__FILE__)
 # Autoloading and such
 module Gpuzzletime
   autoload :App, 'gpuzzletime/app'
+  autoload :Configuration, 'gpuzzletime/configuration'
   autoload :Entry, 'gpuzzletime/entry'
   autoload :Script, 'gpuzzletime/script'
   autoload :Timelog, 'gpuzzletime/timelog'

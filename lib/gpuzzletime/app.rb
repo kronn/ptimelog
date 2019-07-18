@@ -7,14 +7,8 @@ require 'pathname'
 module Gpuzzletime
   # Wrapper for everything
   class App
-    CONFIGURATION_DEFAULTS = {
-      base_url: 'https://time.puzzle.ch',
-      rounding: 15,
-      dir:      Pathname.new('~/.config/gpuzzletime').expand_path,
-    }.freeze
-
     def initialize(args)
-      @config = load_config(CONFIGURATION_DEFAULTS[:dir].join('config'))
+      @config = Configuration.instance
       command = (args[0] || :show).to_sym
 
       @date = named_dates(args[1] || 'last') || :all
@@ -40,12 +34,6 @@ module Gpuzzletime
     end
 
     private
-
-    def load_config(config_fn)
-      user_config = config_fn.exist? ? YAML.load_file(config_fn) : {}
-
-      CONFIGURATION_DEFAULTS.merge(user_config)
-    end
 
     def entries
       @entries ||= {}

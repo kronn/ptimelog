@@ -17,3 +17,17 @@ Layout/AlignHash:
   EnforcedHashRocketStyle: table
   EnforcedColonStyle: table
   EnforcedLastArgumentHashStyle: always_inspect # default
+
+Naming/UncommunicativeMethodParamName:
+  AllowedNames:
+    - fn
+    # default allowed names
+    - io
+    - id
+    - to
+    - by
+    - on
+    - in
+    - at
+    - ip
+    - db

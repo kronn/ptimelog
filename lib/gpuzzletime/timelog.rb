@@ -11,7 +11,7 @@ module Gpuzzletime
       end
 
       def timelog_txt
-        Pathname.new('~/.local/share/gtimelog/timelog.txt').expand_path
+        Pathname.new(Configuration.instance[:timelog]).expand_path
       end
     end
 

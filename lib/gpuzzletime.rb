@@ -7,6 +7,7 @@ module Gpuzzletime
   autoload :App, 'gpuzzletime/app'
   autoload :Configuration, 'gpuzzletime/configuration'
   autoload :Entry, 'gpuzzletime/entry'
+  autoload :NamedDate, 'gpuzzletime/named_date'
   autoload :Script, 'gpuzzletime/script'
   autoload :Timelog, 'gpuzzletime/timelog'
   autoload :VERSION, 'gpuzzletime/version'

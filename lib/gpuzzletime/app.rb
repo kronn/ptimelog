@@ -11,11 +11,12 @@ module Gpuzzletime
       @config = Configuration.instance
       command = (args[0] || :show).to_sym
 
-      @date = named_dates(args[1] || 'last') || :all
       @command = case command
                  when :show
+                   @date = NamedDate.new.date(args[1])
                    Gpuzzletime::Command::Show.new(@config)
                  when :upload
+                   @date = NamedDate.new.date(args[1])
                    Gpuzzletime::Command::Upload.new(@config)
                  when :edit
                    Gpuzzletime::Command::Edit.new(@config, args[1])
@@ -60,15 +61,6 @@ module Gpuzzletime
 
           start = entry.finish_time # store previous ending for nice display of next entry
         end
-      end
-    end
-
-    def named_dates(date)
-      case date
-      when 'yesterday'        then Date.today.prev_day.to_s
-      when 'today'            then Date.today.to_s
-      when 'last'             then timelog.to_h.keys.compact.sort[-2] || Date.today.prev_day.to_s
-      when /\d{4}(-\d{2}){2}/ then date
       end
     end
   end

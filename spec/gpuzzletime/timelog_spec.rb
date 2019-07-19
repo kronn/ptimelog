@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Gpuzzletime::Timelog do
-  subject { described_class.new }
+  subject { described_class.instance }
 
   let(:timelog) do
     <<~TIMELOG
@@ -42,7 +42,6 @@ describe Gpuzzletime::Timelog do
   end
 
   it 'provides a shorthand' do
-    expect(described_class).to receive(:new).and_return(subject)
     expect(subject).to receive(:read).and_return(timelog)
 
     expect(described_class).to respond_to :load

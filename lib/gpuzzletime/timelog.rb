@@ -5,9 +5,11 @@ require 'pathname'
 module Gpuzzletime
   # Load and tokenize the data from gtimelog
   class Timelog
+    include Singleton
+
     class << self
       def load
-        new.load
+        instance.load
       end
 
       def timelog_txt
@@ -16,7 +18,7 @@ module Gpuzzletime
     end
 
     def load
-      parse(read)
+      @load ||= parse(read)
     end
 
     def timelog_txt

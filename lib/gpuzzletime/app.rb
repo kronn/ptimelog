@@ -40,13 +40,12 @@ module Gpuzzletime
       @entries ||= {}
     end
 
-    def timelog
-      Gpuzzletime::Timelog.load
+    def timeload
+      Timelog.load
     end
 
     def fill_entries
       timelog.each do |date, lines|
-        # this is mixing preparation, assembly and output, but gets the job done
         next unless date                           # guard against the machine
         next unless @date == :all || @date == date # limit to one day if passed
 

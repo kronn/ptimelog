@@ -19,8 +19,9 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
   - [x] get ticket-parser from tags
 - [ ] merge equal adjacent entries into one
 - [ ] complete login/entry automation
-  - [ ] login
-  - [ ] store cookie
+  - [ ] handle authentication
+    - [ ] login and store cookie
+    - [ ] send user and pwd with every request
   - [ ] make entries
   - [ ] open day in browser for review
 - [ ] avoid duplicate entries

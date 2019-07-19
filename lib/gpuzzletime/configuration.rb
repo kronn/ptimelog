@@ -13,20 +13,26 @@ module Gpuzzletime
     }.freeze
 
     def initialize
-      @config = load(CONFIGURATION_DEFAULTS[:dir].join('config'))
+      @config = load_config(
+        Pathname.new(CONFIGURATION_DEFAULTS[:dir]).join('config')
+      )
       wrap_with_pathname(:dir)
       wrap_with_pathname(:timelog)
     end
 
-    def load(fn)
+    def load_config(fn)
       user_config = fn.exist? ? YAML.load_file(fn) : {}
 
       CONFIGURATION_DEFAULTS.merge(user_config)
     end
 
+    def [](key)
+      @config[key]
+    end
+
     private
 
-    def wrap_pathnames(key)
+    def wrap_with_pathname(key)
       return unless @config.key?(key)
       return if @config[key].is_a? Pathname
 

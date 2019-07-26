@@ -40,7 +40,7 @@ module Gpuzzletime
       @entries ||= {}
     end
 
-    def timeload
+    def timelog
       Timelog.load
     end
 

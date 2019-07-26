@@ -28,6 +28,15 @@ describe Gpuzzletime::App do
       2018-03-05 09:00: start **
     TIMELOG
   end
+  let(:config) { {} }
+
+  before :each do
+    Gpuzzletime::Configuration.instance.reset
+
+    config.each do |key, value|
+      Gpuzzletime::Configuration.instance[key] = value
+    end
+  end
 
   it 'omits entries ending in two stars' do
     expect(subject).to receive(:timelog).at_least(:once).and_return(timelog)
@@ -62,7 +71,6 @@ describe Gpuzzletime::App do
       let(:argument) { '2018-03-02' }
 
       it 'leaves them as they were' do
-        subject.send(:instance_variable_set, '@config', config)
         expect(subject).to receive(:timelog).at_least(:once).and_return(timelog)
 
         expect { subject.run }.to output(/09:51 - 11:40/).to_stdout

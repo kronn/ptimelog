@@ -53,7 +53,7 @@ module Gpuzzletime
         start = nil # at the start of the day, we have no previous end
 
         lines.each do |line|
-          entry = Entry.from_timelog(@config, line)
+          entry = Entry.from_timelog(line)
           entry.start_time = start
 
           entries[date] << entry if entry.valid?

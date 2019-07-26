@@ -4,19 +4,20 @@ module Gpuzzletime
   # Dataclass to wrap an entry
   class Entry
     # allow to read everything
-    attr_reader :date, :start_time, :finish_time, :ticket, :description, :tags, :billable, :account
+    attr_reader :date, :start_time, :finish_time, :ticket, :description,
+                :tags, :billable, :account
 
     # define only trivial writers, omit special and derived values
     attr_writer :date, :start_time,               :ticket, :description
 
-    def initialize(config)
+    def initialize(config = Configuration.instance)
       @config = config
-      @script = Script.new(config[:dir])
+      @script = Script.new(@config[:dir])
     end
 
     class << self
-      def from_timelog(config, matched_line)
-        entry = new(config)
+      def from_timelog(matched_line)
+        entry = new
         entry.from_timelog(matched_line)
         entry
       end

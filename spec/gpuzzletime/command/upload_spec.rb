@@ -7,20 +7,27 @@ describe Gpuzzletime::Command::Upload do
 
   let(:config) do
     {
-      rounding: false,
       base_url: 'https://puzzletime.example.net',
       dir:      Pathname.new('./spec/fixtures/configuration').expand_path,
     }
   end
 
+  before :each do
+    Gpuzzletime::Configuration.instance.reset
+
+    config.each do |key, value|
+      Gpuzzletime::Configuration.instance[key] = value
+    end
+  end
+
   let(:entries) do
     {
       '1970-01-01' => [
-        Gpuzzletime::Entry.new(config),
-        Gpuzzletime::Entry.new(config),
-        Gpuzzletime::Entry.new(config),
-        Gpuzzletime::Entry.new(config),
-        Gpuzzletime::Entry.new(config),
+        Gpuzzletime::Entry.new,
+        Gpuzzletime::Entry.new,
+        Gpuzzletime::Entry.new,
+        Gpuzzletime::Entry.new,
+        Gpuzzletime::Entry.new,
       ],
     }
   end

@@ -13,6 +13,10 @@ module Gpuzzletime
     }.freeze
 
     def initialize
+      reset
+    end
+
+    def reset
       @config = load_config(
         Pathname.new(CONFIGURATION_DEFAULTS[:dir]).join('config')
       )
@@ -27,14 +31,20 @@ module Gpuzzletime
     end
 
     def [](key)
-      @config[key]
+      @config[key.to_sym]
+    end
+
+    def []=(key, value)
+      @config[key.to_sym] = value
+
+      wrap_with_pathname(key.to_sym) if %w[dir timelog].include?(key.to_s)
     end
 
     private
 
     def wrap_with_pathname(key)
       return unless @config.key?(key)
-      return if @config[key].is_a? Pathname
+      return @config[key] if @config[key].is_a? Pathname
 
       @config[key] = Pathname.new(@config[key]).expand_path
     end

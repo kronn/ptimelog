@@ -5,18 +5,20 @@ require 'pathname'
 module Gpuzzletime
   # Load and tokenize the data from gtimelog
   class Timelog
+    include Singleton
+
     class << self
       def load
-        new.load
+        instance.load
       end
 
       def timelog_txt
-        Pathname.new('~/.local/share/gtimelog/timelog.txt').expand_path
+        Pathname.new(Configuration.instance[:timelog]).expand_path
       end
     end
 
     def load
-      parse(read)
+      @load ||= parse(read)
     end
 
     def timelog_txt

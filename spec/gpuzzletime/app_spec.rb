@@ -8,7 +8,7 @@ describe Gpuzzletime::App do
   let(:command) { 'show' }
   let(:argument) { 'all' }
   let(:timelog) do
-    Gpuzzletime::Timelog.new.parse <<~TIMELOG
+    Gpuzzletime::Timelog.instance.parse <<~TIMELOG
       2018-03-02 09:51: start **
       2018-03-02 11:40: 12345: prepare deployment -- webapp
       2018-03-02 12:25: lunch **
@@ -28,6 +28,15 @@ describe Gpuzzletime::App do
       2018-03-05 09:00: start **
     TIMELOG
   end
+  let(:config) { {} }
+
+  before :each do
+    Gpuzzletime::Configuration.instance.reset
+
+    config.each do |key, value|
+      Gpuzzletime::Configuration.instance[key] = value
+    end
+  end
 
   it 'omits entries ending in two stars' do
     expect(subject).to receive(:timelog).at_least(:once).and_return(timelog)
@@ -37,36 +46,6 @@ describe Gpuzzletime::App do
     expect { subject.run }.not_to output(/lunch/).to_stdout
     expect { subject.run }.not_to output(/break/).to_stdout
   end
-
-  it 'knows today by name' do
-    today = '2018-03-03'
-
-    Timecop.travel(today) do
-      expect(subject.send(:named_dates, 'today')).to eq(today)
-    end
-  end
-
-  it 'knows yesterday by name' do
-    today     = '2018-03-03'
-    yesterday = '2018-03-02'
-
-    Timecop.travel(today) do
-      expect(subject.send(:named_dates, 'yesterday')).to eq(yesterday)
-    end
-  end
-
-  it 'knows the last day by name' do
-    expect(subject).to receive(:timelog).at_least(:once).and_return(timelog)
-    last_day = '2018-03-03' # dependent on test-data of timelog above
-
-    expect(subject.send(:named_dates, 'last')).to eq(last_day)
-  end
-
-  it 'understands and accepts dates in YYYY-MM-DD format' do
-    date = '1970-01-01'
-    expect(subject.send(:named_dates, date)).to be date
-  end
-  # it 'defaults to "last day"'
 
   # it 'can show parsed entries'
   # it 'can upload parsed entries'
@@ -87,28 +66,11 @@ describe Gpuzzletime::App do
       }
     end
 
-    context 'with a custom puzzletime-domain, so it' do
-      let(:command) { :upload }
-      let(:argument) { '2018-03-02' }
-
-      it 'opens a browser with that domain' do
-        subject.send(:instance_variable_set, '@config', config)
-        expect(subject).to receive(:timelog).once.and_return(timelog)
-
-        expect(subject).to receive(:xdg_open).with(
-          %r{https://puzzletime.example.net}, silent: true
-        ).exactly(5).times.and_return(true)
-
-        subject.run
-      end
-    end
-
     context 'to not round the time-entries, so it' do
       let(:command) { :show }
       let(:argument) { '2018-03-02' }
 
       it 'leaves them as they were' do
-        subject.send(:instance_variable_set, '@config', config)
         expect(subject).to receive(:timelog).at_least(:once).and_return(timelog)
 
         expect { subject.run }.to output(/09:51 - 11:40/).to_stdout

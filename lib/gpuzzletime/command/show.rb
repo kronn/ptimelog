@@ -1,0 +1,45 @@
+# frozen_string_literal: true
+
+module Gpuzzletime
+  module Command
+    # show entries of one day or all of them
+    class Show
+      def initialize(config)
+        @config  = config
+        @entries = {}
+      end
+
+      def needs_entries?
+        true
+      end
+
+      def run
+        @entries.each do |date, list|
+          puts date, '----------'
+          list.each do |entry|
+            puts entry
+          end
+          puts nil
+        end
+      end
+
+      def entries=(entries)
+        entries.each do |date, list|
+          @entries[date] = []
+
+          list.each do |entry|
+            @entries[date] << [
+              entry.start_time, '-', entry.finish_time,
+              [
+                entry.ticket,
+                entry.description,
+                entry.tags,
+                entry.account,
+              ].compact.join(' ∴ '),
+            ].compact.join(' ')
+          end
+        end
+      end
+    end
+  end
+end

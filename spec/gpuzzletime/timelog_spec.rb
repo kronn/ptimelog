@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Gpuzzletime::Timelog do
-  subject { described_class.new }
+  subject { described_class.instance }
 
   let(:timelog) do
     <<~TIMELOG
@@ -42,19 +42,9 @@ describe Gpuzzletime::Timelog do
   end
 
   it 'provides a shorthand' do
-    expect(described_class).to receive(:new).and_return(subject)
     expect(subject).to receive(:read).and_return(timelog)
 
     expect(described_class).to respond_to :load
     expect(described_class.load).to be_an Array
   end
-
-  # it 'omits entries ending in two stars' do
-  #   expect(subject).to receive(:read).at_least(:once).and_return(timelog)
-  #
-  #   expect { subject.run }.to output(/studying/).to_stdout
-  #   expect { subject.run }.not_to output(/dinner/).to_stdout
-  #   expect { subject.run }.not_to output(/lunch/).to_stdout
-  #   expect { subject.run }.not_to output(/break/).to_stdout
-  # end
 end

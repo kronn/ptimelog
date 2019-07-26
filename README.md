@@ -6,7 +6,7 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
 
 - [x] read timelog.txt
   - [x] from known location
-  - [ ] later: configure location?
+  - [x] later: configure location?
   - [ ] later: auto-detect location?
 - [x] parse out last day
   - [x] especially start/end-times for each entry
@@ -19,8 +19,9 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
   - [x] get ticket-parser from tags
 - [ ] merge equal adjacent entries into one
 - [ ] complete login/entry automation
-  - [ ] login
-  - [ ] store cookie
+  - [ ] handle authentication
+    - [ ] login and store cookie
+    - [ ] send user and pwd with every request
   - [ ] make entries
   - [ ] open day in browser for review
 - [ ] avoid duplicate entries
@@ -37,7 +38,7 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
   - [ ] allow to have a list of "favourite" time-accounts
   - [ ] select best-matching time-account according to tags, possibly limited to the favourites
 - [ ] add cli-help
-
+  - [ ] use commander for CLI?
 
 ## Installation
 

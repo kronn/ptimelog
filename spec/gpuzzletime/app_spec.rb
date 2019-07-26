@@ -57,31 +57,6 @@ describe Gpuzzletime::App do
   # it 'can open the timelog in an editor'
   # it 'can open a parser-script in an editor'
 
-  context 'can be configured' do
-    let(:config) do
-      {
-        rounding: false,
-        base_url: 'https://puzzletime.example.net',
-        dir:      Pathname.new('./spec/fixtures/configuration').expand_path,
-      }
-    end
-
-    context 'to not round the time-entries, so it' do
-      let(:command) { :show }
-      let(:argument) { '2018-03-02' }
-
-      it 'leaves them as they were' do
-        expect(subject).to receive(:timelog).at_least(:once).and_return(timelog)
-
-        expect { subject.run }.to output(/09:51 - 11:40/).to_stdout
-        expect { subject.run }.to output(/12:25 - 13:15/).to_stdout
-        expect { subject.run }.to output(/14:30 - 16:00/).to_stdout
-        expect { subject.run }.to output(/16:00 - 17:18/).to_stdout
-        expect { subject.run }.to output(/18:58 - 20:08/).to_stdout
-      end
-    end
-  end
-
   context 'just looking at one day, it' do
     let(:command) { :show }
     let(:argument) { '2018-03-02' }

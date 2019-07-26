@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'singleton'
+
 module Gpuzzletime
   # Wrapper around configuration-options and -loading
   class Configuration

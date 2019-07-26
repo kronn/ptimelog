@@ -5,7 +5,7 @@ module Gpuzzletime
     # edit one file. without argument, it will edit the timelog, otherwise a
     # parser-script is loaded
     class Edit
-      def initalize(config, file)
+      def initialize(config, file)
         @config = config
         @script = Script.new(@config[:dir])
         @file   = file

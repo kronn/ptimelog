@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'erb'
+
 module Gpuzzletime
   module Command
     # Upload entries to puzzletime

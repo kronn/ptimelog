@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require 'date'
-require 'erb'
-require 'pathname'
-
 module Gpuzzletime
   # Wrapper for everything
   class App

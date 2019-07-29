@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'date'
+
 module Gpuzzletime
   # Mapping between semantic/relative names and absolute dates
   class NamedDate

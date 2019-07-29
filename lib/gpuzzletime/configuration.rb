@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'singleton'
+require 'pathname'
 
 module Gpuzzletime
   # Wrapper around configuration-options and -loading

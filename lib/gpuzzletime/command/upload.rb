@@ -3,13 +3,8 @@
 module Gpuzzletime
   module Command
     # Upload entries to puzzletime
-    class Upload
+    class Upload < Base
       attr_writer :entries
-
-      def initialize(config)
-        @config  = config
-        @entries = {}
-      end
 
       def needs_entries?
         true

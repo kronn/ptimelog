@@ -14,6 +14,7 @@ module Gpuzzletime
 
   # Collection of commands available at the CLI
   module Command
+    autoload :Base, 'gpuzzletime/command/base'
     autoload :Edit, 'gpuzzletime/command/edit'
     autoload :Show, 'gpuzzletime/command/show'
     autoload :Upload, 'gpuzzletime/command/upload'

@@ -14,12 +14,13 @@ module Gpuzzletime
       @command = case command
                  when :show
                    @date = NamedDate.new.date(args[1])
-                   Gpuzzletime::Command::Show.new(@config)
+                   Gpuzzletime::Command::Show.new
                  when :upload
                    @date = NamedDate.new.date(args[1])
-                   Gpuzzletime::Command::Upload.new(@config)
+                   Gpuzzletime::Command::Upload.new
                  when :edit
-                   Gpuzzletime::Command::Edit.new(@config, args[1])
+                   file = args[1]
+                   Gpuzzletime::Command::Edit.new(file)
                  else
                    raise ArgumentError, "Unsupported Command #{@command}"
                  end

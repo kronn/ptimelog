@@ -3,12 +3,11 @@
 require 'spec_helper'
 
 describe Gpuzzletime::Command::Upload do
-  subject { described_class.new(config) }
+  subject { described_class.new }
 
   let(:config) do
     {
       base_url: 'https://puzzletime.example.net',
-      dir:      Pathname.new('./spec/fixtures/configuration').expand_path,
     }
   end
 

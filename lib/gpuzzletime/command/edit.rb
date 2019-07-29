@@ -4,15 +4,12 @@ module Gpuzzletime
   module Command
     # edit one file. without argument, it will edit the timelog, otherwise a
     # parser-script is loaded
-    class Edit
-      def initialize(config, file)
-        @config = config
-        @script = Script.new(@config[:dir])
-        @file   = file
-      end
+    class Edit < Base
+      def initialize(file)
+        super()
 
-      def needs_entries?
-        false
+        @scripts = Script.new(@config[:dir])
+        @file    = file
       end
 
       def run
@@ -24,7 +21,7 @@ module Gpuzzletime
       def launch_editor(file)
         editor = `which $EDITOR`.chomp
 
-        file = file.nil? ? Timelog.timelog_txt : @script.parser(@file)
+        file = file.nil? ? Timelog.timelog_txt : @scripts.parser(@file)
 
         exec "#{editor} #{file}"
       end

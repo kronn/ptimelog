@@ -3,12 +3,7 @@
 module Gpuzzletime
   module Command
     # show entries of one day or all of them
-    class Show
-      def initialize(config)
-        @config  = config
-        @entries = {}
-      end
-
+    class Show < Base
       def needs_entries?
         true
       end

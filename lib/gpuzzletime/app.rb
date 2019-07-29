@@ -23,26 +23,19 @@ module Gpuzzletime
     end
 
     def run
-      if @command.needs_entries?
-        fill_entries
-        @command.entries = entries
-      end
+      @command.entries = entries if @command.needs_entries?
 
       @command.run
     end
 
     private
 
-    def entries
-      @entries ||= {}
-    end
-
     def timelog
       Timelog.load
     end
 
-    def fill_entries
-      timelog.each do |date, lines|
+    def entries
+      timelog.each_with_object({}) do |(date, lines), entries|
         next unless date                           # guard against the machine
         next unless @date == :all || @date == date # limit to one day if passed
 
@@ -57,6 +50,8 @@ module Gpuzzletime
 
           start = entry.finish_time # store previous ending for nice display of next entry
         end
+
+        entries
       end
     end
   end

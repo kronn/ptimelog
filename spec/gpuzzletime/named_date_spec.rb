@@ -42,18 +42,32 @@ describe Gpuzzletime::NamedDate do
     end
   end
 
-  it 'knows the last day by name' do
-    expect(subject).to receive(:timelog).at_least(:once).and_return(timelog)
-    last_day = '2018-03-03' # dependent on test-data of timelog above
-
-    expect(subject.named_date('last')).to eq(last_day)
-  end
-
   it 'understands and accepts dates in YYYY-MM-DD format' do
     date = '1970-01-01'
     expect(subject.named_date(date)).to be date
   end
 
-  xit 'defaults to "last day"'
-  xit 'returns :all if nothing was found'
+  context 'taking the timelog into account' do
+    before do
+      allow(subject).to receive(:timelog).and_return(timelog)
+    end
+
+    let(:last_day) { '2018-03-03' } # dependent on test-data of timelog above
+
+    it 'knows the last day by name' do
+      expect(subject.named_date('last')).to eq(last_day)
+    end
+
+    it 'defaults to "last day" for nil' do
+      expect(subject.date(nil)).to eq(last_day)
+    end
+
+    it 'defaults to "last day" for ""' do
+      expect(subject.date('')).to eq(last_day)
+    end
+
+    it 'returns :all if nothing was found' do
+      expect(subject.date('something-unrecognized')).to eq(:all)
+    end
+  end
 end

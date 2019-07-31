@@ -42,9 +42,10 @@ module Gpuzzletime
     end
 
     def tags=(tags)
-      return unless tags
-
-      @tags = tags.split
+      @tags = case tags
+              when '', nil then nil
+              else tags.split.compact
+              end
     end
 
     def valid?
@@ -94,12 +95,12 @@ module Gpuzzletime
     def infer_account
       return unless @tags
 
-      parser_name = tags.shift
+      parser_name = @tags.first
       parser = @script.parser(parser_name)
 
       return unless parser.exist?
 
-      cmd = %(#{parser} "#{@ticket}" "#{@description}" #{tags.map(&:inspect).join(' ')})
+      cmd = %(#{parser} "#{@ticket}" "#{@description}" #{@tags[1..-1].map(&:inspect).join(' ')})
       `#{cmd}`.chomp # maybe only execute if parser is in correct dir?
     end
 

@@ -8,7 +8,7 @@ module Gpuzzletime
                 :tags, :billable, :account
 
     # define only trivial writers, omit special and derived values
-    attr_writer :date, :start_time,               :ticket, :description
+    attr_writer :date,                            :ticket, :description
 
     def initialize(config = Configuration.instance)
       @config = config
@@ -31,6 +31,10 @@ module Gpuzzletime
       self.tags        = matched_line[:tags]
 
       infer_ptime_settings
+    end
+
+    def start_time=(time)
+      @start_time = round_time(time, @config[:rounding])
     end
 
     def finish_time=(time)

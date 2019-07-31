@@ -52,7 +52,7 @@ module Gpuzzletime
     end
 
     def hidden?
-      @description.match(/\*\*$/) # hide lunch and breaks
+      @description =~ /\*\*$/ # hide lunch and breaks
     end
 
     def infer_ptime_settings
@@ -79,6 +79,7 @@ module Gpuzzletime
 
     def round_time(time, interval)
       return time unless interval
+      return unless time.to_s =~ /\d\d:\d\d/
 
       hour, minute = time.split(':')
       minute = (minute.to_i / interval.to_f).round * interval.to_i

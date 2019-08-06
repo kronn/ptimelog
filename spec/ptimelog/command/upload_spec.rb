@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gpuzzletime::Command::Upload do
+describe Ptimelog::Command::Upload do
   subject { described_class.new }
 
   let(:config) do
@@ -12,21 +12,21 @@ describe Gpuzzletime::Command::Upload do
   end
 
   before :each do
-    Gpuzzletime::Configuration.instance.reset
+    Ptimelog::Configuration.instance.reset
 
     config.each do |key, value|
-      Gpuzzletime::Configuration.instance[key] = value
+      Ptimelog::Configuration.instance[key] = value
     end
   end
 
   let(:entries) do
     {
       '1970-01-01' => [
-        Gpuzzletime::Entry.new,
-        Gpuzzletime::Entry.new,
-        Gpuzzletime::Entry.new,
-        Gpuzzletime::Entry.new,
-        Gpuzzletime::Entry.new,
+        Ptimelog::Entry.new,
+        Ptimelog::Entry.new,
+        Ptimelog::Entry.new,
+        Ptimelog::Entry.new,
+        Ptimelog::Entry.new,
       ],
     }
   end

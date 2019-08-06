@@ -2,7 +2,7 @@
 
 require 'date'
 
-module Gpuzzletime
+module Ptimelog
   # Mapping between semantic/relative names and absolute dates
   class NamedDate
     def date(arg = 'last')

@@ -1,4 +1,4 @@
-# gPuzzleTime
+# pTimeLog
 
 small tooling to transfer timelog-entries from gtimelog's timelog.txt to the PuzzleTime TimeTracking Website.
 
@@ -44,11 +44,11 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
 
 Install it with:
 
-    $ gem install gpuzzletime
+    $ gem install ptimelog
 
 ## Usage
 
-    $ gpuzzletime ACTION DATE
+    $ ptimelog ACTION DATE
 
 ### Actions
 
@@ -81,16 +81,16 @@ Otherwise, a script to determine the time-account is loaded.
 
 ## Helper-Scripts
 
-gpuzzletime can prefill the account-number and billable-state of an entry.
+ptimelog can prefill the account-number and billable-state of an entry.
 
 The tags are used to determine a script that helps infer the time-account.
-These scripts should be located in `~/.config/gpuzzletime/parsers/` and be named
+These scripts should be located in `~/.config/ptimelog/parsers/` and be named
 like the first tag used. The script gets the ticket, the description and all
 remaining tags passed as arguments. The output of the script should only be the
 ID of the time-account.
 
 In order to infer the billable-state of an entry, a script
-`~/.config/gpuzzletime/billable` is called. It only gets the previously infered
+`~/.config/ptimelog/billable` is called. It only gets the previously infered
 account-id as argument and is expected to output "true" or "false".
 
 Since these script are called a lot, it is better to write them in a compiled
@@ -99,7 +99,7 @@ scripts, the code is almost identical and "just" needs to be compiled.
 
 ## Configuration
 
-A config-file is read from `$HOME/.config/gpuzzletime/config`. It is expected
+A config-file is read from `$HOME/.config/ptimelog/config`. It is expected
 to be a YAML-file. Currently, it supports the following keys:
 
 	- rounding: [integer or false, default 15]
@@ -109,7 +109,7 @@ to be a YAML-file. Currently, it supports the following keys:
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run
 `rake spec` to run the tests. You can also run `bin/console` for an interactive
-prompt that will allow you to experiment. Run `bundle exec gpuzzletime` to use
+prompt that will allow you to experiment. Run `bundle exec ptimelog` to use
 the gem in this directory, ignoring other installed copies of this gem.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To
@@ -120,7 +120,7 @@ git commits and tags, and push the `.gem` file to
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/kronn/gpuzzletime.
+Bug reports and pull requests are welcome on GitHub at https://github.com/kronn/ptimelog.
 
 
 ## License

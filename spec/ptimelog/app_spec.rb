@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-describe Gpuzzletime::App do
+describe Ptimelog::App do
   subject { described_class.new([command, argument].compact) }
 
   let(:command) { 'show' }
   let(:argument) { 'all' }
   let(:timelog) do
-    Gpuzzletime::Timelog.instance.parse <<~TIMELOG
+    Ptimelog::Timelog.instance.parse <<~TIMELOG
       2018-03-02 09:51: start **
       2018-03-02 11:40: 12345: prepare deployment -- webapp
       2018-03-02 12:25: lunch **
@@ -24,12 +24,12 @@ describe Gpuzzletime::App do
 
   before :each do
     config.each do |key, value|
-      Gpuzzletime::Configuration.instance[key] = value
+      Ptimelog::Configuration.instance[key] = value
     end
   end
 
   after :each do
-    Gpuzzletime::Configuration.instance.reset
+    Ptimelog::Configuration.instance.reset
   end
 
   context 'can show parsed entries' do

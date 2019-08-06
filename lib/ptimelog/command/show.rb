@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Gpuzzletime
+module Ptimelog
   module Command
     # show entries of one day or all of them
     class Show < Base

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Gpuzzletime
+module Ptimelog
   # Wrapper for everything
   class App
     def initialize(args)
@@ -10,13 +10,13 @@ module Gpuzzletime
       @command = case command
                  when :show
                    @date = NamedDate.new.date(args[1])
-                   Gpuzzletime::Command::Show.new
+                   Command::Show.new
                  when :upload
                    @date = NamedDate.new.date(args[1])
-                   Gpuzzletime::Command::Upload.new
+                   Command::Upload.new
                  when :edit
                    file = args[1]
-                   Gpuzzletime::Command::Edit.new(file)
+                   Command::Edit.new(file)
                  else
                    raise ArgumentError, "Unsupported Command #{@command}"
                  end

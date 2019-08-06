@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
-require 'bundler/gem_tasks'
+require 'rake/clean'
+CLOBBER.include 'pkg'
+
+require 'bundler/gem_helper'
+Bundler::GemHelper.install_tasks name: 'ptimelog'
+
 require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
 

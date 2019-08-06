@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gpuzzletime::Timelog do
+describe Ptimelog::Timelog do
   subject { described_class.instance }
 
   let(:timelog) do

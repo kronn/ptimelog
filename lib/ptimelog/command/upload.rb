@@ -2,7 +2,7 @@
 
 require 'erb'
 
-module Gpuzzletime
+module Ptimelog
   module Command
     # Upload entries to puzzletime
     class Upload < Base
@@ -41,7 +41,7 @@ module Gpuzzletime
             to enter the worktime-entry into puzzletime.
 
             If this needs to be configurable, please open an issue at
-            https://github.com/kronn/gpuzzletime/issues/new
+            https://github.com/kronn/ptimelog/issues/new
           ERRORMESSAGE
         end
       end

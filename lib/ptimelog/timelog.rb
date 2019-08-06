@@ -2,7 +2,7 @@
 
 require 'pathname'
 
-module Gpuzzletime
+module Ptimelog
   # Load and tokenize the data from gtimelog
   class Timelog
     include Singleton

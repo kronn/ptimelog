@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gpuzzletime::Command::Base do
+describe Ptimelog::Command::Base do
   it 'does not enforce the need for timelog-entries by default' do
     expect(subject.needs_entries?).to be false
   end
@@ -12,7 +12,7 @@ describe Gpuzzletime::Command::Base do
   end
 
   it 'pulls the general configuration' do
-    expect(subject.instance_variable_get('@config')).to be_a Gpuzzletime::Configuration
+    expect(subject.instance_variable_get('@config')).to be_a Ptimelog::Configuration
   end
 
   it 'demands #run' do

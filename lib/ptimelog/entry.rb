@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Gpuzzletime
+module Ptimelog
   # Dataclass to wrap an entry
   class Entry
     # allow to read everything

@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-describe Gpuzzletime::Entry do
+describe Ptimelog::Entry do
   after :each do
-    Gpuzzletime::Configuration.instance.reset
+    Ptimelog::Configuration.instance.reset
   end
 
   it 'has a string representation' do
@@ -59,7 +59,7 @@ describe Gpuzzletime::Entry do
 
   context 'can be configured' do
     it 'to not round the time-entries' do
-      Gpuzzletime::Configuration.instance[:rounding] = false
+      Ptimelog::Configuration.instance[:rounding] = false
 
       subject.start_time = '09:51'
       subject.finish_time = '11:40'

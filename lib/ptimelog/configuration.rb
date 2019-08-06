@@ -3,7 +3,7 @@
 require 'singleton'
 require 'pathname'
 
-module Gpuzzletime
+module Ptimelog
   # Wrapper around configuration-options and -loading
   class Configuration
     include Singleton
@@ -11,7 +11,7 @@ module Gpuzzletime
     CONFIGURATION_DEFAULTS = {
       base_url: 'https://time.puzzle.ch',
       rounding: 15,
-      dir:      '~/.config/gpuzzletime',
+      dir:      '~/.config/ptimelog',
       timelog:  '~/.local/share/gtimelog/timelog.txt',
     }.freeze
 

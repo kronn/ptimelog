@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Gpuzzletime
+module Ptimelog
   module Command
     # Foundation and common API for all commands
     class Base

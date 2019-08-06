@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-describe Gpuzzletime::NamedDate do
+describe Ptimelog::NamedDate do
   let(:timelog) do
-    Gpuzzletime::Timelog.instance.parse <<~TIMELOG
+    Ptimelog::Timelog.instance.parse <<~TIMELOG
       2018-03-02 09:51: start **
       2018-03-02 11:40: 12345: prepare deployment -- webapp
       2018-03-02 12:25: lunch **

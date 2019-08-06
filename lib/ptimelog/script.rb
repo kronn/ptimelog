@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Gpuzzletime
+module Ptimelog
   # Wrapper around all external scripts that might be called to get more
   # information about the time-entries
   class Script

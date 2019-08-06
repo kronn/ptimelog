@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Gpuzzletime
+module Ptimelog
   module Command
     # edit one file. without argument, it will edit the timelog, otherwise a
     # parser-script is loaded

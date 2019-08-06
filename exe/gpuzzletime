@@ -1,6 +1,53 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative '../lib/gpuzzletime'
+require 'fileutils'
+require 'pathname'
 
-Gpuzzletime::App.new(ARGV).run
+def upgrade_needed?
+  Pathname.new('~/.config/gpuzzletime').expand_path.exist?
+end
+
+def upgrade_config
+  FileUtils.mv Pathname.new('~/.config/gpuzzletime').expand_path,
+               Pathname.new('~/.config/ptimelog').expand_path,
+               verbose: true
+end
+
+STDERR.puts <<~MESSAGE
+
+  =========================================================================
+
+    The name of the project has changed. Please use ptimelog from now on.
+
+  =========================================================================
+
+MESSAGE
+
+if upgrade_needed?
+  STDERR.puts <<~MESSAGE
+    This script can automatically rename the directory for
+    configuration and external scripts on your machine.
+
+  MESSAGE
+
+  puts 'Upgrade now? [Yn]'
+  answer = STDIN.gets.chomp
+
+  if answer.empty? || answer =~ /^y/i
+    upgrade_config
+    puts 'Done.'
+  else
+    puts 'Okay, leaving everything as it were.'
+  end
+  puts
+end
+
+STDERR.puts <<~MESSAGE
+  =========================================================================
+
+    No further action has been taken.
+
+  =========================================================================
+
+MESSAGE

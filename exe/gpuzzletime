@@ -14,7 +14,7 @@ def upgrade_config
                verbose: true
 end
 
-STDERR.puts <<~MESSAGE
+warn <<~MESSAGE
 
   =========================================================================
 
@@ -25,7 +25,7 @@ STDERR.puts <<~MESSAGE
 MESSAGE
 
 if upgrade_needed?
-  STDERR.puts <<~MESSAGE
+  warn <<~MESSAGE
     This script can automatically rename the directory for
     configuration and external scripts on your machine.
 
@@ -43,7 +43,7 @@ if upgrade_needed?
   puts
 end
 
-STDERR.puts <<~MESSAGE
+warn <<~MESSAGE
   =========================================================================
 
     No further action has been taken.

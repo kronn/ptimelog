@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name          = 'gpuzzletime'
-  spec.version       = '0.5.0'
+  spec.version       = '0.5.1'
   spec.authors       = ['Matthias Viehweger']
   spec.email         = ['kronn@kronn.de']
 
@@ -11,4 +11,16 @@ Gem::Specification.new do |spec|
   spec.license       = 'MIT'
 
   spec.add_runtime_dependency 'ptimelog'
+
+  spec.post_install_message = <<-MESSAGE
+    gpuzzletime has been renamed to ptimelog. Along with this update, ptimelog
+    has already been installed. The previous executable is now a
+    migration-script.
+
+    You can safely uninstall gpuzzletime. If you miss the executable
+    gpuzzletime afterwards, you can recreate the migration-script version by
+    reinstalling ptimelog.
+
+    Sorry for the inconvenience.
+  MESSAGE
 end

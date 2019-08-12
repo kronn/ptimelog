@@ -12,8 +12,7 @@ Gem::Specification.new do |spec|
 
   spec.files         = ['exe/gpuzzletime']
   spec.bindir        = 'exe'
-  spec.executables   = ['exe/gpuzzletime']
-  spec.require_pahts = []
+  spec.executables   = ['gpuzzletime']
 
   spec.add_runtime_dependency 'ptimelog'
 

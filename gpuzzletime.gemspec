@@ -2,13 +2,18 @@
 
 Gem::Specification.new do |spec|
   spec.name          = 'gpuzzletime'
-  spec.version       = '0.5.1'
+  spec.version       = '0.5.2'
   spec.authors       = ['Matthias Viehweger']
   spec.email         = ['kronn@kronn.de']
 
   spec.summary       = 'The gem formerly known as gpuzzletime is now ptimelog'
   spec.homepage      = 'https://github.com/kronn/ptimelog'
   spec.license       = 'MIT'
+
+  spec.files         = ['exe/gpuzzletime']
+  spec.bindir        = 'exe'
+  spec.executables   = ['exe/gpuzzletime']
+  spec.require_pahts = []
 
   spec.add_runtime_dependency 'ptimelog'
 

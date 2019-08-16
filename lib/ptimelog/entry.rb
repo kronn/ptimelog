@@ -10,6 +10,9 @@ module Ptimelog
     # define only trivial writers, omit special and derived values
     attr_writer :date,                            :ticket, :description
 
+    BILLABLE_TRUE  = 1
+    BILLABLE_FALSE = 0
+
     def initialize(config = Configuration.instance)
       @config = config
       @script = Script.new(@config[:dir])
@@ -107,9 +110,9 @@ module Ptimelog
     def infer_billable
       script = @script.billable
 
-      return 1 unless script.exist?
+      return BILLABLE_TRUE unless script.exist?
 
-      `#{script} #{@account}`.chomp == 'true' ? 1 : 0
+      `#{script} #{@account}`.chomp == 'true' ? BILLABLE_TRUE : BILLABLE_FALSE
     end
   end
 end

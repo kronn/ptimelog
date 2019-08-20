@@ -71,12 +71,7 @@ module Ptimelog
     def to_s
       [
         @start_time, '-', @finish_time,
-        [
-          @ticket,
-          @description,
-          @tags,
-          @account,
-        ].compact.join(' : '),
+        [@ticket, @description, @tags, @account].compact.join(' : '),
       ].compact.join(' ')
     end
 

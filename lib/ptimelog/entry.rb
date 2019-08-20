@@ -60,8 +60,12 @@ module Ptimelog
     end
 
     def infer_ptime_settings
-      @account  = infer_account
-      @billable = infer_billable
+      if @script.inferer(script_name).exist?
+        @account, @billable = infer_account_and_billable
+      else
+        @account  = infer_account
+        @billable = infer_billable
+      end
     end
 
     def to_s
@@ -95,15 +99,20 @@ module Ptimelog
       end.map { |part| part.to_s.rjust(2, '0') }.join(':')
     end
 
-    def infer_account
-      return unless @tags
+    def script_name
+      @script_name ||= @tags.to_a.first.to_s
+    end
 
-      parser_name = @tags.first
-      parser = @script.parser(parser_name)
+    def script_args
+      @script_args ||= @tags.to_a[1..-1].to_a.map(&:inspect).join(' ')
+    end
+
+    def infer_account
+      parser = @script.parser(script_name)
 
       return unless parser.exist?
 
-      cmd = %(#{parser} "#{@ticket}" "#{@description}" #{@tags[1..-1].map(&:inspect).join(' ')})
+      cmd = %(#{parser} "#{@ticket}" "#{@description}" #{script_args})
       `#{cmd}`.chomp # maybe only execute if parser is in correct dir?
     end
 
@@ -113,6 +122,21 @@ module Ptimelog
       return BILLABLE_TRUE unless script.exist?
 
       `#{script} #{@account}`.chomp == 'true' ? BILLABLE_TRUE : BILLABLE_FALSE
+    end
+
+    def infer_account_and_billable
+      script = @script.inferer(script_name)
+
+      return unless script.exist?
+
+      cmd = %(#{script} "#{@ticket}" "#{@description}" #{script_args})
+
+      account, billable = `#{cmd}`.chomp.split # maybe only execute if parser is in correct dir?
+
+      [
+        account.to_i,
+        (billable == 'true' ? BILLABLE_TRUE : BILLABLE_FALSE),
+      ]
     end
   end
 end

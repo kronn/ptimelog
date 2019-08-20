@@ -16,5 +16,12 @@ module Ptimelog
     def billable
       @config_dir.join('billable').expand_path
     end
+
+    def inferer(name)
+      return false if name.nil?
+      raise if name =~ %r{[\\/]} # prevent relavtive paths, stupidly, FIXME: really check FS
+
+      @config_dir.join('inferers').join(name).expand_path
+    end
   end
 end

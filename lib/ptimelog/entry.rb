@@ -63,6 +63,7 @@ module Ptimelog
       if @script.inferer(script_name).exist?
         @account, @billable = infer_account_and_billable
       else
+        warn 'DEPRECATION NOTICE: Please switch to inferer-scripts.'
         @account  = infer_account
         @billable = infer_billable
       end

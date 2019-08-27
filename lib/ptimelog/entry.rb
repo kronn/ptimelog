@@ -10,8 +10,8 @@ module Ptimelog
     # define only trivial writers, omit special and derived values
     attr_writer :date,                            :ticket, :description
 
-    BILLABLE_TRUE  = 1
-    BILLABLE_FALSE = 0
+    BILLABLE     = 1
+    NON_BILLABLE = 0
 
     def initialize(config = Configuration.instance)
       @config = config
@@ -114,11 +114,11 @@ module Ptimelog
 
     def infer_billable
       script = @script.billable
+      return BILLABLE unless script.exist?
 
-      return BILLABLE_TRUE unless script.exist?
       @script.deprecate(script)
 
-      `#{script} #{@account}`.chomp == 'true' ? BILLABLE_TRUE : BILLABLE_FALSE
+      `#{script} #{@account}`.chomp == 'true' ? BILLABLE : NON_BILLABLE
     end
 
     def infer_account_and_billable
@@ -127,11 +127,11 @@ module Ptimelog
 
       cmd = %(#{script} "#{@ticket}" "#{@description}" #{script_args})
 
-      account, billable = `#{cmd}`.chomp.split # maybe only execute if parser is in correct dir?
+      account, billable = `#{cmd}`.chomp.split
 
       [
-        account.to_i,
-        (billable == 'true' ? BILLABLE_TRUE : BILLABLE_FALSE),
+        account,
+        (billable == 'true' ? BILLABLE : NON_BILLABLE),
       ]
     end
   end

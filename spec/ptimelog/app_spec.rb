@@ -20,7 +20,11 @@ describe Ptimelog::App do
       2018-03-02 20:08: 12345: prepare deployment -- webapp
     TIMELOG
   end
-  let(:config) { {} }
+  let(:config) do
+    {
+      dir: fixtures_dir / 'config',
+    }
+  end
 
   before :each do
     config.each do |key, value|

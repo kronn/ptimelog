@@ -67,4 +67,22 @@ describe Ptimelog::Entry do
       expect(subject.to_s).to match(/09:51 - 11:40/)
     end
   end
+
+  context 'can infer the account-id and billable-state' do
+    it 'from an external script' do
+      script_mock = instance_double(
+        Ptimelog::Script,
+        inferer: fixtures_dir / 'inferer'
+      )
+      output = `#{script_mock.inferer(:mocked)}`
+      expect(output).to match(/^1234\ntrue$/m)
+
+      subject.instance_variable_set('@script', script_mock)
+
+      subject.infer_ptime_settings
+
+      expect(subject.account).to  eq '1234'
+      expect(subject.billable).to eq described_class::BILLABLE
+    end
+  end
 end

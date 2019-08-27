@@ -23,5 +23,15 @@ module Ptimelog
 
       @config_dir.join('inferers').join(name).expand_path
     end
+
+    def deprecate(script_fn)
+      warn <<~MESSAGE
+        DEPRECATION NOTICE: #{script_fn} is deprecated
+
+        Please move the parser- and billable-scripts to an inferer-script.
+        Support for the previous scripts in parsers/* and billable will
+        be dropped in 0.7.
+      MESSAGE
+    end
   end
 end

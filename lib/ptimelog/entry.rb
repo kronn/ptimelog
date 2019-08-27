@@ -63,7 +63,6 @@ module Ptimelog
       if @script.inferer(script_name).exist?
         @account, @billable = infer_account_and_billable
       else
-        warn 'DEPRECATION NOTICE: Please switch to inferer-scripts.'
         @account  = infer_account
         @billable = infer_billable
       end
@@ -105,8 +104,9 @@ module Ptimelog
 
     def infer_account
       parser = @script.parser(script_name)
-
       return unless parser.exist?
+
+      @script.deprecate(parser)
 
       cmd = %(#{parser} "#{@ticket}" "#{@description}" #{script_args})
       `#{cmd}`.chomp # maybe only execute if parser is in correct dir?
@@ -116,13 +116,13 @@ module Ptimelog
       script = @script.billable
 
       return BILLABLE_TRUE unless script.exist?
+      @script.deprecate(script)
 
       `#{script} #{@account}`.chomp == 'true' ? BILLABLE_TRUE : BILLABLE_FALSE
     end
 
     def infer_account_and_billable
       script = @script.inferer(script_name)
-
       return unless script.exist?
 
       cmd = %(#{script} "#{@ticket}" "#{@description}" #{script_args})

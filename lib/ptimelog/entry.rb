@@ -59,6 +59,10 @@ module Ptimelog
       @description =~ /\*\*$/ # hide lunch and breaks
     end
 
+    def billable?
+      @billable == BILLABLE
+    end
+
     def infer_ptime_settings
       if @script.inferer(script_name).exist?
         @account, @billable = infer_account_and_billable
@@ -129,10 +133,7 @@ module Ptimelog
 
       account, billable = `#{cmd}`.chomp.split
 
-      [
-        account,
-        (billable == 'true' ? BILLABLE : NON_BILLABLE),
-      ]
+      [account, (billable == 'true' ? BILLABLE : NON_BILLABLE)]
     end
   end
 end

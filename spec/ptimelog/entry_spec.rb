@@ -81,8 +81,8 @@ describe Ptimelog::Entry do
 
       subject.infer_ptime_settings
 
-      expect(subject.account).to  eq '1234'
-      expect(subject.billable).to eq described_class::BILLABLE
+      expect(subject.account).to eq '1234'
+      expect(subject).to be_billable
     end
   end
 end

@@ -64,6 +64,8 @@ module Ptimelog
     end
 
     def infer_ptime_settings
+      return if hidden?
+
       if @script.inferer(script_name).exist?
         @account, @billable = infer_account_and_billable
       else

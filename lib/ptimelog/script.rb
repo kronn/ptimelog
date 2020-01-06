@@ -24,18 +24,9 @@ module Ptimelog
       @config_dir.join('inferers').join(name).expand_path
     end
 
-    # rubocop:disable Style/GlobalVars
-    def deprecate(script_fn)
-      warn deprecate_header(script_fn)
+    include DeprecationWarning
 
-      return unless $deprecation_warning_rendered.nil?
-
-      warn deprecate_message
-      $deprecation_warning_rendered = true
-    end
-    # rubocop:enable Style/GlobalVars
-
-    def deprecate_message
+    def deprecate_message(_)
       <<~MESSAGE
         Please move the parser- and billable-scripts to an inferer-script.
         Support for the previous scripts in parsers/* and billable will
@@ -45,7 +36,7 @@ module Ptimelog
     end
 
     def deprecate_header(script_fn)
-      warn "DEPRECATION NOTICE: #{script_fn} is deprecated"
+      "DEPRECATION NOTICE: #{script_fn} is deprecated"
     end
   end
 end

@@ -6,6 +6,7 @@ $LOAD_PATH.unshift File.dirname(__FILE__)
 module Ptimelog
   autoload :App, 'ptimelog/app'
   autoload :Configuration, 'ptimelog/configuration'
+  autoload :DeprecationWarning, 'ptimelog/deprecation_warning'
   autoload :Entry, 'ptimelog/entry'
   autoload :NamedDate, 'ptimelog/named_date'
   autoload :Script, 'ptimelog/script'

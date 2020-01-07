@@ -56,7 +56,7 @@ module Ptimelog
     end
 
     def hidden?
-      @description =~ /\*\*$/ # hide lunch and breaks
+      @description.to_s.end_with?('**') # hide lunch and breaks
     end
 
     def billable?

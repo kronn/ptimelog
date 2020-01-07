@@ -129,7 +129,6 @@ module Ptimelog
 
     def infer_account_and_billable
       script = @script.inferer(script_name)
-      return unless script.exist?
 
       cmd = %(#{script} "#{@ticket}" "#{@description}" #{script_args})
 

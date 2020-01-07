@@ -9,6 +9,7 @@ module Ptimelog
   autoload :DeprecationWarning, 'ptimelog/deprecation_warning'
   autoload :Entry, 'ptimelog/entry'
   autoload :NamedDate, 'ptimelog/named_date'
+  autoload :NullPathname, 'ptimelog/null_pathname'
   autoload :Script, 'ptimelog/script'
   autoload :Timelog, 'ptimelog/timelog'
   autoload :VERSION, 'ptimelog/version'

@@ -18,7 +18,7 @@ module Ptimelog
     end
 
     def inferer(name)
-      return false if name.nil?
+      return NullPathname.new if name.to_s.empty?
       raise if name =~ %r{[\\/]} # prevent relavtive paths, stupidly, FIXME: really check FS
 
       @config_dir.join('inferers').join(name).expand_path

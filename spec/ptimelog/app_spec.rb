@@ -22,7 +22,7 @@ describe Ptimelog::App do
   end
   let(:config) do
     {
-      dir: fixtures_dir / 'config',
+      dir: fixtures_dir / 'empty',
     }
   end
 

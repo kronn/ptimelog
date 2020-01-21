@@ -13,7 +13,7 @@ module Ptimelog
       end
 
       def run
-        launch_editor(@file)
+        launch_editor(find_file(@file))
       end
 
       private
@@ -21,9 +21,49 @@ module Ptimelog
       def launch_editor(file)
         editor = `which $EDITOR`.chomp
 
-        file = file.nil? ? Timelog.timelog_txt : @scripts.parser(@file)
-
         exec "#{editor} #{file}"
+      end
+
+      def find_file(requested_file)
+        %i[
+          timelog
+          existing_inferer
+          existing_parser
+          billable
+          empty_inferer
+        ].each do |file_lookup|
+          valid, filename = send(file_lookup, requested_file)
+
+          return filename if valid
+        end
+      end
+
+      def timelog(file)
+        [file.nil?, Timelog.timelog_txt]
+      end
+
+      def existing_inferer(file)
+        fn = @scripts.inferer(file)
+
+        [fn.exist?, fn]
+      end
+
+      def existing_parser(file)
+        fn = @scripts.parser(file)
+
+        [fn.exist?, fn]
+      end
+
+      def billable(file)
+        [file == 'billable', @scripts.billable]
+      end
+
+      def empty_inferer(file)
+        [true, @scripts.inferer(file)]
+      end
+
+      def empty_parser(file)
+        [true, @scripts.parser(file)]
       end
     end
   end

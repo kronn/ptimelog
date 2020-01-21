@@ -16,5 +16,27 @@ module Ptimelog
     def billable
       @config_dir.join('billable').expand_path
     end
+
+    def inferer(name)
+      return NullPathname.new if name.to_s.empty?
+      raise if name =~ %r{[\\/]} # prevent relavtive paths, stupidly, FIXME: really check FS
+
+      @config_dir.join('inferers').join(name).expand_path
+    end
+
+    include DeprecationWarning
+
+    def deprecate_message(_)
+      <<~MESSAGE
+        Please move the parser- and billable-scripts to an inferer-script.
+        Support for the previous scripts in parsers/* and billable will
+        be dropped in 0.7.
+
+      MESSAGE
+    end
+
+    def deprecate_header(script_fn)
+      "DEPRECATION NOTICE: #{script_fn} is deprecated"
+    end
   end
 end

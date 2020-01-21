@@ -30,6 +30,7 @@ module Ptimelog
                 entry.description,
                 entry.tags,
                 entry.account,
+                (entry.billable? ? '$' : nil),
               ].compact.join(' ∴ '),
             ].compact.join(' ')
           end

@@ -37,7 +37,7 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
     - [ ] from *-notation
   - [ ] allow to have a list of "favourite" time-accounts
   - [ ] select best-matching time-account according to tags, possibly limited to the favourites
-  - [ ] combine billable and account-lookup into one script
+  - [x] combine billable and account-lookup into one script
 - [ ] add cli-help
   - [ ] use commander for CLI?
 
@@ -85,16 +85,15 @@ Otherwise, a script to determine the time-account is loaded.
 ptimelog can prefill the account-number and billable-state of an entry.
 
 The tags are used to determine a script that helps infer the time-account.
-These scripts should be located in `~/.config/ptimelog/parsers/` and be named
+These scripts should be located in `~/.config/ptimelog/inferers/` and be named
 like the first tag used. The script gets the ticket, the description and all
-remaining tags passed as arguments. The output of the script should only be the
-ID of the time-account.
+remaining tags passed as arguments.
 
-In order to infer the billable-state of an entry, a script
-`~/.config/ptimelog/billable` is called. It only gets the previously infered
-account-id as argument and is expected to output "true" or "false".
+The output of the script should be the ID of the time-account and the
+billable-state as "true" or "false". Both items need to be separated by
+whitespace, so you can output those two on the same line or on different lines.
 
-Since these script are called a lot, it is better to write them in a compiled
+Since these scripts are called a lot, it is better to write them in a compiled
 language. If you only like ruby, take a look at crystal. For such simple
 scripts, the code is almost identical and "just" needs to be compiled.
 

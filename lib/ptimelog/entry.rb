@@ -10,6 +10,9 @@ module Ptimelog
     # define only trivial writers, omit special and derived values
     attr_writer :date,                            :ticket, :description
 
+    BILLABLE     = 1
+    NON_BILLABLE = 0
+
     def initialize(config = Configuration.instance)
       @config = config
       @script = Script.new(@config[:dir])
@@ -53,23 +56,29 @@ module Ptimelog
     end
 
     def hidden?
-      @description =~ /\*\*$/ # hide lunch and breaks
+      @description.to_s.end_with?('**') # hide lunch and breaks
     end
 
+    def billable?
+      @billable == BILLABLE
+    end
+
+    # this method will be reduced in 0.7, when support for parsers is removed
     def infer_ptime_settings
-      @account  = infer_account
-      @billable = infer_billable
+      return if hidden?
+
+      if @script.inferer(script_name).exist?
+        @account, @billable = infer_account_and_billable
+      else
+        @account  = infer_account
+        @billable = infer_billable
+      end
     end
 
     def to_s
       [
         @start_time, '-', @finish_time,
-        [
-          @ticket,
-          @description,
-          @tags,
-          @account,
-        ].compact.join(' : '),
+        [@ticket, @description, @tags, @account].compact.join(' : '),
       ].compact.join(' ')
     end
 
@@ -92,24 +101,43 @@ module Ptimelog
       end.map { |part| part.to_s.rjust(2, '0') }.join(':')
     end
 
+    def script_name
+      @script_name ||= @tags.to_a.first.to_s
+    end
+
+    def script_args
+      @script_args ||= @tags.to_a[1..-1].to_a.map(&:inspect).join(' ')
+    end
+
+    # this method will be removed in 0.7, when support for parsers is removed
     def infer_account
-      return unless @tags
-
-      parser_name = @tags.first
-      parser = @script.parser(parser_name)
-
+      parser = @script.parser(script_name)
       return unless parser.exist?
 
-      cmd = %(#{parser} "#{@ticket}" "#{@description}" #{@tags[1..-1].map(&:inspect).join(' ')})
+      @script.deprecate(parser)
+
+      cmd = %(#{parser} "#{@ticket}" "#{@description}" #{script_args})
       `#{cmd}`.chomp # maybe only execute if parser is in correct dir?
     end
 
+    # this method will be removed in 0.7, when support for billable is removed
     def infer_billable
       script = @script.billable
+      return BILLABLE unless script.exist?
 
-      return 1 unless script.exist?
+      @script.deprecate(script)
 
-      `#{script} #{@account}`.chomp == 'true' ? 1 : 0
+      `#{script} #{@account}`.chomp == 'true' ? BILLABLE : NON_BILLABLE
+    end
+
+    def infer_account_and_billable
+      script = @script.inferer(script_name)
+
+      cmd = %(#{script} "#{@ticket}" "#{@description}" #{script_args})
+
+      account, billable = `#{cmd}`.chomp.split
+
+      [account, (billable == 'true' ? BILLABLE : NON_BILLABLE)]
     end
   end
 end

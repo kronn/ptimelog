@@ -37,7 +37,7 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
     - [ ] from *-notation
   - [ ] allow to have a list of "favourite" time-accounts
   - [ ] select best-matching time-account according to tags, possibly limited to the favourites
-  - [ ] combine billable and account-lookup into one script
+  - [x] combine billable and account-lookup into one script
 - [ ] add cli-help
   - [ ] use commander for CLI?
 

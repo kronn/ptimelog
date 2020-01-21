@@ -63,6 +63,7 @@ module Ptimelog
       @billable == BILLABLE
     end
 
+    # this method will be reduced in 0.7, when support for parsers is removed
     def infer_ptime_settings
       return if hidden?
 
@@ -108,6 +109,7 @@ module Ptimelog
       @script_args ||= @tags.to_a[1..-1].to_a.map(&:inspect).join(' ')
     end
 
+    # this method will be removed in 0.7, when support for parsers is removed
     def infer_account
       parser = @script.parser(script_name)
       return unless parser.exist?
@@ -118,6 +120,7 @@ module Ptimelog
       `#{cmd}`.chomp # maybe only execute if parser is in correct dir?
     end
 
+    # this method will be removed in 0.7, when support for billable is removed
     def infer_billable
       script = @script.billable
       return BILLABLE unless script.exist?

@@ -1,6 +1,6 @@
 inherit_from: .rubocop_todo.yml
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 120
 
 Metrics/BlockLength:
@@ -13,12 +13,12 @@ Style/TrailingCommaInArrayLiteral:
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: consistent_comma
 
-Layout/AlignHash:
+Layout/HashAlignment:
   EnforcedHashRocketStyle: table
   EnforcedColonStyle: table
   EnforcedLastArgumentHashStyle: always_inspect # default
 
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   AllowedNames:
     - fn
     # default allowed names

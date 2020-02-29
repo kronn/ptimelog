@@ -11,14 +11,6 @@ describe Ptimelog::Command::Upload do
     }
   end
 
-  before :each do
-    Ptimelog::Configuration.instance.reset
-
-    config.each do |key, value|
-      Ptimelog::Configuration.instance[key] = value
-    end
-  end
-
   let(:entries) do
     {
       '1970-01-01' => [

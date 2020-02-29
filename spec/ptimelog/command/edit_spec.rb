@@ -12,16 +12,6 @@ describe Ptimelog::Command::Edit do
       timelog: (fixtures_dir / 'timelog.txt'),
     }
   end
-  before :each do
-    Ptimelog::Configuration.instance.reset
-
-    config.each do |key, value|
-      Ptimelog::Configuration.instance[key] = value
-    end
-  end
-  after :each do
-    Ptimelog::Configuration.instance.reset
-  end
 
   context 'finds the requested filename' do
     it 'timelog.txt if empty' do

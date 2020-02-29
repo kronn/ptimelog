@@ -3,27 +3,7 @@
 require 'spec_helper'
 
 describe Ptimelog::NamedDate do
-  let(:timelog) do
-    Ptimelog::Timelog.instance.parse <<~TIMELOG
-      2018-03-02 09:51: start **
-      2018-03-02 11:40: 12345: prepare deployment -- webapp
-      2018-03-02 12:25: lunch **
-      2018-03-02 13:15: 12345: prepare deployment -- webapp
-      2018-03-02 14:30: break **
-      2018-03-02 16:00: handover
-      2018-03-02 17:18: cleanup database
-      2018-03-02 18:58: break **
-      2018-03-02 20:08: 12345: prepare deployment -- webapp
-
-      2018-03-03 14:00: start **
-      2018-03-03 15:34: 23456: debug -- network
-      2018-03-03 18:46: studying
-      2018-03-03 20:08: dinner **
-      2018-03-03 21:36: 12345: prepare deployment -- webapp
-
-      2018-03-05 09:00: start **
-    TIMELOG
-  end
+  include_context 'mocked timelog'
 
   it 'knows today by name' do
     today = '2018-03-03'
@@ -48,11 +28,7 @@ describe Ptimelog::NamedDate do
   end
 
   context 'taking the timelog into account' do
-    before do
-      allow(subject).to receive(:timelog).and_return(timelog)
-    end
-
-    let(:last_day) { '2018-03-03' } # dependent on test-data of timelog above
+    let(:last_day) { mocked_timelog_last_day }
 
     it 'knows the last day by name' do
       expect(subject.named_date('last')).to eq(last_day)

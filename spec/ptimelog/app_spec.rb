@@ -3,46 +3,14 @@
 require 'spec_helper'
 
 describe Ptimelog::App do
+  include_context 'mocked timelog'
   subject { described_class.new([command, argument].compact) }
-
-  let(:command) { 'show' }
-  let(:argument) { 'all' }
-  let(:timelog) do
-    Ptimelog::Timelog.instance.parse <<~TIMELOG
-      2018-03-02 09:51: start **
-      2018-03-02 11:40: 12345: prepare deployment -- webapp
-      2018-03-02 12:25: lunch **
-      2018-03-02 13:15: 23456: debug -- network
-      2018-03-02 14:30: break **
-      2018-03-02 16:00: handover
-      2018-03-02 17:18: cleanup database
-      2018-03-02 18:58: dinner **
-      2018-03-02 20:08: 12345: prepare deployment -- webapp
-    TIMELOG
-  end
-  let(:config) do
-    {
-      dir: fixtures_dir / 'empty',
-    }
-  end
-
-  before :each do
-    config.each do |key, value|
-      Ptimelog::Configuration.instance[key] = value
-    end
-  end
-
-  after :each do
-    Ptimelog::Configuration.instance.reset
-  end
 
   context 'can show parsed entries' do
     let(:command) { :show }
-    let(:argument) { '2018-03-02' }
+    let(:argument) { mocked_timelog_date }
 
     it 'on stdout' do
-      expect(subject).to receive(:timelog).at_least(:once).and_return(timelog)
-
       # hides **-entries
       expect { subject.run }.not_to output(/lunch/).to_stdout
       expect { subject.run }.not_to output(/break/).to_stdout

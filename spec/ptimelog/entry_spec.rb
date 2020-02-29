@@ -3,10 +3,6 @@
 require 'spec_helper'
 
 describe Ptimelog::Entry do
-  after :each do
-    Ptimelog::Configuration.instance.reset
-  end
-
   it 'has a string representation' do
     expect(subject).to respond_to :to_s
 

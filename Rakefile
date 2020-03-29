@@ -1,3 +1,4 @@
+# typed: ignore
 # frozen_string_literal: true
 
 require 'rake/clean'
@@ -11,5 +12,15 @@ RSpec::Core::RakeTask.new(:spec)
 
 require 'rubocop/rake_task'
 RuboCop::RakeTask.new
+
+namespace :sorbet do
+  desc 'Record sorbet adoption metrics'
+  task metrics: ['metrics.json'] do
+    sh %(cat metrics.json | jq -r '.metrics.[] | [.key, " = ", (.value | tostring)] | join("") ' >> sorbet-stats.txt)
+  end
+  file 'metrics.json' do
+    sh 'srb tc --metrics-file=metrics.json'
+  end
+end
 
 task default: %i[rubocop spec]

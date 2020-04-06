@@ -1,30 +1,20 @@
 # frozen_string_literal: true
 
 module Ptimelog
-  # Wrapper for everything, mostly calling other parts
+  # Wrapper for everything, dispatching to a command
   class App
     def initialize(args)
       @config = Configuration.instance
-      command = (args[0] || :show).to_sym
+      command = (args[0] || 'show')
 
-      @command = case command
-                 when :show
-                   @day = args[1]
-                   Command::Show.new
-                 when :upload
-                   @date = args[1]
-                   Command::Upload.new
-                 when :edit
-                   file = args[1]
-                   Command::Edit.new(file)
-                 else
-                   raise ArgumentError, "Unsupported Command #{@command}"
-                 end
+      constant_name = command.to_s[0].upcase + command[1..-1].downcase
+      command_class = Command.const_get(constant_name.to_sym)
+      raise ArgumentError, "Unsupported Command '#{command}'" if command_class.nil?
+
+      @command = command_class.new(args[1]) # e.g. Ptimelog::Command::Show.new('today')
     end
 
     def run
-      @command.entries = Ptimelog::Day.new(@day).entries if @command.needs_entries?
-
       @command.run
     end
   end

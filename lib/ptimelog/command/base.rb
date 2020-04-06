@@ -4,9 +4,12 @@ module Ptimelog
   module Command
     # Foundation and common API for all commands
     class Base
-      def initialize
-        @config  = Configuration.instance
-        @entries = {} if needs_entries?
+      def initialize(day = nil)
+        @config = Configuration.instance
+
+        return unless needs_entries?
+
+        @entries = Ptimelog::Day.new(day).entries
       end
 
       def needs_entries?

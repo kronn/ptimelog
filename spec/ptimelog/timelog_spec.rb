@@ -42,7 +42,8 @@ describe Ptimelog::Timelog do
   end
 
   it 'provides a shorthand' do
-    expect(subject).to receive(:read).and_return(timelog)
+    # might already be called, subject is a singleton
+    allow(subject).to receive(:read).and_return(timelog)
 
     expect(described_class).to respond_to :load
     expect(described_class.load).to be_an Array

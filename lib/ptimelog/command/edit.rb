@@ -28,8 +28,6 @@ module Ptimelog
         %i[
           timelog
           existing_inferer
-          existing_parser
-          billable
           empty_inferer
         ].each do |file_lookup|
           valid, filename = send(file_lookup, requested_file)
@@ -48,22 +46,8 @@ module Ptimelog
         [fn.exist?, fn]
       end
 
-      def existing_parser(file)
-        fn = @scripts.parser(file)
-
-        [fn.exist?, fn]
-      end
-
-      def billable(file)
-        [file == 'billable', @scripts.billable]
-      end
-
       def empty_inferer(file)
         [true, @scripts.inferer(file)]
-      end
-
-      def empty_parser(file)
-        [true, @scripts.parser(file)]
       end
     end
   end

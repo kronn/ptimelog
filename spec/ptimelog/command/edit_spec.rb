@@ -23,15 +23,6 @@ describe Ptimelog::Command::Edit do
         .to eq config[:dir] / 'inferers' / 'inferer'
     end
 
-    it 'parser if present' do
-      expect(subject.send(:find_file, 'parser'))
-        .to eq config[:dir] / 'parsers' / 'parser'
-    end
-    it 'billable-script if requested' do
-      expect(subject.send(:find_file, 'billable'))
-        .to eq config[:dir] / 'billable'
-    end
-
     it 'empty inferer if nothing else matches' do
       expect(subject.send(:find_file, 'empty'))
         .to eq config[:dir] / 'inferers' / 'empty'

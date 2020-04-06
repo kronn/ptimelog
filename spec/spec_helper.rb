@@ -14,6 +14,9 @@ RSpec.configure do |rspec|
   # It causes the host group and examples to inherit metadata
   # from the shared context.
   rspec.shared_context_metadata_behavior = :apply_to_host_groups
+
+  # allows to run `rspec --only-failures`
+  rspec.example_status_persistence_file_path = "#{__dir__}/state.txt"
 end
 
 RSpec.shared_context 'mocked timelog' do

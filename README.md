@@ -27,7 +27,7 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
 - [ ] avoid duplicate entries
   - [ ] start/end time as indicator?
 - [x] offer rounding times to the next 5, 10 or 15 minutes
-- [ ] allow to add entries from the command-line
+- [x] allow to add entries from the command-line
 - [ ] handle time-account and billable better
   - [ ] import time-accounts from ptime (https://time.puzzle.ch/work_items/search.json?q=search%20terms)
     - [ ] with a dedicated cli?

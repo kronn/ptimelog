@@ -94,4 +94,48 @@ describe Ptimelog::Entry do
       expect(subject).to_not be_billable
     end
   end
+
+  context 'can compute the duration of an entry' do
+    it 'leaving round values as is' do
+      subject.start_time  = '14:30'
+      subject.finish_time = '16:00'
+
+      expect(subject.duration).to be 90
+    end
+
+    it 'after applying rounding' do
+      subject.start_time  = '14:28'
+      subject.finish_time = '16:03'
+
+      expect(subject.duration).to be 90
+    end
+
+    it 'with minute-precision if rounding is disabled' do
+      Ptimelog::Configuration.instance[:rounding] = false
+
+      subject.start_time  = '15:23'
+      subject.finish_time = '15:42'
+
+      # expect(subject.duration).to be (42 - 23)
+      expect(subject.duration).to be 19
+    end
+
+    it 'but raises if no start_time is set' do
+      subject.finish_time = '23:42'
+
+      expect(subject.start_time).to be_nil
+      expect(subject.finish_time).to_not be_nil
+
+      expect { subject.duration }.to raise_error
+    end
+
+    it 'but raises if no finish_time is set' do
+      subject.start_time = '23:42'
+
+      expect(subject.start_time).to_not be_nil
+      expect(subject.finish_time).to be_nil
+
+      expect { subject.duration }.to raise_error
+    end
+  end
 end

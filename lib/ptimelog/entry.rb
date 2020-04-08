@@ -70,6 +70,13 @@ module Ptimelog
       @account, @billable = infer_account_and_billable
     end
 
+    def duration
+      # raise if @start_time.nil? || @finish_time.nil?
+
+      seconds = Time.parse(@finish_time) - Time.parse(@start_time)
+      (seconds / 60).to_i
+    end
+
     def to_s
       [
         @start_time, '-', @finish_time,
@@ -78,7 +85,6 @@ module Ptimelog
     end
 
     # make sortable/def <=>
-    # duration if start and finish is set
 
     private
 

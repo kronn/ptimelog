@@ -125,7 +125,7 @@ describe Ptimelog::Entry do
       expect(subject.start_time).to be_nil
       expect(subject.finish_time).to_not be_nil
 
-      expect { subject.duration }.to raise_error
+      expect { subject.duration }.to raise_error TypeError
     end
 
     it 'but raises if no finish_time is set' do
@@ -134,7 +134,7 @@ describe Ptimelog::Entry do
       expect(subject.start_time).to_not be_nil
       expect(subject.finish_time).to be_nil
 
-      expect { subject.duration }.to raise_error
+      expect { subject.duration }.to raise_error TypeError
     end
   end
 end

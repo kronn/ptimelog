@@ -78,9 +78,10 @@ module Ptimelog
     end
 
     def to_s
+      billable = billable? ? '$' : nil
       [
         @start_time, '-', @finish_time,
-        [@ticket, @description, @tags, @account].compact.join(' : '),
+        [@ticket, @description, @tags, @account, billable].compact.join(' ∴ '),
       ].compact.join(' ')
     end
 

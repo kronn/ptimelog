@@ -23,16 +23,7 @@ module Ptimelog
           @entries[date] = []
 
           list.each do |entry|
-            @entries[date] << [
-              entry.start_time, '-', entry.finish_time,
-              [
-                entry.ticket,
-                entry.description,
-                entry.tags,
-                entry.account,
-                (entry.billable? ? '$' : nil),
-              ].compact.join(' ∴ '),
-            ].compact.join(' ')
+            @entries[date] << entry.to_s
           end
         end
       end

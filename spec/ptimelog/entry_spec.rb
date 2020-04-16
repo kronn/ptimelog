@@ -13,7 +13,7 @@ describe Ptimelog::Entry do
     subject.description = 'important work'
     subject.tags        = 'client'
 
-    expect(subject.to_s).to eql '10:00 - 11:45 12345 : important work : client'
+    expect(subject.to_s).to eql '10:00 - 11:45 12345 ∴ important work ∴ client'
   end
 
   context 'rounds entry times to nearest 15 minutes by default' do

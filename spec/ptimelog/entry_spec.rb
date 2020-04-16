@@ -100,14 +100,14 @@ describe Ptimelog::Entry do
       subject.start_time  = '14:30'
       subject.finish_time = '16:00'
 
-      expect(subject.duration).to be 90
+      expect(subject.duration).to be((90 * 60)) # seconds
     end
 
     it 'after applying rounding' do
       subject.start_time  = '14:28'
       subject.finish_time = '16:03'
 
-      expect(subject.duration).to be 90
+      expect(subject.duration).to be((90 * 60)) # seconds
     end
 
     it 'with minute-precision if rounding is disabled' do
@@ -116,8 +116,7 @@ describe Ptimelog::Entry do
       subject.start_time  = '15:23'
       subject.finish_time = '15:42'
 
-      # expect(subject.duration).to be (42 - 23)
-      expect(subject.duration).to be 19
+      expect(subject.duration).to be 1140 # 42 - 23 = 19 minutes in seconds
     end
 
     it 'but raises if no start_time is set' do

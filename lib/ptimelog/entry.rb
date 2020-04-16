@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'time'
+
 module Ptimelog
   # Dataclass to wrap an entry
   class Entry
@@ -71,10 +73,7 @@ module Ptimelog
     end
 
     def duration
-      # raise if @start_time.nil? || @finish_time.nil?
-
-      seconds = Time.parse(@finish_time) - Time.parse(@start_time)
-      (seconds / 60).to_i
+      (Time.parse(@finish_time) - Time.parse(@start_time)).to_i
     end
 
     def to_s

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'time'
+
 module Ptimelog
   # Dataclass to wrap an entry
   class Entry
@@ -70,15 +72,19 @@ module Ptimelog
       @account, @billable = infer_account_and_billable
     end
 
+    def duration
+      (Time.parse(@finish_time) - Time.parse(@start_time)).to_i
+    end
+
     def to_s
+      billable = billable? ? '$' : nil
       [
         @start_time, '-', @finish_time,
-        [@ticket, @description, @tags, @account].compact.join(' : '),
+        [@ticket, @description, @tags, @account, billable].compact.join(' ∴ '),
       ].compact.join(' ')
     end
 
     # make sortable/def <=>
-    # duration if start and finish is set
 
     private
 

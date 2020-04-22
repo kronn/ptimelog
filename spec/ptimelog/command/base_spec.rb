@@ -22,20 +22,24 @@ describe Ptimelog::Command::Base do
   end
 
   context 'if subclasses need entries, it' do
-    let(:subject) do
+    let(:subject_class) do
       Class.new(described_class) do
         def needs_entries?
           true
         end
-      end.new
+      end
     end
 
     it 'demands #entries=' do
-      expect { subject.entries = { today: 'entry' } }.to raise_error(RuntimeError)
+      expect { subject_class.new }.to raise_error(RuntimeError)
     end
 
     it 'prepares an entries hash' do
-      expect(subject.instance_variable_get('@entries')).to be_a Hash
+      subject_class.class_eval do
+        attr_writer :entries
+      end
+
+      expect(subject_class.new.instance_variable_get('@entries')).to be_a Hash
     end
   end
 end

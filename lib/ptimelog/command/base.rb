@@ -9,7 +9,8 @@ module Ptimelog
 
         return unless needs_entries?
 
-        @entries = Ptimelog::Day.new(day).entries
+        @entries = {}
+        self.entries = Ptimelog::Day.new(day).entries
       end
 
       def needs_entries?

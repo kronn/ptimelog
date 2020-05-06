@@ -12,17 +12,7 @@ module Ptimelog
         next unless date                           # guard against the machine
         next unless @date == :all || @date == date # limit to one day if passed
 
-        entries[date] = []
-        start = nil # at the start of the day, we have no previous end
-
-        lines.each do |line|
-          entry = Entry.from_timelog(line)
-          entry.start_time = start
-
-          entries[date] << entry if entry.valid?
-
-          start = entry.finish_time # store previous ending for nice display of next entry
-        end
+        entries[date] = entries_of_day(lines)
 
         entries
       end
@@ -32,6 +22,22 @@ module Ptimelog
 
     def timelog
       Timelog.load
+    end
+
+    def entries_of_day(lines)
+      entries = []
+      start = nil # at the start of the day, we have no previous end
+
+      lines.each do |line|
+        entry = Entry.from_timelog(line)
+        entry.start_time = start
+
+        entries << entry if entry.valid?
+
+        start = entry.finish_time # store previous ending for nice display of next entry
+      end
+
+      entries
     end
   end
 end

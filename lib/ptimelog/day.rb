@@ -12,7 +12,7 @@ module Ptimelog
         next unless date                           # guard against the machine
         next unless @date == :all || @date == date # limit to one day if passed
 
-        entries[date] = entries_of_day(lines)
+        entries[date] = entries_of_day(lines).each_cons(2).flat_map { |pair| maybe_join(*pair) }
 
         entries
       end
@@ -38,6 +38,17 @@ module Ptimelog
       end
 
       entries
+    end
+
+    def maybe_join(one, two)
+      if one.ticket == two.ticket && one.description == two.description
+        joined = one.dup
+        joined.finish_time = two.finish_time
+
+        [joined]
+      else
+        [one, two]
+      end
     end
   end
 end

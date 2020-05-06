@@ -57,7 +57,16 @@ describe Ptimelog::Day do
 
       expect(entries.keys.size).to eq 1 # day
       expect(entries.first[1].size).to eq 1 # entry
-      expect(entries.first[1]).to match(/23456: debug/)
+
+      single_entry = entries.first[1].first
+
+      expect(single_entry.ticket).to eq '23456'
+      expect(single_entry.description).to eq 'debug'
+
+      expect(single_entry.start_time).to eq '14:00'
+      expect(single_entry.finish_time).to eq '16:45'
+      duration_seconds = (60 + 60 + 45) * 60
+      expect(single_entry.duration).to be duration_seconds
     end
   end
 end

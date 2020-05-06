@@ -22,5 +22,6 @@ module Ptimelog
     autoload :Edit, 'ptimelog/command/edit'
     autoload :Show, 'ptimelog/command/show'
     autoload :Upload, 'ptimelog/command/upload'
+    autoload :Version, 'ptimelog/command/version'
   end
 end

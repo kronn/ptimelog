@@ -17,7 +17,7 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
 - [x] infer time-account from ticket-format
   - [x] support user-supplied ticket-parsers
   - [x] get ticket-parser from tags
-- [ ] merge equal adjacent entries into one
+- [x] merge equal adjacent entries into one
 - [ ] complete login/entry automation
   - [ ] handle authentication
     - [ ] login and store cookie (https://stackoverflow.com/questions/12399087/curl-to-access-a-page-that-requires-a-login-from-a-different-page#12399176)

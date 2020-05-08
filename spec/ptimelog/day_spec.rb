@@ -44,21 +44,94 @@ describe Ptimelog::Day do
   context 'adjacent simliar entries' do
     let(:timelog) do
       Ptimelog::Timelog.instance.parse <<~TIMELOG
-        2018-03-03 14:00: start
+        2018-03-03 11:00: start **
+        2018-03-03 12:00: 123: other -- network
+        2018-03-03 13:00: lunch **
+        2018-03-03 14:00: 123: other -- network
+        2018-03-03 14:14: 23456: debug -- network
+        2018-03-03 14:43: 23456: debug -- network
+        2018-03-03 15:34: 23456: debug -- network
         2018-03-03 15:34: 23456: debug -- network
         2018-03-03 16:45: 23456: debug -- network
+        2018-03-03 17:00: 123: other -- network
       TIMELOG
     end
 
     let(:date) { '2018-03-03' }
 
+    context 'has a join-implementation which' do
+      let(:entries) do
+        timelog.each_with_object({}) do |(day, lines), hash|
+          hash[day] = subject.send(:entries_of_day, lines)
+        end.fetch(date)
+      end
+
+      it 'has assumptions' do
+        expect(entries.size).to be 8
+      end
+
+      it 'joins not if one' do
+        list = []
+        list << entries[0]
+
+        expect(list.size).to be 1
+
+        result = subject.send(:join_similar, list)
+
+        expect(result.size).to be 1
+      end
+
+      it 'joins not if two are different' do
+        list = []
+        list << entries[1]
+        list << entries[2]
+
+        expect(list.size).to be 2
+
+        result = subject.send(:join_similar, list)
+
+        expect(result.size).to be 2
+      end
+
+      it 'joins nothing if all are different' do
+        list = []
+        list << entries[0]
+        list << entries[2]
+        list << entries[6]
+
+        expect(list.size).to be 3
+
+        result = subject.send(:join_similar, list)
+
+        expect(result.size).to be 3
+      end
+
+      it 'joins only adjacent entries, even with same description' do
+        list = []
+        list << entries[2]
+        list << entries[3]
+        list << entries[5]
+
+        expect(list.size).to be 3
+
+        expect(list.map(&:description).uniq).to be_one
+        expect(list.map(&:ticket).uniq).to be_one
+        expect(entries[2].finish_time).to eq entries[3].start_time
+        expect(entries[3].finish_time).to_not eq entries[3].start_time
+
+        result = subject.send(:join_similar, list)
+
+        expect(result.size).to be 2
+      end
+    end
+
     it 'are joined' do
       entries = subject.entries
 
       expect(entries.keys.size).to eq 1 # day
-      expect(entries.first[1].size).to eq 1 # entry
+      expect(entries.first[1].size).to eq 4 # entries
 
-      single_entry = entries.first[1].first
+      single_entry = entries.first[1][2]
 
       expect(single_entry.ticket).to eq '23456'
       expect(single_entry.description).to eq 'debug'

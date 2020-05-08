@@ -12,9 +12,7 @@ module Ptimelog
         next unless date                           # guard against the machine
         next unless @date == :all || @date == date # limit to one day if passed
 
-        entries[date] = join_similar(entries_of_day(lines))
-
-        entries
+        entries[date] = join_similar(entries_of_day(lines)) # lines |> entries_of_day |> join_similar"
       end
     end
 

@@ -125,8 +125,8 @@ scripts, the code is almost identical and "just" needs to be compiled.
 A config-file is read from `$HOME/.config/ptimelog/config`. It is expected
 to be a YAML-file. Currently, it supports the following keys:
 
-	- rounding: [integer or false, default 15]
-	- base_url: [url to your puzzletime-installation, default https://time.puzzle.ch]
+  - rounding: [integer or false, default 15]
+  - base_url: [url to your puzzletime-installation, default https://time.puzzle.ch]
 
 ## Development
 

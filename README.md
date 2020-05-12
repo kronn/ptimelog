@@ -1,6 +1,8 @@
 # pTimeLog
 
-small tooling to transfer timelog-entries from gtimelog's timelog.txt to the PuzzleTime TimeTracking Website.
+small tooling to transfer timelog-entries from gtimelog's timelog.txt to the PuzzleTime Timetracking Website.
+
+[![Build Status](https://travis-ci.org/kronn/ptimelog.svg?branch=master)](https://travis-ci.org/kronn/ptimelog)
 
 ## Approach
 

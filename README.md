@@ -60,10 +60,13 @@ Currently supported actions are
 - show
 - upload
 - edit
+- add
+- version
 
 ### Date-Identifier
 
-To handle a specific date, the format YYYY-MM-DD is expected, e.g. 2017-12-25. Please note that you should not work on that day, unless you bring presents.
+To handle a specific date, the format YYYY-MM-DD is expected, e.g. 2017-12-25.
+Please note that you should not work on that day, unless you bring presents.
 
 For reusability in a shell-history the following keywords are supported:
 
@@ -76,11 +79,29 @@ If nothing is specified, the action is applied to entries of the last day.
 
 ### Edit-Identifier
 
-When the action is "edit", the next argument is treated as script that should be edited.
+When the action is "edit", the next argument is treated as script that should
+be edited.
 
 If nothing is passed, the main timelog.txt is loaded.
 
 Otherwise, a script to determine the time-account is loaded.
+
+### Adding entries
+
+In order to add entries with the ptimelog-cli, the complete entry needs to be
+quoted on the command-line to count as one argument.
+
+    $ ptimelog add 'ticket 1337: Implement requirements -- client coding'
+
+While this requires some knowledge of the file-format, it is no different than
+entering the same string in gTimelog. For now, the entry is added to the
+timelog.txt as it is passed. Special parsing might be added in the future. For
+now, the date/time added to the entry is the one when the command is executed.
+
+### Showing the Version
+
+I got tired of asking rubygems which version I installed, so I took on the
+herculean task of letting ptimelog show its own version.
 
 ## Helper-Scripts
 

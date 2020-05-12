@@ -51,7 +51,7 @@ describe Ptimelog::Day do
         2018-03-03 14:14: 23456: debug -- network
         2018-03-03 14:43: 23456: debug -- network
         2018-03-03 15:34: 23456: debug -- network
-        2018-03-03 15:34: 23456: debug -- network
+        2018-03-03 16:34: 23456: debug -- network
         2018-03-03 16:45: 23456: debug -- network
         2018-03-03 17:00: 123: other -- network
       TIMELOG

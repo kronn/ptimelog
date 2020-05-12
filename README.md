@@ -24,8 +24,8 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt to the Puz
     - [ ] send user and pwd with every request
   - [ ] make entries
   - [ ] open day in browser for review
-- [ ] avoid duplicate entries
-  - [ ] start/end time as indicator?
+- [x] avoid duplicate entries
+  - [x] start/end time as indicator?
 - [x] offer rounding times to the next 5, 10 or 15 minutes
 - [x] allow to add entries from the command-line
 - [ ] handle time-account and billable better

@@ -142,4 +142,25 @@ describe Ptimelog::Day do
       expect(single_entry.duration).to be duration_seconds
     end
   end
+
+  context 'empty entries' do
+    let(:timelog) do
+      Ptimelog::Timelog.instance.parse <<~TIMELOG
+        2018-03-03 08:00: start **
+        2018-03-03 12:00: work -- network
+        2018-03-03 13:00: lunch **
+        2018-03-03 13:00: zero minutes -- network
+        2018-03-03 13:05: five minutes, rounded away -- network
+        2018-03-03 17:00: work -- network
+      TIMELOG
+    end
+
+    let(:date) { '2018-03-03' }
+
+    it 'are removed' do
+      entries = subject.entries[date]
+
+      expect(entries.size).to eq 2
+    end
+  end
 end

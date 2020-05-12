@@ -54,7 +54,7 @@ module Ptimelog
     end
 
     def valid?
-      @start_time && !hidden?
+      @start_time && duration.positive? && !hidden?
     end
 
     def hidden?

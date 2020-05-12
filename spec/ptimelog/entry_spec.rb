@@ -137,4 +137,26 @@ describe Ptimelog::Entry do
       expect { subject.duration }.to raise_error TypeError
     end
   end
+
+  context 'are invalid' do
+    it 'without start_time' do
+      expect(subject.start_time).to be_falsey
+      expect(subject).to_not be_valid
+    end
+
+    it 'if hidden' do
+      subject.description = 'break **'
+
+      expect(subject).to be_hidden
+      expect(subject).to_not be_valid
+    end
+
+    it 'with a duration of 0' do
+      subject.start_time = '13:37'
+      subject.finish_time = '13:37'
+
+      expect(subject.duration).to be_zero
+      expect(subject).to_not be_valid
+    end
+  end
 end

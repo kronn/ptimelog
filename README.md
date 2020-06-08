@@ -103,6 +103,14 @@ now, the date/time added to the entry is the one when the command is executed.
 I got tired of asking rubygems which version I installed, so I took on the
 herculean task of letting ptimelog show its own version.
 
+### Formatting the Output
+
+In order to format the output of the show-action into a table, a hopefully
+convienient field-marker has been chosen. I think it is unlikely, that ∴ is
+being used in a time-entry. Therefore, you can pipe the output into `column`:
+
+    ptimelog show today | column -t -s ∴
+
 ## Helper-Scripts
 
 ptimelog can prefill the account-number and billable-state of an entry.

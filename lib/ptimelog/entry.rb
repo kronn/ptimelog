@@ -77,10 +77,16 @@ module Ptimelog
     end
 
     def to_s
-      billable = billable? ? '$' : nil
+      billable = billable? ? '($)' : nil
+      tag_list = Array(@tags).compact
+
+      tags = tag_list.join(' ') if tag_list.any?
+      desc = [@ticket, @description].compact.join(': ')
+      acc  = [@account, billable].compact.join(' ') if @account
+
       [
-        @start_time, '-', @finish_time,
-        [@ticket, @description, @tags, @account, billable].compact.join(' ∴ '),
+        @start_time, '-', @finish_time, '∴',
+        [desc, tags, acc].compact.join(' ∴ '),
       ].compact.join(' ')
     end
 

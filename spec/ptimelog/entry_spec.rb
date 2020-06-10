@@ -3,17 +3,44 @@
 require 'spec_helper'
 
 describe Ptimelog::Entry do
-  it 'has a string representation' do
-    expect(subject).to respond_to :to_s
+  context 'has a string representation' do
+    subject do
+      entry = described_class.new
+      entry.start_time  = '10:00'
+      entry.finish_time = '11:45'
+      entry.date        = '1970-01-01'
+      entry.ticket      = '12345'
+      entry.description = 'important work'
+      entry.tags        = 'client'
+      entry
+    end
 
-    subject.start_time  = '10:00'
-    subject.finish_time = '11:45'
-    subject.date        = '1970-01-01'
-    subject.ticket      = '12345'
-    subject.description = 'important work'
-    subject.tags        = 'client'
+    it 'with the usual method' do
+      expect(subject).to respond_to :to_s
+    end
 
-    expect(subject.to_s).to eql '10:00 - 11:45 12345 ∴ important work ∴ client'
+    it 'for simple cases' do
+      expect(subject.to_s).to eql '10:00 - 11:45 ∴ 12345: important work ∴ client'
+    end
+
+    it 'with multiple tags' do
+      subject.tags = 'client debugging server'
+
+      expect(subject.to_s).to eql '10:00 - 11:45 ∴ 12345: important work ∴ client debugging server'
+    end
+
+    it 'with no tags and no account' do
+      subject.tags = nil
+      expect(subject.account).to be_nil
+
+      expect(subject.to_s).to eql '10:00 - 11:45 ∴ 12345: important work'
+    end
+
+    it 'without a ticket' do
+      subject.ticket = nil
+
+      expect(subject.to_s).to eql '10:00 - 11:45 ∴ important work ∴ client'
+    end
   end
 
   context 'rounds entry times to nearest 15 minutes by default' do

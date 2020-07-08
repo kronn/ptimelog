@@ -18,6 +18,9 @@ module Ptimelog
         @entries.each do |date, list|
           puts date,
                '----------'
+
+          next if list.empty?
+
           list.each do |entry|
             puts entry
           end

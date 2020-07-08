@@ -9,8 +9,8 @@ module Ptimelog
 
     def entries
       timelog.each_with_object({}) do |(date, lines), entries|
-        next unless date                           # guard against the machine
-        next unless @date == :all || @date == date # limit to one day if passed
+        next unless date # guard against the machine
+        next unless @date.to_s == 'all' || @date == date # limit to one day if passed
 
         entries[date] = join_similar(entries_of_day(lines)) # lines |> entries_of_day |> join_similar
       end

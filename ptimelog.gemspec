@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'naught'
+  spec.add_dependency 'tty-exit'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'overcommit', '~> 0.45'

@@ -29,6 +29,21 @@ describe Ptimelog::App do
     end
   end
 
+  context 'fails for unknown commands' do
+    let(:command) { :asdfagregas }
+
+    it 'with a usage error' do
+      expect { subject.run }.to raise_error(SystemExit) do |err|
+        expect(err.status).to eq(64)
+        expect(err.message).to eq('exit')
+      end
+    end
+
+    it 'with a message on stderr' do
+      expect { subject.run }.to output('ERROR(64): Command line usage error').to_stderr
+    end
+  end
+
   # it 'can upload parsed entries'
   # it 'can load custom mappers for the ordertime_account'
   # it 'can open the timelog in an editor'

@@ -19,7 +19,7 @@ module Ptimelog
       end
 
       def run
-        add_empty_line if previous_entry.date == Date.yesterday
+        add_empty_line if previous_entry.date == yesterday
         add_entry(Time.now.strftime('%F %R'), @task)
 
         save_file
@@ -49,6 +49,10 @@ module Ptimelog
         last_entry = @timelog.tokenize(last_line)
 
         Entry.from_timelog(last_entry)
+      end
+
+      def yesterday
+        NamedDate.new.named_date('yesterday')
       end
     end
   end

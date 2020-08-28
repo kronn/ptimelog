@@ -58,4 +58,26 @@ describe Ptimelog::Command::Add do
       expect(last_date).to eq Date.today.to_s
     end
   end
+
+  it 'appends an empty line if the day changed' do
+    timelog = Ptimelog::Timelog.instance
+    last_date = timelog.load.last.first
+
+    Timecop.travel(last_date.succ) do
+      expect(last_date).to eq last_date
+      expect(last_date).to_not eq Date.today.to_s
+
+      subject.run
+
+      last_lines = timelog.timelog_txt.readlines.last(2).map(&:chomp)
+
+      empty_line = /\A\z/
+      new_entry  = /\A\d{4}-\d{2}-\d{2} \d{2}:\d{2}: working on stuff\z/
+
+      expect(last_lines.size).to be 2
+
+      expect(last_lines.first).to match(empty_line)
+      expect(last_lines.last).to match(new_entry)
+    end
+  end
 end

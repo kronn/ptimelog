@@ -11,6 +11,7 @@ module Ptimelog
 
         @task = task
         @timelog = Ptimelog::Timelog.instance
+        @new_lines = []
       end
 
       def needs_entries?
@@ -18,10 +19,22 @@ module Ptimelog
       end
 
       def run
-        date_time = Time.now.strftime('%F %R')
+        add_entry(Time.now.strftime('%F %R'), @task)
 
+        save_file
+      end
+
+      private
+
+      def add_entry(date_time, task)
+        @new_lines << "#{date_time}: #{task}"
+      end
+
+      def save_file
         @timelog.timelog_txt.open('a') do |log|
-          log << "#{date_time}: #{@task}\n"
+          @new_lines.each do |line|
+            log << "#{line}\n"
+          end
         end
       end
     end

@@ -19,6 +19,7 @@ module Ptimelog
       end
 
       def run
+        add_empty_line if previous_entry.date == Date.yesterday
         add_entry(Time.now.strftime('%F %R'), @task)
 
         save_file
@@ -30,12 +31,24 @@ module Ptimelog
         @new_lines << "#{date_time}: #{task}"
       end
 
+      def add_empty_line
+        @new_lines << ''
+      end
+
       def save_file
         @timelog.timelog_txt.open('a') do |log|
           @new_lines.each do |line|
             log << "#{line}\n"
           end
         end
+      end
+
+      def previous_entry
+        lines = @timelog.timelog_txt.readlines.last(2)
+        last_line = lines.map(&:chomp).delete_if(&:empty?).last
+        last_entry = @timelog.tokenize(last_line)
+
+        Entry.from_timelog(last_entry)
       end
     end
   end

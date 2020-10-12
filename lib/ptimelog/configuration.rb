@@ -2,6 +2,7 @@
 
 require 'singleton'
 require 'pathname'
+require 'yaml'
 
 module Ptimelog
   # Wrapper around configuration-options and -loading
@@ -9,10 +10,10 @@ module Ptimelog
     include Singleton
 
     CONFIGURATION_DEFAULTS = {
-      base_url: 'https://time.puzzle.ch',
-      rounding: 15,
-      dir:      '~/.config/ptimelog',
-      timelog:  '~/.local/share/gtimelog/timelog.txt',
+      'base_url' => 'https://time.puzzle.ch',
+      'rounding' => 15,
+      'dir'      => '~/.config/ptimelog',
+      'timelog'  => '~/.local/share/gtimelog/timelog.txt',
     }.freeze
 
     def initialize
@@ -21,10 +22,12 @@ module Ptimelog
 
     def reset
       @config = load_config(
-        Pathname.new(CONFIGURATION_DEFAULTS[:dir]).join('config')
+        Pathname.new(CONFIGURATION_DEFAULTS['dir'])
+                .expand_path
+                .join('config')
       )
-      wrap_with_pathname(:dir)
-      wrap_with_pathname(:timelog)
+      wrap_with_pathname('dir')
+      wrap_with_pathname('timelog')
     end
 
     def load_config(fn)
@@ -34,13 +37,13 @@ module Ptimelog
     end
 
     def [](key)
-      @config[key.to_sym]
+      @config[key.to_s]
     end
 
     def []=(key, value)
-      @config[key.to_sym] = value
+      @config[key.to_s] = value
 
-      wrap_with_pathname(key.to_sym) if %w[dir timelog].include?(key.to_s)
+      wrap_with_pathname(key.to_s) if %w[dir timelog].include?(key.to_s)
     end
 
     private

@@ -20,12 +20,26 @@ module Ptimelog
 
       def run
         add_empty_line if @timelog.previous_entry.date == yesterday
-        add_entry(Time.now.strftime('%F %R'), @task)
+        add_entry(*parse_task(@task))
 
         save_file
       end
 
       private
+
+      def parse_task(line)
+        matches = line.match('(?<time>\d{1,2}:\d{2} )?(?<offset>[+-]\d+ )?(?<task>.*)')
+        formatted_time = if matches[:time]
+                           Time.parse(matches[:time])
+                         else
+                           Time.now
+                         end
+                         .localtime
+                         .then { |time| time + (matches[:offset].to_i * 60) }
+                         .strftime('%F %R')
+
+        [formatted_time, matches[:task]]
+      end
 
       def add_entry(date_time, task)
         @new_lines << "#{date_time}: #{task}"

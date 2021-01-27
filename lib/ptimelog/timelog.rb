@@ -15,6 +15,14 @@ module Ptimelog
       def timelog_txt
         Pathname.new(Configuration.instance[:timelog]).expand_path
       end
+
+      def previous_entry
+        lines = timelog_txt.readlines.last(2)
+        last_line = lines.map(&:chomp).delete_if(&:empty?).last
+        last_entry = instance.tokenize(last_line)
+
+        Entry.from_timelog(last_entry)
+      end
     end
 
     def load
@@ -23,6 +31,10 @@ module Ptimelog
 
     def timelog_txt
       self.class.timelog_txt
+    end
+
+    def previous_entry
+      self.class.previous_entry
     end
 
     def read

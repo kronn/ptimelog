@@ -52,9 +52,11 @@ end
 
 RSpec.shared_context 'configuration reset' do
   let(:config) do
-    {
-      dir: fixtures_dir / 'empty',
-    }
+    Ptimelog::Configuration::CONFIGURATION_DEFAULTS.merge(
+      {
+        dir: fixtures_dir / 'empty',
+      }
+    )
   end
 
   before :each do

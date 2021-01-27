@@ -11,6 +11,7 @@ module Ptimelog
 
         @task = task
         @timelog = Ptimelog::Timelog.instance
+        @new_lines = []
       end
 
       def needs_entries?
@@ -18,11 +19,46 @@ module Ptimelog
       end
 
       def run
-        date_time = Time.now.strftime('%F %R')
+        add_empty_line if @timelog.previous_entry.date == yesterday
+        add_entry(*parse_task(@task))
 
+        save_file
+      end
+
+      private
+
+      def parse_task(line)
+        matches = line.match('(?<time>\d{1,2}:\d{2} )?(?<offset>[+-]\d+ )?(?<task>.*)')
+        formatted_time = if matches[:time]
+                           Time.parse(matches[:time])
+                         else
+                           Time.now
+                         end
+                         .localtime
+                         .then { |time| time + (matches[:offset].to_i * 60) }
+                         .strftime('%F %R')
+
+        [formatted_time, matches[:task]]
+      end
+
+      def add_entry(date_time, task)
+        @new_lines << "#{date_time}: #{task}"
+      end
+
+      def add_empty_line
+        @new_lines << ''
+      end
+
+      def save_file
         @timelog.timelog_txt.open('a') do |log|
-          log << "#{date_time}: #{@task}\n"
+          @new_lines.each do |line|
+            log << "#{line}\n"
+          end
         end
+      end
+
+      def yesterday
+        NamedDate.new.named_date('yesterday')
       end
     end
   end

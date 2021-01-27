@@ -61,8 +61,8 @@ describe Ptimelog::Day do
 
     context 'has a join-implementation which' do
       let(:entries) do
-        timelog.each_with_object({}) do |(day, lines), hash|
-          hash[day] = subject.send(:entries_of_day, lines)
+        timelog.to_h.transform_values do |lines|
+          subject.send(:entries_of_day, lines)
         end.fetch(date)
       end
 

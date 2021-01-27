@@ -22,6 +22,8 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
+  spec.required_ruby_version = '2.7'
+
   spec.add_dependency 'naught'
 
   spec.add_development_dependency 'bundler'
@@ -30,5 +32,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake', '>= 12.3.3'
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'rubocop', '~> 0.50'
+  # spec.add_development_dependency 'rubocop-rake'
+  # spec.add_development_dependency 'rubocop-rspec'
+  # spec.add_development_dependency 'rubocop-packaging'
+  # spec.add_development_dependency 'rubocop-performance'
   spec.add_development_dependency 'timecop', '~> 0.9'
 end

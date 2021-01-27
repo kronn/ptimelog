@@ -95,8 +95,14 @@ quoted on the command-line to count as one argument.
 
 While this requires some knowledge of the file-format, it is no different than
 entering the same string in gTimelog. For now, the entry is added to the
-timelog.txt as it is passed. Special parsing might be added in the future. For
-now, the date/time added to the entry is the one when the command is executed.
+timelog.txt as it is passed. By default, the date/time added to the entry is
+the one when the command is executed.
+
+You can prefix a positive or negative signed number to slightly skew the entry
+(think: '-5 meeting' or '+5 lunch \*\*') or even set a precise time ('10:30
+meeting').
+
+    $ ptimelog add '-5 meeting: Discuss requirements -- client planning'
 
 ### Showing the Version
 

@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'ptimelog'
 
-  spec.required_ruby_version = '2.7'
+  spec.required_ruby_version = '>= 2.5' # rubocop:disable Gemspec/RequiredRubyVersion
 
   spec.post_install_message = <<-MESSAGE
     gpuzzletime has been renamed to ptimelog. Along with this update, ptimelog

@@ -32,7 +32,7 @@ if upgrade_needed?
   MESSAGE
 
   puts 'Upgrade now? [Yn]'
-  answer = STDIN.gets.chomp
+  answer = $stdin.gets.chomp
 
   if answer.empty? || answer =~ /^y/i
     upgrade_config

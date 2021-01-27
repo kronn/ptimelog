@@ -5,12 +5,11 @@ require 'time'
 module Ptimelog
   # Dataclass to wrap an entry
   class Entry
-    # allow to read everything
-    attr_reader :date, :start_time, :finish_time, :ticket, :description,
-                :tags, :billable, :account
-
     # define only trivial writers, omit special and derived values
-    attr_writer :date,                            :ticket, :description
+    attr_accessor :date, :ticket, :description
+
+    # allow to read everything else
+    attr_reader :start_time, :finish_time, :tags, :billable, :account
 
     BILLABLE     = 1
     NON_BILLABLE = 0
@@ -113,7 +112,7 @@ module Ptimelog
     end
 
     def script_args
-      @script_args ||= @tags.to_a[1..-1].to_a.map(&:inspect).join(' ')
+      @script_args ||= @tags.to_a[1..].to_a.map(&:inspect).join(' ')
     end
 
     def infer_account_and_billable

@@ -7,7 +7,8 @@ inherit_from: .rubocop_todo.yml
 #   - rubocop-performance
 
 AllCops:
-    NewCops: enable
+  TargetRubyVersion: 2.4
+  NewCops: enable
 
 Layout/LineLength:
   Max: 120

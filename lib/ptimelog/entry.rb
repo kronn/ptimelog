@@ -112,7 +112,7 @@ module Ptimelog
     end
 
     def script_args
-      @script_args ||= @tags.to_a[1..].to_a.map(&:inspect).join(' ')
+      @script_args ||= @tags.to_a[1..-1].to_a.map(&:inspect).join(' ')
     end
 
     def infer_account_and_billable

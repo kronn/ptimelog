@@ -7,7 +7,7 @@ module Ptimelog
       @config = Configuration.instance
       command = (args[0] || 'show')
 
-      constant_name = command.to_s[0].upcase + command[1..].downcase
+      constant_name = command.to_s[0].upcase + command[1..-1].downcase
       command_class = Command.const_get(constant_name.to_sym)
       raise ArgumentError, "Unsupported Command '#{command}'" if command_class.nil?
 

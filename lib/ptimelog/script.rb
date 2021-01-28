@@ -10,7 +10,7 @@ module Ptimelog
 
     def inferer(name)
       return NullPathname.new if name.to_s.empty?
-      raise if name =~ %r{[\\/]} # prevent relavtive paths, stupidly, FIXME: really check FS
+      raise if %r{[\\/]}.match?(name) # prevent relavtive paths, stupidly, FIXME: really check FS
 
       @config_dir.join('inferers').join(name).expand_path
     end

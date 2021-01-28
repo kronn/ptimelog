@@ -95,7 +95,7 @@ module Ptimelog
 
     def round_time(time, interval)
       return time unless interval
-      return unless time.to_s =~ /\d\d:\d\d/
+      return unless /\d\d:\d\d/.match?(time.to_s)
 
       hour, minute = time.split(':')
       minute = (minute.to_i / interval.to_f).round * interval.to_i

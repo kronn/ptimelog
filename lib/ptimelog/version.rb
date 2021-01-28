@@ -16,5 +16,5 @@
 # with an improvement. Keep in mind that this is also covered by rspec so I
 # expect (pun intended) 100% test-coverage for any additional code.
 module Ptimelog
-  VERSION = '0.10.0'
+  VERSION = '0.11.0'
 end

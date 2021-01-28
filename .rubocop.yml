@@ -1,10 +1,10 @@
 inherit_from: .rubocop_todo.yml
 
-# require:
-#   - rubocop-rake
-#   - rubocop-rspec
-#   - rubocop-packaging
-#   - rubocop-performance
+require:
+  - rubocop-packaging
+  - rubocop-performance
+  - rubocop-rake
+  # - rubocop-rspec
 
 AllCops:
   TargetRubyVersion: 2.4

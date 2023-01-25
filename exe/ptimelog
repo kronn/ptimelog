@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative '../lib/ptimelog'
+require File.expand_path('../lib/ptimelog.rb', __dir__)
 
 Ptimelog::App.new(ARGV).run

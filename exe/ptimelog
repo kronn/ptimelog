@@ -1,6 +1,21 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require File.expand_path('../lib/ptimelog.rb', __dir__)
+require 'cmdparse'
+require 'ptimelog'
 
-Ptimelog::App.new(ARGV).run
+parser = CmdParse::CommandParser.new(handle_exceptions: true)
+parser.main_options.version = Ptimelog::VERSION
+parser.main_options.program_name = 'ptimelog'
+parser.main_options.banner = 'Move time-entries from gTimelog to PuzzleTime'
+
+parser.add_command(CmdParse::VersionCommand.new)
+parser.add_command(CmdParse::HelpCommand.new, default: true)
+parser.add_command(Ptimelog::Command::Info.new)
+
+parser.add_command(Ptimelog::Command::Add.new)
+parser.add_command(Ptimelog::Command::Edit.new)
+parser.add_command(Ptimelog::Command::Show.new)
+parser.add_command(Ptimelog::Command::Upload.new)
+
+parser.parsetimelog::App.new(ARGV).run

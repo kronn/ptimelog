@@ -14,12 +14,16 @@ module Ptimelog
       end
 
       def timelog_txt
-        Pathname.new(Configuration.instance[:timelog]).expand_path
+        Pathname.new(Configuration.instance[:timelog_txt]).expand_path
       end
 
       def previous_entry
-        lines = timelog_txt.readlines.last(2)
-        last_line = lines.map(&:chomp).delete_if(&:empty?).last
+        lines = timelog_txt.readlines.last(10)
+
+        last_line = lines.map(&:chomp).delete_if do |line|
+          line.empty? || line.end_with?('**')
+        end.last
+
         last_entry = instance.tokenize(last_line)
 
         Entry.from_timelog(last_entry)

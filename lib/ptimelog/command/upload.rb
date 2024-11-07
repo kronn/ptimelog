@@ -5,17 +5,26 @@ require 'erb'
 module Ptimelog
   module Command
     # Upload entries to puzzletime
-    class Upload < Base
-      attr_writer :entries
+    class Upload < CmdParse::Command
+      def initialize
+        super('upload', takes_commands: false)
 
-      def needs_entries?
-        true
+        @durations = false
+        @entries = {}
+        @config = Configuration.instance
       end
 
-      def run
+      def execute(maybe_named_day)
+        @day = Ptimelog::NamedDate.new.named_date(maybe_named_day)
+        @entries = Ptimelog::DataSource.new(@config, @day).entries
+
         @entries.each do |date, list|
+          next if list.empty?
+
+          valids = list.select(&:valid?)
+
           puts "Uploading #{date}"
-          list.each do |entry|
+          valids.each do |entry|
             open_browser(entry)
           end
         end

@@ -16,7 +16,7 @@ describe Ptimelog::Command::Edit do
   context 'finds the requested filename' do
     it 'timelog.txt if empty' do
       expect(subject.send(:find_file, nil))
-        .to eq config[:timelog]
+        .to eq config[:timelog_txt]
     end
     it 'inferer if present' do
       expect(subject.send(:find_file, 'inferer'))

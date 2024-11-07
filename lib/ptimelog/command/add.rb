@@ -5,22 +5,19 @@ require 'pathname'
 module Ptimelog
   module Command
     # add a new entrie with the current date and time
-    class Add < Base
-      def initialize(task)
-        super()
+    class Add < CmdParse::Command
+      def initialize
+        super('add', takes_commands: false)
 
-        @task = task
         @timelog = Ptimelog::Timelog.instance
         @new_lines = []
       end
 
-      def needs_entries?
-        false
-      end
+      def execute(task)
+        abort('only timelog is supported for this action') unless Ptimelog::Configuration.instance['timelog']
 
-      def run
         add_empty_line if @timelog.previous_entry.date == yesterday
-        add_entry(*parse_task(@task))
+        add_entry(*parse_task(task))
 
         save_file
       end

@@ -5,6 +5,7 @@ $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require 'ptimelog'
 require 'timecop'
 require 'pathname'
+require 'cmdparse'
 
 RSpec.configure do |rspec|
   # This config option will be enabled by default on RSpec 4,

@@ -4,15 +4,17 @@ module Ptimelog
   module Command
     # edit one file. without argument, it will edit the timelog, otherwise a
     # parser-script is loaded
-    class Edit < Base
-      def initialize(file)
-        super()
+    class Edit < CmdParse::Command
+      def initialize
+        super('edit', takes_commands: false)
 
+        @config = Configuration.instance
         @scripts = Script.new(@config[:dir])
-        @file    = file
       end
 
-      def run
+      def execute(file = nil)
+        @file = file
+
         launch_editor(find_file(@file))
       end
 
@@ -37,7 +39,10 @@ module Ptimelog
       end
 
       def timelog(file)
-        [file.nil?, Timelog.timelog_txt]
+        [
+          file.nil?,
+          Ptimelog::DataSource.new(@config, Ptimelog::NamedDate.new.named_date(:today)).file,
+        ]
       end
 
       def existing_inferer(file)

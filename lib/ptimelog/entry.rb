@@ -52,17 +52,12 @@ module Ptimelog
               end
     end
 
-    def valid?
-      @start_time && duration.positive? && !hidden?
-    end
+    def valid? = @start_time && duration.positive? && !hidden?
 
-    def hidden?
-      @description.to_s.end_with?('**') # hide lunch and breaks
-    end
+    # hide lunch and breaks
+    def hidden? = @description.to_s.end_with?('**')
 
-    def billable?
-      @billable == BILLABLE
-    end
+    def billable? = @billable == BILLABLE
 
     def infer_ptime_settings
       return if hidden?
@@ -112,17 +107,19 @@ module Ptimelog
     end
 
     def script_args
-      @script_args ||= @tags.to_a[1..-1].to_a.map(&:inspect).join(' ')
+      @script_args ||= @tags.to_a[1..].to_a.map(&:inspect).join(' ')
     end
 
-    def infer_account_and_billable
+    def infer_entry_attributes
       script = @script.inferer(script_name)
 
       cmd = %(#{script} "#{@ticket}" "#{@description}" #{script_args})
 
-      account, billable = `#{cmd}`.chomp.split
+      results = `#{cmd}`.chomp.split
+      account = results[0]
+      billable = ((results[1] || 'false').to_s == 'true' ? BILLABLE : NON_BILLABLE)
 
-      [account, (billable == 'true' ? BILLABLE : NON_BILLABLE)]
+      [account, billable]
     end
   end
 end

@@ -3,48 +3,46 @@
 module Ptimelog
   module Command
     # show entries of one day or all of them
-    class Show < Base
-      def initialize(*args)
-        @durations = Hash.new(0)
+    class Show < CmdParse::Command
+      attr_reader :entries
 
-        super
+      def initialize
+        super('show', takes_commands: false)
+        @entries = {}
+        @config = Configuration.instance
       end
 
-      def needs_entries?
-        true
-      end
+      def execute(maybe_named_day)
+        @day = Ptimelog::NamedDate.new.named_date(maybe_named_day)
+        @entries = Ptimelog::DataSource.new(@config, @day).entries
 
-      def run
         @entries.each do |date, list|
-          puts date,
-               '----------'
-
           next if list.empty?
 
-          list.each do |entry|
-            puts entry
-          end
-          puts '----------',
-               "Total work done: #{duration(date)} hours",
-               '----------------------------',
-               nil
+          valids = list.select(&:valid?)
+          total_duration = duration(valids.sum(&:duration))
+
+          output(date, valids, total_duration)
         end
       end
 
-      def entries=(entries)
-        entries.each do |date, list|
-          @entries[date] = []
+      private
 
-          list.each do |entry|
-            @durations[date] += entry.duration
-            @entries[date] << entry.to_s
-          end
+      def output(date, entries, total_duration)
+        puts date,
+             '----------'
+
+        entries.each do |entry|
+          puts entry
         end
+
+        puts '----------',
+             "Total work done: #{total_duration} hours",
+             '----------------------------',
+             nil
       end
 
-      def duration(date)
-        Time.at(@durations[date]).utc.strftime('%H:%M')
-      end
+      def duration(durations) = Time.at(durations).utc.strftime('%H:%M')
     end
   end
 end

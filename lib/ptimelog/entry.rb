@@ -5,11 +5,13 @@ require 'time'
 module Ptimelog
   # Dataclass to wrap an entry
   class Entry
+    SEPARATOR = '|'
+
     # define only trivial writers, omit special and derived values
     attr_accessor :date, :ticket, :description
 
     # allow to read everything else
-    attr_reader :start_time, :finish_time, :tags, :billable, :account
+    attr_reader :start_time, :finish_time, :tags, :billable, :account, :publishable
 
     BILLABLE     = 1
     NON_BILLABLE = 0
@@ -57,13 +59,18 @@ module Ptimelog
     # hide lunch and breaks
     def hidden? = @description.to_s.end_with?('**')
 
+    # or something like @tags.to_a.include?('special-team')
+    def selected? = true
+
     def billable? = @billable == BILLABLE
+
+    def publishable? = @publishable != false
 
     def infer_ptime_settings
       return if hidden?
       return unless @script.inferer(script_name).exist?
 
-      @account, @billable = infer_account_and_billable
+      @account, @billable, @publishable = infer_entry_attributes
     end
 
     def duration
@@ -76,7 +83,6 @@ module Ptimelog
 
     def to_s
       billable = billable? ? '($)' : nil
-      tag_list = Array(@tags).compact
 
       tags = tag_list.join(' ') if tag_list.any?
       desc = [@ticket, @description].compact.join(': ')
@@ -92,6 +98,8 @@ module Ptimelog
     # make sortable/def <=>
 
     private
+
+    def tag_list = Array(@tags).compact
 
     def round_time(time, interval)
       return time unless interval
@@ -123,8 +131,9 @@ module Ptimelog
       results = `#{cmd}`.chomp.split
       account = results[0]
       billable = ((results[1] || 'false').to_s == 'true' ? BILLABLE : NON_BILLABLE)
+      publishable = ((results[2] || 'true').to_s == 'true')
 
-      [account, billable]
+      [account, billable, publishable]
     end
   end
 end

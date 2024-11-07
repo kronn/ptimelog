@@ -30,7 +30,7 @@ module Ptimelog
         entry = Entry.from_timelog(line)
         entry.start_time = start
 
-        entries << entry if entry.valid?
+        entries << entry if entry.valid? && entry.selected?
 
         start = entry.finish_time # store previous ending for nice display of next entry
       end

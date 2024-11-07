@@ -70,6 +70,10 @@ module Ptimelog
       (Time.parse(@finish_time) - Time.parse(@start_time)).to_i
     end
 
+    def duration_hours
+      format('%.02f', duration / 3600.0)
+    end
+
     def to_s
       billable = billable? ? '($)' : nil
       tag_list = Array(@tags).compact
@@ -79,8 +83,9 @@ module Ptimelog
       acc  = [@account, billable].compact.join(' ') if @account
 
       [
-        @start_time, '-', @finish_time, '∴',
-        [desc, tags, acc].compact.join(' ∴ '),
+        @start_time, '-', @finish_time, SEPARATOR,
+        "#{duration_hours}h", SEPARATOR,
+        [desc, tags, acc].compact.join(" #{SEPARATOR} "),
       ].compact.join(' ')
     end
 

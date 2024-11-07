@@ -12,6 +12,8 @@ module Ptimelog
         @durations = false
         @entries = {}
         @config = Configuration.instance
+
+        options.on('-d', '--durations', 'Only upload durations') { @durations = true }
       end
 
       def execute(maybe_named_day)
@@ -56,17 +58,33 @@ module Ptimelog
       end
 
       def url_options(entry)
-        {
-          work_date:                    entry.date,
-          'ordertime[ticket]':          entry.ticket,
-          'ordertime[description]':     entry.description,
-          'ordertime[from_start_time]': entry.start_time,
-          'ordertime[to_end_time]':     entry.finish_time,
-          'ordertime[account_id]':      entry.account,
-          'ordertime[billable]':        entry.billable,
-        }
+        base_params(entry)
+          .merge(duration_params(entry))
           .map { |key, value| [key, ERB::Util.url_encode(value)].join('=') }
           .join('&')
+      end
+
+      def base_params(entry)
+        {
+          work_date:                entry.date,
+          'ordertime[ticket]':      entry.ticket,
+          'ordertime[description]': entry.description,
+          'ordertime[account_id]':  entry.account,
+          'ordertime[billable]':    entry.billable,
+        }
+      end
+
+      def duration_params(entry)
+        if @durations
+          {
+            'ordertime[hours]': entry.duration_hours,
+          }
+        else
+          {
+            'ordertime[from_start_time]': entry.start_time,
+            'ordertime[to_end_time]':     entry.finish_time,
+          }
+        end
       end
     end
   end

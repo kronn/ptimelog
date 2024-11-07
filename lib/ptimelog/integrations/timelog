@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'ptimelog'
+
+prompt = ARGV[1] || 'Aktuelle Tätigkeit'
+
+last_entry = Ptimelog::Timelog.instance.previous_entry
+last = [last_entry.ticket, last_entry.description].compact.join(': ')
+
+cmd = [
+  'yad',
+  '--width=300 --height=80 --center',
+  '--no-escape',
+  '--undecorated',
+  '--entry',
+  %(--text="#{prompt}"),
+  %(--entry-text="#{last}"),
+].join(' ')
+
+Ptimelog::Command::Add.new(`#{cmd}`.chomp).run

@@ -1,0 +1,10 @@
+#!/usr/bin/env /home/mviehweger/.asdf/shims/ruby
+# frozen_string_literal: true
+
+system 'timelog-lock nonforking'
+
+require 'ptimelog'
+entry = Ptimelog::Timelog.instance.previous_entry
+break_duration = Ptimelog::Configuration.instance['rounding']
+
+system 'timelog "letzte Abwesenheit"' if entry.minutes_ago > break_duration

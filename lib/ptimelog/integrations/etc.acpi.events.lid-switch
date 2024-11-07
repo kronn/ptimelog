@@ -1,0 +1,6 @@
+# event="button/lid LID close"
+# event="button/lid LID open"
+
+# these two activate logging open and close-events
+# event=button/lid.*
+# action=/absolute/path/to/timelog-lidswitch-entry.sh

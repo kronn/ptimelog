@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+background_fn="/tmp/lockscreen"
+scrot_options="mogrify -scale 10% -blur 0x1 -resize 1000% -format png \$f"
+
+# screenshot as JPG, make smaller, blur, make bigger, save as PNG
+scrot -d0 -b "${background_fn}.jpg" -e "${scrot_options}" &
+
+# ask for current task, visually
+timelog "Aktuelle Tätigkeit"
+
+if [[ ${1:-'fork'} = 'fork' ]]; then
+  fork_locker=''
+else
+  fork_locker='--nofork'
+fi
+
+if [[ -f "${background_fn}.png" ]]; then
+  background="-i${background_fn}.png"
+else
+  # if I am too fast, lock the screen without background
+  background="--blur 10"
+fi
+
+# well, lock the screen
+i3lock ${fork_locker} -f -e -c 0c0c0c --pass-media-keys ${background} --radius 120
+
+# remove screenshots after (maybe) loading it into the locker
+rm -f ${background_fn}.jpg ${background_fn}.png

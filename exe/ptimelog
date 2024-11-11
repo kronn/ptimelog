@@ -18,4 +18,12 @@ parser.add_command(Ptimelog::Command::Edit.new)
 parser.add_command(Ptimelog::Command::Show.new)
 parser.add_command(Ptimelog::Command::Upload.new)
 
-parser.parse
+begin
+  parser.parse
+rescue Ptimelog::Error => e
+  warn <<~MSG
+    An Error occured: #{e.class}
+
+    #{e.message}
+  MSG
+end

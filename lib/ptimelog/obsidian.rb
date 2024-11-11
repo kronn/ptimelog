@@ -11,6 +11,18 @@ module Ptimelog
       @configuration = Ptimelog::Configuration.instance
     end
 
+    # Inform about potentially malformed Markdown
+    class HeadingNotFound < Ptimelog::Error
+      def initialize(config)
+        super(<<~MSG)
+          Could not find level-#{config[:level]} Heading '#{config[:title]}'
+
+          Please check that the heading is there and valid markdown.
+          I often have typos right before the heading if I type in the wrong window, maybe you do, too?
+        MSG
+      end
+    end
+
     def entries # rubocop:disable Metrics/AbcSize
       list_tokens.map do |matched_line|
         entry = Ptimelog::Entry.new
@@ -51,11 +63,14 @@ module Ptimelog
     end
 
     def heading_idx
-      md_ast.find_index do |node|
+      index = md_ast.find_index do |node|
         node.type == :heading &&
           node.header_level == heading_config[:level] &&
           node.first_child.string_content == heading_config[:title]
       end
+      raise HeadingNotFound, heading_config if index.nil?
+
+      index
     end
 
     def list_start = heading_idx + 1

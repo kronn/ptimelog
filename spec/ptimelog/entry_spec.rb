@@ -20,26 +20,26 @@ describe Ptimelog::Entry do
     end
 
     it 'for simple cases' do
-      expect(subject.to_s).to eql '10:00 - 11:45 ∴ 12345: important work ∴ client'
+      expect(subject.to_s).to eql '10:00 - 11:45 | 1.75h | 12345: important work | client'
     end
 
     it 'with multiple tags' do
       subject.tags = 'client debugging server'
 
-      expect(subject.to_s).to eql '10:00 - 11:45 ∴ 12345: important work ∴ client debugging server'
+      expect(subject.to_s).to eql '10:00 - 11:45 | 1.75h | 12345: important work | client debugging server'
     end
 
     it 'with no tags and no account' do
       subject.tags = nil
       expect(subject.account).to be_nil
 
-      expect(subject.to_s).to eql '10:00 - 11:45 ∴ 12345: important work'
+      expect(subject.to_s).to eql '10:00 - 11:45 | 1.75h | 12345: important work'
     end
 
     it 'without a ticket' do
       subject.ticket = nil
 
-      expect(subject.to_s).to eql '10:00 - 11:45 ∴ important work ∴ client'
+      expect(subject.to_s).to eql '10:00 - 11:45 | 1.75h | important work | client'
     end
   end
 

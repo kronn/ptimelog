@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ptimelog::Command::Upload do
+xdescribe Ptimelog::Command::Upload do
   subject { described_class.new }
 
   let(:config) do

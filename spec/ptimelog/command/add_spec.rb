@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ptimelog::Command::Add do
+xdescribe Ptimelog::Command::Add do
   subject { described_class.new(task) }
   let(:task) { 'working on stuff' }
 

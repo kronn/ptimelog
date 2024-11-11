@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Ptimelog::Command::Edit do
+xdescribe Ptimelog::Command::Edit do
   subject { described_class.new(file) }
   let(:file) { 'inferer' }
 

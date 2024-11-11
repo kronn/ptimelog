@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.bindir        = 'exe'
   spec.executables   = ['gpuzzletime']
 
-  spec.add_runtime_dependency 'ptimelog'
+  spec.add_dependency 'ptimelog'
 
   spec.required_ruby_version = '>= 2.4' # rubocop:disable Gemspec/RequiredRubyVersion
   spec.metadata['rubygems_mfa_required'] = 'true'

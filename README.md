@@ -18,6 +18,7 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt or obsidia
   - [x] support user-supplied ticket-parsers
   - [x] get ticket-parser from tags
 - [x] merge equal adjacent entries into one
+- [x] caculate, show and upload durations
 - [ ] complete login/entry automation
   - [ ] handle authentication
     - [ ] login and store cookie (https://stackoverflow.com/questions/12399087/curl-to-access-a-page-that-requires-a-login-from-a-different-page#12399176)
@@ -38,8 +39,18 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt or obsidia
   - [ ] allow to have a list of "favourite" time-accounts
   - [ ] select best-matching time-account according to tags, possibly limited to the favourites
   - [x] combine billable and account-lookup into one script
-- [ ] add cli-help
-  - [ ] use commander for CLI?
+- [x] add cli-help
+  - [x] use ~~commander~~ _cmd_parse_ for CLI
+- [x] support Obsidian as datasource
+  - [x] with explicit config
+  - [ ] with reading the config from the Obsidian Vault
+  - [x] time-entries from dayplanner-section of a daily note
+  - [ ] time-account/billable/metadata lookup from a note
+  - [x] support show-command: output the entries of a day
+  - [x] support upload-command: send the entries of a day to ptime
+  - [ ] support add-command: add a new entry to the current day
+  - [ ] support edit-command: edit the metadata-lookup
+  - [ ] support "last"-day for obsidian
 
 ## Installation
 
@@ -60,20 +71,22 @@ Currently supported actions are
 - edit
 - add
 - version
+- help
 
 ### Date-Identifier
 
 To handle a specific date, the format YYYY-MM-DD is expected, e.g. 2017-12-25.
-Please note that you should not work on that day, unless you bring presents.
+Please note that you should not work on that day, unless you bring presents or
+release a new version of Ruby.
 
 For reusability in a shell-history the following keywords are supported:
 
 - today
 - yesterday
-- last
 - all
 
-If nothing is specified, the action is applied to entries of the last day.
+Currently, you need to pass a day. The previously exisiting "last" worked fine
+to timelog.txt, but not for Obsidian.
 
 ### Edit-Identifier
 
@@ -81,8 +94,10 @@ When the action is "edit", the next argument is treated as script that should
 be edited.
 
 If nothing is passed, the main timelog.txt is loaded.
+:warn: How this works for the Obsidian-Datasource is not yet decided.
 
 Otherwise, a script to determine the time-account is loaded.
+
 
 ### Adding entries
 
@@ -102,18 +117,25 @@ meeting').
 
     $ ptimelog add '-5 meeting: Discuss requirements -- client planning'
 
+:warn: How this works for the Obsidian-Datasource is not yet decided. Possibly
+the same, at some point.
+
 ### Showing the Version
 
 I got tired of asking rubygems which version I installed, so I took on the
-herculean task of letting ptimelog show its own version.
+herculean task of letting ptimelog show its own version. With the switch to a
+cmd_parse-based CLI, this has been partially offloaded to cmd_parse. You can
+imagine the weight that has been lifted off my shoulders.
 
 ### Formatting the Output
 
 In order to format the output of the show-action into a table, a hopefully
-convienient field-marker has been chosen. I think it is unlikely, that ∴ is
-being used in a time-entry. Therefore, you can pipe the output into `column`:
+convienient field-marker has been chosen. After 0.10.0, I switched from '∴' to
+'|', which is much more widely used, but also much easier to find on keyboard.
+This removes one need to copy an unusual separator, maybe even using the mouse...
+Anyway, you can pipe the output into `column`:
 
-    ptimelog show today | column -t -s ∴
+    ptimelog show today | column -t -s'|'
 
 ## Helper-Scripts
 
@@ -156,7 +178,6 @@ git commits and tags, and push the `.gem` file to
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/kronn/ptimelog.
-
 
 ## License
 

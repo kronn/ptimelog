@@ -12,7 +12,10 @@ module Ptimelog
         next unless date # guard against the machine
         next unless @date.to_s == 'all' || @date == date # limit to one day if passed
 
-        entries[date] = join_similar(entries_of_day(lines)) # lines |> entries_of_day |> join_similar
+        # lines |> entries_of_day |> join_similar
+        entries[date] = Ptimelog::Joiner.new.join_similar(
+          entries_of_day(lines)
+        )
       end
     end
 
@@ -36,36 +39,6 @@ module Ptimelog
       end
 
       entries
-    end
-
-    def join_similar(list)
-      return [] if list.empty?
-      return list if list.one?
-
-      one, *tail = list
-      two, *rest = tail
-
-      joined = maybe_join(one, two)
-
-      if joined.one?
-        join_similar(joined + rest)
-      else
-        [one] + join_similar(tail)
-      end
-    end
-
-    def maybe_join(one, two)
-      if one.ticket == two.ticket &&
-         one.description == two.description &&
-         one.finish_time == two.start_time
-
-        joined = one.dup
-        joined.finish_time = two.finish_time
-
-        [joined]
-      else
-        [one, two]
-      end
     end
   end
 end

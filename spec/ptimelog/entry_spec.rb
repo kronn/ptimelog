@@ -186,4 +186,147 @@ describe Ptimelog::Entry do
       expect(subject).to_not be_valid
     end
   end
+
+  context 'can be combined' do
+    def timelog(attrs)
+      entry = described_class.from_timelog(
+        date:        attrs.fetch(:date, Date.today),
+        ticket:      attrs.fetch(:ticket, '12345'),
+        description: attrs.fetch(:description, 'Work'),
+        time:        attrs.fetch(:time, '10:00'),
+        tags:        attrs.fetch(:tags, 'test tag')
+      )
+      entry.start_time = attrs.fetch(:start, '08:00')
+
+      entry
+    end
+
+    it 'with the same, non-empty ticket and keep the ticket' do
+      one = timelog(ticket: '123')
+      two = timelog(ticket: '123')
+
+      result = one + two
+
+      expect(result.ticket).to be '123'
+    end
+
+    it 'with the same date and keep the date' do
+      one = timelog(date: Date.parse('2025-02-18'))
+      two = timelog(date: Date.parse('2025-02-18'))
+
+      result = one + two
+
+      expect(result.date).to eql Date.parse('2025-02-18')
+    end
+
+    it 'only with the same date' do
+      one = timelog(date: Date.parse('2025-02-18'))
+      two = timelog(date: Date.parse('2025-01-01'))
+
+      expect do
+        one + two
+      end.to raise_error Ptimelog::Entry::AdditionError
+    end
+
+    it 'with the same tags' do
+      one = timelog(tags: 'test tag')
+      two = timelog(tags: 'test tag')
+
+      result = one + two
+
+      expect(result.tags).to match_array %w[test tag]
+    end
+
+    it 'if only one has tags' do
+      one = timelog(tags: 'test tag')
+      two = timelog(tags: '')
+
+      expect((one + two).tags).to match_array %w[test tag]
+      expect((two + one).tags).to match_array %w[test tag]
+    end
+
+    it 'if both are valid' do
+      one = timelog(start: '08:00', time: '10:00')
+      two = timelog(start: nil, time: '12:00')
+
+      expect(one).to be_valid
+      expect(two).to_not be_valid
+
+      expect do
+        one + two
+      end.to raise_error(Ptimelog::Entry::AdditionError)
+    end
+
+    it 'but rejects differing tags' do
+      one = timelog(tags: 'work blub')
+      two = timelog(tags: 'work blah')
+
+      expect do
+        one + two
+      end.to raise_error Ptimelog::Entry::AdditionError
+    end
+
+    it 'and combine the description' do
+      one = timelog(description: 'Research')
+      two = timelog(description: 'Feedback')
+
+      result = one + two
+
+      expect(result.description).to eql 'Research, Feedback'
+    end
+
+    it 'and reduces duplication in the description' do
+      one = timelog(description: 'Research')
+      two = timelog(description: 'Research')
+
+      result = one + two
+
+      expect(result.description).to eql 'Research'
+    end
+
+    it 'and have the combined duration' do
+      one = timelog(start: '08:00', time: '10:00')
+      two = timelog(start: '12:00', time: '14:00')
+
+      two_hours = 2 * 3600
+
+      expect(one.duration).to be(two_hours)
+      expect(two.duration).to be(two_hours)
+
+      four_hours = 4 * 3600
+
+      expect((one + two).duration).to be(four_hours)
+    end
+
+    it 'and have ptime-settings'
+    it 'and combine the start/end-time if possible'
+    it 'and conjure new start/end-time if needed'
+
+    it 'only if the ticket is present' do
+      one = timelog(ticket: '')
+      two = timelog(ticket: '')
+
+      expect(one.ticket).to eql two.ticket
+
+      expect do
+        one + two
+      end.to raise_error Ptimelog::Entry::AdditionError
+    end
+
+    it 'only if the tickets match' do
+      one = timelog(ticket: '123')
+      two = timelog(ticket: '456')
+
+      expect(one.ticket).to_not eq two.ticket
+
+      expect do
+        one + two
+      end.to raise_error Ptimelog::Entry::AdditionError
+    end
+
+    # commutativity is the only math-assumption I will check here
+    # neutral elements are invalid and
+    # inverse elements are both invalid and hard to imagine.
+    it 'regardless of the order of "addition"'
+  end
 end

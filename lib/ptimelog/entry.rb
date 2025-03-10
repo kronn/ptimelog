@@ -16,6 +16,9 @@ module Ptimelog
     BILLABLE     = 1
     NON_BILLABLE = 0
 
+    class AdditionError < ::StandardError
+    end
+
     def initialize(config = Configuration.instance)
       @config = config
       @script = Script.new(@config[:dir])
@@ -39,6 +42,34 @@ module Ptimelog
       infer_ptime_settings
     end
 
+    def +(other) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+      raise AdditionError, "Tickets don't match or empty" if @ticket != other.ticket || @ticket.to_s == ''
+      raise AdditionError, 'O RLY? Date is different' if @date != other.date
+      raise AdditionError, 'At least one is invalid' if [self, other].reject(&:valid?).any?
+
+      both_have_tags = [self, other].all? { |entry| !entry.tags.nil? }
+      raise AdditionError, 'Tags do not match' if both_have_tags && tag_list.sort != other.tag_list.sort
+
+      joined = self.class.new
+      joined.ticket = @ticket
+      joined.date = @date
+      joined.description = [@description, other.description].uniq.join(', ')
+      joined.tags = [tag_list, other.tag_list].uniq.join(' ')
+
+      joined.infer_ptime_settings
+
+      earlier, later = [self, other].sort
+
+      joined.start_time = earlier.start_time
+      joined.finish_time = if earlier.finish_time == later.start_time
+                             later.finish_time
+                           else
+                             (Time.parse(earlier.finish_time) + later.duration).strftime('%H:%M')
+                           end
+
+      joined
+    end
+
     def start_time=(time)
       @start_time = round_time(time, @config[:rounding])
     end
@@ -48,6 +79,8 @@ module Ptimelog
     end
 
     def tags=(tags)
+      raise 'HELL' unless tags.is_a?(String) || tags.nil?
+
       @tags = case tags
               when '', nil then nil
               else tags.split.compact
@@ -59,7 +92,7 @@ module Ptimelog
     # hide lunch and breaks
     def hidden? = @description.to_s.end_with?('**')
 
-    # or something like @tags.to_a.include?('special-team')
+    # or something like @tags.to_a.include?('special-team'), still needs to be implemented...
     def selected? = true
 
     def billable? = @billable == BILLABLE
@@ -95,11 +128,21 @@ module Ptimelog
       ].compact.join(' ')
     end
 
-    # make sortable/def <=>
+    def <=>(other)
+      @start_time <=> other.start_time
+    end
+
+    protected
+
+    def tag_list
+      list = [first_tag] + tail_tags.split
+      list.reject(&:empty?).compact
+    end
+
+    def first_tag = @tags.to_a.first.to_s
+    def tail_tags = @tags.to_a[1..].to_a.join(' ')
 
     private
-
-    def tag_list = Array(@tags).compact
 
     def round_time(time, interval)
       return time unless interval
@@ -116,11 +159,11 @@ module Ptimelog
     end
 
     def script_name
-      @script_name ||= @tags.to_a.first.to_s
+      @script_name ||= first_tag
     end
 
     def script_args
-      @script_args ||= @tags.to_a[1..].to_a.map(&:inspect).join(' ')
+      @script_args ||= tail_tags.split.map(&:inspect).join(' ')
     end
 
     def infer_entry_attributes

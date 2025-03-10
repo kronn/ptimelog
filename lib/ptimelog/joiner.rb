@@ -3,7 +3,7 @@
 module Ptimelog
   # Join two directly adjacent entries or adjacent entries with the same ticket
   class Joiner
-    def initialize(compact_on_ticket_only)
+    def initialize(compact_on_ticket_only = false)
       @compact_on_ticket_only = compact_on_ticket_only
     end
 

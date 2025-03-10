@@ -23,12 +23,12 @@ module Ptimelog
         @entries.each do |date, list|
           next if list.empty?
 
-          valids = list.select(&:valid?)
+          valids = Ptimelog::Joiner.new(@durations).join_similar(
+            list.select(&:valid?).sort_by { |entry| entry.ticket.to_s }
+          )
 
           puts "Uploading #{date}"
-          valids.each do |entry|
-            open_browser(entry)
-          end
+          valids.each { |entry| open_browser(entry) }
         end
       end
 

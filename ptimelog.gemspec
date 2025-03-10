@@ -17,7 +17,9 @@ Gem::Specification.new do |spec|
   spec.license       = 'MIT'
 
   spec.files         = Rake::FileList['**/*'].exclude(*File.read('.gitignore').split)
-                                             .exclude(%w[gpuzzletime])
+                                             .exclude(%w[exe/gpuzzletime
+                                                         *.gemspec
+                                                         bin/* bin spec/**/* spec])
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']

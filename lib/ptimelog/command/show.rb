@@ -17,7 +17,7 @@ module Ptimelog
         options.on('--debug', 'Show debugging output') { @debug = true }
       end
 
-      def execute(maybe_named_day) # rubocop:disable Metrics/AbcSize
+      def execute(maybe_named_day) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
         debug("Requested Day: #{maybe_named_day}")
         @day = Ptimelog::NamedDate.new.named_date(maybe_named_day)
         debug("Resolved Day: #{@day}")
@@ -43,6 +43,7 @@ module Ptimelog
              '----------'
 
         entries.each do |entry|
+          debug(entry.instance_variable_get(:@inferer_cmd))
           puts entry
         end
 

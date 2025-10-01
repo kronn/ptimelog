@@ -4,7 +4,7 @@ require 'time'
 
 module Ptimelog
   # Dataclass to wrap an entry
-  class Entry
+  class Entry # rubocop:disable Metrics/ClassLength
     SEPARATOR = '|'
 
     # define only trivial writers, omit special and derived values
@@ -170,6 +170,7 @@ module Ptimelog
       script = @script.inferer(script_name)
 
       cmd = %(#{script} "#{@ticket}" "#{@description}" #{script_args})
+      @inferer_cmd = cmd
 
       results = `#{cmd}`.chomp.split
       account = results[0]

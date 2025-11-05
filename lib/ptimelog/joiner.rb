@@ -27,6 +27,7 @@ module Ptimelog
 
     def maybe_join(one, two)
       return [one, two] if one.ticket != two.ticket || one.ticket.to_s == ''
+      return [one, two] if tags_are_present_but_differ(one, two)
 
       if @compact_on_ticket_only ||
          (one.description == two.description && one.finish_time == two.start_time)
@@ -34,6 +35,13 @@ module Ptimelog
       else
         [one, two]
       end
+    end
+
+    def tags_are_present_but_differ(one, two)
+      both_have_tags = [one, two].all? { |entry| !entry.tags.nil? }
+      tags_differ = (one.tags.sort != two.tags.sort)
+
+      both_have_tags && tags_differ
     end
   end
 end

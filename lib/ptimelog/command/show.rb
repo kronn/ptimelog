@@ -27,7 +27,7 @@ module Ptimelog
         @entries.each do |date, list|
           next if list.empty?
 
-          valids = Ptimelog::Joiner.new(@durations).join_similar(
+          valids = Ptimelog::Joiner.new(compact_on_ticket_only: @durations).join_similar(
             list.select(&:valid?).sort_by { |entry| entry.ticket.to_s }
           ).sort_by(&:start_time)
           total_duration = duration(valids.sum(&:duration))

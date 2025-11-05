@@ -13,9 +13,7 @@ module Ptimelog
         next unless @date.to_s == 'all' || @date == date # limit to one day if passed
 
         # lines |> entries_of_day |> join_similar
-        entries[date] = Ptimelog::Joiner.new.join_similar(
-          entries_of_day(lines)
-        )
+        entries[date] = join_similar(entries_of_day(lines))
       end
     end
 
@@ -23,6 +21,10 @@ module Ptimelog
 
     def timelog
       Timelog.load
+    end
+
+    def join_similar(list)
+      Ptimelog::Joiner.new.join_similar(list)
     end
 
     def entries_of_day(lines)

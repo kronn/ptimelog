@@ -21,18 +21,22 @@ module Ptimelog
         @entries = Ptimelog::DataSource.new(@config, @day).entries
 
         @entries.each do |date, list|
-          next if list.empty?
-
-          valids = Ptimelog::Joiner.new(@durations).join_similar(
-            list.select(&:valid?).sort_by { |entry| entry.ticket.to_s }
-          )
-
-          puts "Uploading #{date}"
-          valids.each { |entry| open_browser(entry) }
+          upload_date(date, list)
         end
       end
 
       private
+
+      def upload_date(date, list)
+        return if list.empty?
+
+        valids = Ptimelog::Joiner.new(compact_on_ticket_only: @durations).join_similar(
+          list.select(&:valid?).sort_by { |entry| entry.ticket.to_s }
+        )
+
+        puts "Uploading #{date}"
+        valids.each { |entry| open_browser(entry) }
+      end
 
       def open_browser(entry)
         xdg_open "'#{@config[:base_url]}/ordertimes/new?#{url_options(entry)}'", silent: true

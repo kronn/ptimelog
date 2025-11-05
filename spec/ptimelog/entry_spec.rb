@@ -298,9 +298,25 @@ describe Ptimelog::Entry do
       expect((one + two).duration).to be(four_hours)
     end
 
-    it 'and have ptime-settings'
-    it 'and combine the start/end-time if possible'
-    it 'and conjure new start/end-time if needed'
+    it 'and combine the start/end-time if possible' do
+      one = timelog(start: '08:00', time: '10:00')
+      two = timelog(start: '10:00', time: '12:00')
+
+      combined = one + two
+
+      expect(combined.start_time).to eq('08:00')
+      expect(combined.finish_time).to eq('12:00')
+    end
+
+    it 'and conjure new start/end-time if needed' do
+      one = timelog(start: '08:00', time: '10:00')
+      two = timelog(start: '12:00', time: '14:00')
+
+      combined = one + two
+
+      expect(combined.start_time).to eq('08:00')
+      expect(combined.finish_time).to eq('12:00')
+    end
 
     it 'only if the ticket is present' do
       one = timelog(ticket: '')
@@ -327,6 +343,20 @@ describe Ptimelog::Entry do
     # commutativity is the only math-assumption I will check here
     # neutral elements are invalid and
     # inverse elements are both invalid and hard to imagine.
-    it 'regardless of the order of "addition"'
+    it 'regardless of the order of "addition"' do
+      one = timelog(start: '08:00', time: '10:00')
+      two = timelog(start: '12:00', time: '14:00')
+
+      one_first = one + two
+      two_first = two + one
+
+      %i[
+        date ticket description
+        start_time finish_time tags
+        billable account publishable
+      ].each do |attr|
+        expect(one_first.send(attr)).to eql(two_first.send(attr))
+      end
+    end
   end
 end

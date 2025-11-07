@@ -2,10 +2,16 @@
 
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
+# core gem
 require 'ptimelog'
-require 'timecop'
+
+# runtime-dependencies
 require 'pathname'
 require 'cmdparse'
+
+# test-dependencies
+require 'timecop'
+require 'rspec/collection_matchers'
 
 RSpec.configure do |rspec|
   # This config option will be enabled by default on RSpec 4,

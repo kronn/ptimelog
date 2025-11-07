@@ -132,6 +132,13 @@ module Ptimelog
       @start_time <=> other.start_time
     end
 
+    def ==(other)
+      comparable_attrs = %i[date ticket description start_time finish_time tags]
+
+      self.class == other.class &&
+        comparable_attrs.map { |attr| send(attr) == other.send(attr) }
+    end
+
     protected
 
     def tag_list

@@ -23,20 +23,8 @@ module Ptimelog
       end
     end
 
-    def entries # rubocop:disable Metrics/AbcSize
-      list_tokens.map do |matched_line|
-        entry = Ptimelog::Entry.new
-        entry.date        = @day
-        entry.ticket      = matched_line[:ticket]
-        entry.description = matched_line[:description]
-        entry.start_time  = matched_line[:start]
-        entry.finish_time = matched_line[:stop]
-        entry.tags        = matched_line[:tags]
-
-        entry.infer_ptime_settings
-
-        entry
-      end
+    def entries
+      list_tokens.map { |matched_line| tokens_to_entry(matched_line) }
     end
 
     def file
@@ -86,6 +74,37 @@ module Ptimelog
 
       regexp = /^#{re_start} - #{re_stop} #{re_tick}?#{re_desc}#{re_tags}?$/
       line.match(regexp)
+    end
+
+    def tokens_to_entry(matched_line)
+      entry = Ptimelog::Entry.new
+      entry.date        = @day
+      entry.ticket      = matched_line[:ticket]
+      entry.description = matched_line[:description]
+      entry.start_time  = matched_line[:start]
+      entry.finish_time = matched_line[:stop]
+      entry.tags        = matched_line[:tags]
+
+      entry.infer_ptime_settings
+
+      entry
+    end
+
+    def dayplanner_to_entry(line)
+      tokenize_dayplanner(line).then do |tokens|
+        tokens_to_entry(tokens)
+      end
+    end
+
+    def entry_to_dayplanner(entry)
+      format(
+        '%<start>s - %<finish>s %<ticket>s: %<description>s -- %<tags>s',
+        start:       entry.start_time,
+        finish:      entry.finish_time,
+        ticket:      entry.ticket,
+        description: entry.description,
+        tags:        entry.tags.join(' ')
+      )
     end
 
     def remove_tags_and_markers(line)

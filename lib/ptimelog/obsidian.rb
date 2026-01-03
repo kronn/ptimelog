@@ -24,6 +24,8 @@ module Ptimelog
     end
 
     def entries
+      return [] unless file.exist?
+
       list_tokens.map { |matched_line| tokens_to_entry(matched_line) }
     end
 

@@ -28,6 +28,7 @@ module Ptimelog
   # Collection of commands available at the CLI
   module Command
     autoload :Add, 'ptimelog/command/add'
+    autoload :Confirm, 'ptimelog/command/confirm'
     autoload :Edit, 'ptimelog/command/edit'
     autoload :Info, 'ptimelog/command/info'
     autoload :Show, 'ptimelog/command/show'

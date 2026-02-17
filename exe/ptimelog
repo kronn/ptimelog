@@ -17,6 +17,7 @@ parser.add_command(Ptimelog::Command::Add.new)
 parser.add_command(Ptimelog::Command::Edit.new)
 parser.add_command(Ptimelog::Command::Show.new)
 parser.add_command(Ptimelog::Command::Upload.new)
+parser.add_command(Ptimelog::Command::Confirm.new)
 
 begin
   parser.parse

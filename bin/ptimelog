@@ -2,4 +2,5 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+# shellcheck disable=SC2068
 exec bundle exec exe/ptimelog $@

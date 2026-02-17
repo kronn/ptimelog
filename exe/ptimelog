@@ -7,7 +7,7 @@ require 'ptimelog'
 parser = CmdParse::CommandParser.new(handle_exceptions: true)
 parser.main_options.version = Ptimelog::VERSION
 parser.main_options.program_name = 'ptimelog'
-parser.main_options.banner = 'Move time-entries from gTimelog to PuzzleTime'
+parser.main_options.banner = Ptimelog::BANNER
 
 parser.add_command(CmdParse::VersionCommand.new)
 parser.add_command(CmdParse::HelpCommand.new, default: true)

@@ -24,5 +24,5 @@
 # Bruce."
 module Ptimelog
   VERSION = '0.11.0'
-  BANNER = 'Move time-entries from gTimelog to PuzzleTime'
+  BANNER = 'Move time-entries from gTimelog or Obsidian to PuzzleTime'
 end

@@ -103,7 +103,7 @@ describe Ptimelog::Entry do
       output = `#{script_mock.inferer(:mocked)}`
       expect(output).to match(/^1234\ntrue$/m)
 
-      subject.instance_variable_set('@script', script_mock)
+      subject.instance_variable_set(:@script, script_mock)
 
       subject.infer_ptime_settings
 
@@ -127,14 +127,14 @@ describe Ptimelog::Entry do
       subject.start_time  = '14:30'
       subject.finish_time = '16:00'
 
-      expect(subject.duration).to be((90 * 60)) # seconds
+      expect(subject.duration).to be(90 * 60) # seconds
     end
 
     it 'after applying rounding' do
       subject.start_time  = '14:28'
       subject.finish_time = '16:03'
 
-      expect(subject.duration).to be((90 * 60)) # seconds
+      expect(subject.duration).to be(90 * 60) # seconds
     end
 
     it 'with minute-precision if rounding is disabled' do

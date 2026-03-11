@@ -13,7 +13,7 @@ module Ptimelog
       case date.to_s
       when 'yesterday'        then yesterday
       when 'today'            then Date.today.to_s
-      when 'last', ''         then last_entry.to_s || yesterday
+      when 'last', ''         then (last_entry || yesterday).to_s
       when 'mon', 'monday'    then previous_weekday('monday')
       when 'tue', 'tuesday'   then previous_weekday('tuesday')
       when 'wed', 'wednesday' then previous_weekday('wednesday')

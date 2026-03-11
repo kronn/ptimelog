@@ -115,13 +115,12 @@ module Ptimelog
 
     def list_strings
       entry_list
-        .map(&:first_child)
-        .compact
+        .filter_map(&:first_child)
         .map { |item| item.first_child.string_content }
         .map { |item| remove_tags_and_markers(item) }
         .sort
     end
 
-    def list_tokens = list_strings.map { |line| tokenize_dayplanner(line) }.compact
+    def list_tokens = list_strings.filter_map { |line| tokenize_dayplanner(line) }
   end
 end

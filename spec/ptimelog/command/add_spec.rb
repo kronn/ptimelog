@@ -52,7 +52,7 @@ xdescribe Ptimelog::Command::Add do
 
       subject.run
 
-      timelog.instance_variable_set('@load', nil)
+      timelog.instance_variable_set(:@load, nil)
       last_date = timelog.load.last.first
 
       expect(last_date).to eq Date.today.to_s

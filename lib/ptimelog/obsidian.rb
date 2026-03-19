@@ -70,11 +70,11 @@ module Ptimelog
     def tokenize_dayplanner(line)
       re_start = /(?<start>\d{2}:\d{2})/
       re_stop = /(?<stop>\d{2}:\d{2})/
-      re_tick = /(?:(?<ticket>.*?): )/
+      re_tick = /(?:(?<ticket>.*?):\s+)/
       re_desc = /(?<description>.*?)/
-      re_tags = /(?: -- (?<tags>.*)?)/
+      re_tags = /(?:\s+--\s+(?<tags>.*)?)/
 
-      regexp = /^#{re_start} - #{re_stop} #{re_tick}?#{re_desc}#{re_tags}?$/
+      regexp = /^#{re_start}\s*-\s*#{re_stop} #{re_tick}?#{re_desc}#{re_tags}?$/
       line.match(regexp)
     end
 

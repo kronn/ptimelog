@@ -6,7 +6,7 @@ RSpec.describe Ptimelog::Obsidian do
   let(:date) { '2025-10-22' }
   let(:obsidian) { described_class.new(date) }
   let(:file_content) { File.read('spec/fixtures/datasources/obsidian-note.md') }
-  let(:file_double) { double(read: file_content) } # rubocop:disable RSpec/VerifiedDoubles
+  let(:file_double) { double(read: file_content, exist?: true) } # rubocop:disable RSpec/VerifiedDoubles
   let(:hotfix_entry) do
     Ptimelog::Entry.new.tap do |entry|
       entry.date = date
@@ -22,6 +22,7 @@ RSpec.describe Ptimelog::Obsidian do
     Ptimelog::Configuration.instance['dayplanner_heading_level'] = 1
     Ptimelog::Configuration.instance['dayplanner_heading_title'] = 'Calendar'
 
+    allow(file_double).to receive(:write) # { |content| @written_content = content } # TODO: verify written content?
     allow(obsidian).to receive(:file).and_return(file_double)
   end
 
@@ -80,6 +81,56 @@ RSpec.describe Ptimelog::Obsidian do
       formatted = obsidian.send(:entry_to_dayplanner, hotfix_entry)
 
       expect(formatted).to eq '19:00 - 20:00 hotfix: Urgent maintenance -- work clientA support'
+    end
+  end
+
+  describe '#add' do
+    context 'when the dayplanner section exists and has a list,' do
+      it 'appends the entry' do
+        expect do
+          obsidian.add(hotfix_entry)
+        end.to change { obsidian.entries.size }.by 1
+      end
+    end
+
+    context 'when the dayplanner section exists, but is empty,' do
+      let(:file_content) do
+        note = File.read('spec/fixtures/datasources/obsidian-note.md')
+        note_lines = note.lines
+        note_lines[1..7] = nil # remove the existing entries
+        note_lines.join
+      end
+
+      it 'start a list with the entry' do
+        expect do
+          obsidian.add(hotfix_entry)
+        end.to change { obsidian.entries.size }.by 1
+      end
+    end
+
+    context 'when the daily note file does not exist, it' do
+      let(:file_double) { double(read: '', exist?: false) }
+
+      it 'fails' do
+        expect do
+          obsidian.add(hotfix_entry)
+        end.to raise_error
+      end
+    end
+
+    context 'when the dayplanner heading does not exist in an existing file, it' do
+      let(:file_content) do
+        note = File.read('spec/fixtures/datasources/obsidian-note.md')
+        note_lines = note.lines
+        note_lines[0..7] = nil # remove the existing entries and the heading
+        note_lines.join
+      end
+
+      it 'fails' do
+        expect do
+          obsidian.add(hotfix_entry)
+        end.to raise_error # Ptimelog::Obsidian::HeadingNotFound
+      end
     end
   end
 end

@@ -29,8 +29,34 @@ module Ptimelog
       list_tokens.map { |matched_line| tokens_to_entry(matched_line) }
     end
 
+    def add(entry)
+      new_entry_doc = Commonmarker.parse("- #{entry_to_dayplanner(entry)}")
+      new_entry_list = new_entry_doc.first_child
+      new_item = new_entry_list.first_child
+
+      entry_list.append_child new_item
+
+      file.write(md_ast.to_commonmark)
+
+      entry
+    end
+
     def file
       obsidian_config[:daily_dir].join("#{@day}.md")
+    end
+
+    def previous_entry
+      if entries.any?
+        entries.last
+      else
+        Entry.new.tap do |entry|
+          entry.date = @day
+          entry.description = 'start **'
+          start_time = @configuration['obsidian_start_time'] || '08:00'
+          entry.start_time = start_time
+          entry.finish_time = start_time
+        end
+      end
     end
 
     private
@@ -65,7 +91,14 @@ module Ptimelog
 
     def list_start = heading_idx + 1
 
-    def entry_list = md_ast.drop(list_start).first
+    def entry_list
+      node = md_ast.drop(list_start).first
+      return node if node&.type == :list
+
+      list_node = Commonmarker.parse('- ').first_child
+      node.insert_before(list_node)
+      list_node
+    end
 
     def tokenize_dayplanner(line)
       re_start = /(?<start>\d{2}:\d{2})/
@@ -105,7 +138,7 @@ module Ptimelog
         finish:      entry.finish_time,
         ticket:      entry.ticket,
         description: entry.description,
-        tags:        entry.tags.join(' ')
+        tags:        entry.tags.to_a.join(' ')
       )
     end
 

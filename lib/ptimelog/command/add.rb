@@ -9,17 +9,23 @@ module Ptimelog
       def initialize
         super('add', takes_commands: false)
 
+        @data_source = DataSource.new(
+          Configuration.instance,
+          NamedDate.new.named_date('today')
+        )
         @timelog = Ptimelog::Timelog.instance
-        @new_lines = []
+        options.on('--debug', 'Show debugging output') { @debug = true }
       end
 
-      def execute(task)
-        abort('only timelog is supported for this action') unless Ptimelog::Configuration.instance['timelog']
+      def execute(task_line)
+        start = backend.previous_entry.finish_time
+        finish, task = parse_task(task_line)
+        ticket, desc = task.split(':', 2)
 
-        add_empty_line if @timelog.previous_entry.date == yesterday
-        add_entry(*parse_task(task))
+        entry = create_entry(start, finish, ticket, desc)
+        debug(entry.to_s)
 
-        save_file
+        backend.add(entry)
       end
 
       private
@@ -33,29 +39,29 @@ module Ptimelog
                          end
                          .localtime
                          .then { |time| time + (matches[:offset].to_i * 60) }
-                         .strftime('%F %R')
+                         .strftime('%R')
 
         [formatted_time, matches[:task]]
       end
 
-      def add_entry(date_time, task)
-        @new_lines << "#{date_time}: #{task}"
-      end
-
-      def add_empty_line
-        @new_lines << ''
-      end
-
-      def save_file
-        @timelog.timelog_txt.open('a') do |log|
-          @new_lines.each do |line|
-            log << "#{line}\n"
-          end
+      def create_entry(start, finish, ticket, desc)
+        Entry.new.tap do |e|
+          e.date = Date.today
+          e.start_time = start
+          e.finish_time = finish
+          e.ticket = ticket
+          e.description = desc
         end
       end
 
-      def yesterday
-        NamedDate.new.named_date('yesterday')
+      def backend
+        @data_source.backend
+      end
+
+      def debug(msg)
+        return unless @debug
+
+        warn msg
       end
     end
   end

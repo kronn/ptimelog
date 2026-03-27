@@ -9,28 +9,35 @@ module Ptimelog
       @day = day
     end
 
-    def entries
-      return obsidian_entries if @configuration['obsidian']
-      return timelog_entries if @configuration['timelog']
+    def type
+      if @configuration['timelog']
+        :timelog
+      elsif @configuration['obsidian']
+        :obsidian
+      end
+    end
 
-      []
+    def entries
+      case type
+      when :obsidian then { @day => backend.entries }
+      when :timelog then Ptimelog::Day.new(@day).entries
+      else
+        []
+      end
     end
 
     def file
-      return Ptimelog::Obsidian.new(@day).file if @configuration['obsidian']
-      return Timelog.timelog_txt if @configuration['timelog']
-
-      nil
+      case type
+      when :obsidian then backend.file
+      when :timelog then backend.timelog_txt
+      end
     end
 
-    private
-
-    def obsidian_entries
-      { @day => Ptimelog::Obsidian.new(@day).entries }
-    end
-
-    def timelog_entries
-      Ptimelog::Day.new(@day).entries
+    def backend
+      @backend ||= case type
+                   when :obsidian then Obsidian.new(@day)
+                   when :timelog then Timelog.instance
+                   end
     end
   end
 end

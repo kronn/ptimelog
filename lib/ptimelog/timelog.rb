@@ -46,6 +46,15 @@ module Ptimelog
       timelog_txt.read
     end
 
+    # TODO: spec and activate this code
+    # def add(_entry)
+    #   @new_lines = []
+    #   add_empty_line if @timelog.previous_entry.date == yesterday
+    #   add_entry(*parse_task(task))
+    #
+    #   save_file
+    # end
+
     def parse(data)
       data.split("\n")
           .map { |line| tokenize(line) }
@@ -63,5 +72,44 @@ module Ptimelog
       regexp = /^#{re_date} #{re_time}: #{re_tick}?#{re_desc}#{re_tags}?$/
       line.match(regexp)
     end
+
+    # TODO: spec and maybe activate this code. this might be covered by the "add"-command already.
+    # def parse_task(line)
+    #   matches = line.match('(?<time>\d{1,2}:\d{2} )?(?<offset>[+-]\d+ )?(?<task>.*)')
+    #   formatted_time = if matches[:time]
+    #                      Time.parse(matches[:time])
+    #                    else
+    #                      Time.now
+    #                    end
+    #                    .localtime
+    #                    .then { |time| time + (matches[:offset].to_i * 60) }
+    #                    .strftime('%F %R')
+    #
+    #   [formatted_time, matches[:task]]
+    # end
+
+    # TODO: spec and activate this code.
+    # def add_entry(date_time, task)
+    #   @new_lines << "#{date_time}: #{task}"
+    # end
+
+    # TODO: spec and activate this code.
+    # def add_empty_line
+    #   @new_lines << ''
+    # end
+
+    # TODO: spec and activate this code.
+    # def save_file
+    #   @timelog.timelog_txt.open('a') do |log|
+    #     @new_lines.each do |line|
+    #       log << "#{line}\n"
+    #     end
+    #   end
+    # end
+
+    # TODO: spec and activate this code.
+    # def yesterday
+    #   NamedDate.new.named_date('yesterday')
+    # end
   end
 end

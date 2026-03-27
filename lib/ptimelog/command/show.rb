@@ -17,11 +17,13 @@ module Ptimelog
         options.on('--debug', 'Show debugging output') { @debug = true }
       end
 
-      def execute(maybe_named_day) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
+      def execute(maybe_named_day) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
         debug("Requested Day: #{maybe_named_day}")
         @day = Ptimelog::NamedDate.new.named_date(maybe_named_day)
         debug("Resolved Day: #{@day}")
-        @entries = Ptimelog::DataSource.new(@config, @day).entries
+        data_source = Ptimelog::DataSource.new(@config, @day)
+        debug("Data Source: #{data_source.backend}")
+        @entries = data_source.entries
         debug("Found Entries: #{@entries.values.sum(&:size)}")
 
         @entries.each do |date, list|

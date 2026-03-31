@@ -26,7 +26,7 @@ module Ptimelog
     def entries
       return [] unless file.exist?
 
-      list_tokens.map { |matched_line| tokens_to_entry(matched_line) }
+      document.list_tokens.map { |matched_line| tokens_to_entry(matched_line) }
     end
 
     def add(entry)
@@ -34,9 +34,9 @@ module Ptimelog
       new_entry_list = new_entry_doc.first_child
       new_item = new_entry_list.first_child
 
-      entry_list.append_child new_item
+      document.entry_list.append_child new_item
 
-      file.write(md_ast.to_commonmark)
+      file.write(document.md_ast.to_commonmark(options: { sourcepos: false }))
 
       entry
     end
@@ -61,6 +61,10 @@ module Ptimelog
 
     private
 
+    def document
+      @document ||= Document.new(file, heading_config)
+    end
+
     def heading_config
       {
         level: @configuration['dayplanner_heading_level'],
@@ -72,43 +76,6 @@ module Ptimelog
       {
         daily_dir: @configuration['obsidian_daily_dir'],
       }
-    end
-
-    def md_ast
-      @md_ast ||= Commonmarker.parse(file.read)
-    end
-
-    def heading_idx
-      index = md_ast.find_index do |node|
-        node.type == :heading &&
-          node.header_level == heading_config[:level] &&
-          node.first_child.string_content == heading_config[:title]
-      end
-      raise HeadingNotFound, heading_config if index.nil?
-
-      index
-    end
-
-    def list_start = heading_idx + 1
-
-    def entry_list
-      node = md_ast.drop(list_start).first
-      return node if node&.type == :list
-
-      list_node = Commonmarker.parse('- ').first_child
-      node.insert_before(list_node)
-      list_node
-    end
-
-    def tokenize_dayplanner(line)
-      re_start = /(?<start>\d{2}:\d{2})/
-      re_stop = /(?<stop>\d{2}:\d{2})/
-      re_tick = /(?:(?<ticket>.*?):\s+)/
-      re_desc = /(?<description>.*?)/
-      re_tags = /(?:\s+--\s+(?<tags>.*)?)/
-
-      regexp = /^#{re_start}\s*-\s*#{re_stop} #{re_tick}?#{re_desc}#{re_tags}?$/
-      line.match(regexp)
     end
 
     def tokens_to_entry(matched_line)
@@ -142,8 +109,49 @@ module Ptimelog
       )
     end
 
-    def remove_tags_and_markers(line)
-      line.gsub(/\s+#[a-z]+/, ' ').gsub(/\[\w+:: [^\]]+\]/, '').squeeze(' ').strip
+    def tokenize_dayplanner(line)
+      re_start = /(?<start>\d{2}:\d{2})/
+      re_stop = /(?<stop>\d{2}:\d{2})/
+      re_tick = /(?:(?<ticket>.*?):\s+)/
+      re_desc = /(?<description>.*?)/
+      re_tags = /(?:\s+--\s+(?<tags>.*)?)/
+
+      regexp = /^#{re_start}\s*-\s*#{re_stop} #{re_tick}?#{re_desc}#{re_tags}?$/
+      line.match(regexp)
+    end
+  end
+
+  # Wrap everything needed to access and manipulate the markdown file
+  class Document
+    def initialize(file, heading_config)
+      @file = file
+      @heading_config = heading_config
+    end
+
+    def md_ast
+      @md_ast ||= Commonmarker.parse(@file.read)
+    end
+
+    def heading_idx
+      index = md_ast.find_index do |node|
+        node.type == :heading &&
+          node.header_level == @heading_config[:level] &&
+          node.first_child.string_content == @heading_config[:title]
+      end
+      raise HeadingNotFound, @heading_config if index.nil?
+
+      index
+    end
+
+    def list_start = heading_idx + 1
+
+    def entry_list
+      node = md_ast.drop(list_start).first
+      return node if node&.type == :list
+
+      list_node = Commonmarker.parse('- ').first_child
+      node.insert_before(list_node)
+      list_node
     end
 
     def list_strings
@@ -155,5 +163,22 @@ module Ptimelog
     end
 
     def list_tokens = list_strings.filter_map { |line| tokenize_dayplanner(line) }
+
+    private
+
+    def tokenize_dayplanner(line)
+      re_start = /(?<start>\d{2}:\d{2})/
+      re_stop = /(?<stop>\d{2}:\d{2})/
+      re_tick = /(?:(?<ticket>.*?):\s+)/
+      re_desc = /(?<description>.*?)/
+      re_tags = /(?:\s+--\s+(?<tags>.*)?)/
+
+      regexp = /^#{re_start}\s*-\s*#{re_stop} #{re_tick}?#{re_desc}#{re_tags}?$/
+      line.match(regexp)
+    end
+
+    def remove_tags_and_markers(line)
+      line.gsub(/\s+#[a-z]+/, ' ').gsub(/\[\w+:: [^\]]+\]/, '').squeeze(' ').strip
+    end
   end
 end

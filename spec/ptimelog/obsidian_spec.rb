@@ -109,12 +109,12 @@ RSpec.describe Ptimelog::Obsidian do
     end
 
     context 'when the daily note file does not exist, it' do
-      let(:file_double) { double(read: '', exist?: false) }
+      let(:file_double) { instance_double(Pathname, read: '', exist?: false) }
 
       it 'fails' do
         expect do
           obsidian.add(hotfix_entry)
-        end.to raise_error
+        end.to raise_error(Ptimelog::Obsidian::HeadingNotFound)
       end
     end
 
@@ -129,7 +129,7 @@ RSpec.describe Ptimelog::Obsidian do
       it 'fails' do
         expect do
           obsidian.add(hotfix_entry)
-        end.to raise_error # Ptimelog::Obsidian::HeadingNotFound
+        end.to raise_error(Ptimelog::Obsidian::HeadingNotFound)
       end
     end
   end

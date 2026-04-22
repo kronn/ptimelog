@@ -137,4 +137,27 @@ RSpec.describe Ptimelog::Obsidian do
       end
     end
   end
+
+  describe 'side aspects:' do
+    context 'when interacting with an obsidian note' do
+      it 'does preserve the links' do
+        written_content = nil
+        allow(file_double).to receive(:write) { |content| written_content = content }
+
+        obsidian.add(hotfix_entry)
+
+        expect(written_content).to include('[[Meeting Notes]]')
+        expect(written_content).to include('[[Meeting Notes#Next|Next Steps]]')
+      end
+
+      it 'does not escape #' do
+        written_content = nil
+        allow(file_double).to receive(:write) { |content| written_content = content }
+
+        obsidian.add(hotfix_entry)
+
+        expect(written_content).to include('Ticket#23')
+      end
+    end
+  end
 end

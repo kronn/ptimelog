@@ -9,6 +9,7 @@
 # Notes
 ## Topics
 - [[Meeting Notes]]
+- [[Meeting Notes#Next|Next Steps]]
 
 # Tasks
 ## Planned today

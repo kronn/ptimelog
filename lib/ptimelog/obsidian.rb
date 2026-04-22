@@ -39,7 +39,9 @@ module Ptimelog
 
       document.entry_list.append_child new_item
 
-      file.write(document.md_ast.to_commonmark(options: { sourcepos: false }))
+      symbols = ['[', ']', '#', '_', '-']
+      regex = /\\([#{Regexp.escape(symbols.join)}])/
+      file.write(document.md_ast.to_commonmark.gsub(regex, '\1'))
 
       entry
     end

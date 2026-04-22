@@ -4,9 +4,14 @@ require 'spec_helper'
 
 RSpec.describe Ptimelog::Obsidian do
   let(:date) { '2025-10-22' }
-  let(:obsidian) { described_class.new(date) }
   let(:file_content) { File.read('spec/fixtures/datasources/obsidian-note.md') }
-  let(:file_double) { double(read: file_content, exist?: true) } # rubocop:disable RSpec/VerifiedDoubles
+  let(:file_double) { instance_double(Pathname, read: file_content, exist?: true) }
+  let(:obsidian) do
+    described_class.allocate.tap do |obsidian|
+      allow(obsidian).to receive(:file).and_return(file_double)
+      obsidian.send(:initialize, date)
+    end
+  end
   let(:hotfix_entry) do
     Ptimelog::Entry.new.tap do |entry|
       entry.date = date
@@ -23,7 +28,6 @@ RSpec.describe Ptimelog::Obsidian do
     Ptimelog::Configuration.instance['dayplanner_heading_title'] = 'Calendar'
 
     allow(file_double).to receive(:write) # { |content| @written_content = content } # TODO: verify written content?
-    allow(obsidian).to receive(:file).and_return(file_double)
   end
 
   describe '#entries' do
@@ -123,7 +127,7 @@ RSpec.describe Ptimelog::Obsidian do
         note = File.read('spec/fixtures/datasources/obsidian-note.md')
         note_lines = note.lines
         note_lines[0..7] = nil # remove the existing entries and the heading
-        note_lines.join
+        note_lines.compact.join
       end
 
       it 'fails' do

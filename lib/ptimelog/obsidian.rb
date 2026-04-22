@@ -6,9 +6,12 @@ require 'pathname'
 module Ptimelog
   # Extract entries from a Obsidian+DayPlanner list
   class Obsidian
+    attr_reader :document
+
     def initialize(day)
       @day = day
       @configuration = Ptimelog::Configuration.instance
+      @document = Document.new(file, heading_config)
     end
 
     # Inform about potentially malformed Markdown
@@ -60,10 +63,6 @@ module Ptimelog
     end
 
     private
-
-    def document
-      @document ||= Document.new(file, heading_config)
-    end
 
     def heading_config
       {
@@ -119,66 +118,68 @@ module Ptimelog
       regexp = /^#{re_start}\s*-\s*#{re_stop} #{re_tick}?#{re_desc}#{re_tags}?$/
       line.match(regexp)
     end
-  end
 
-  # Wrap everything needed to access and manipulate the markdown file
-  class Document
-    def initialize(file, heading_config)
-      @file = file
-      @heading_config = heading_config
-    end
+    # Wrap everything needed to access and manipulate the markdown file
+    class Document
+      attr_reader :file
 
-    def md_ast
-      @md_ast ||= Commonmarker.parse(@file.read)
-    end
-
-    def heading_idx
-      index = md_ast.find_index do |node|
-        node.type == :heading &&
-          node.header_level == @heading_config[:level] &&
-          node.first_child.string_content == @heading_config[:title]
+      def initialize(file, heading_config)
+        @file = file
+        @heading_config = heading_config
       end
-      raise HeadingNotFound, @heading_config if index.nil?
 
-      index
-    end
+      def md_ast
+        @md_ast ||= Commonmarker.parse(@file.read)
+      end
 
-    def list_start = heading_idx + 1
+      def heading_idx
+        index = md_ast.find_index do |node|
+          node.type == :heading &&
+            node.header_level == @heading_config[:level] &&
+            node.first_child.string_content == @heading_config[:title]
+        end
+        raise HeadingNotFound, @heading_config if index.nil?
 
-    def entry_list
-      node = md_ast.drop(list_start).first
-      return node if node&.type == :list
+        index
+      end
 
-      list_node = Commonmarker.parse('- ').first_child
-      node.insert_before(list_node)
-      list_node
-    end
+      def list_start = heading_idx + 1
 
-    def list_strings
-      entry_list
-        .filter_map(&:first_child)
-        .map { |item| item.first_child.string_content }
-        .map { |item| remove_tags_and_markers(item) }
-        .sort
-    end
+      def entry_list
+        node = md_ast.drop(list_start).first
+        return node if node&.type == :list
 
-    def list_tokens = list_strings.filter_map { |line| tokenize_dayplanner(line) }
+        list_node = Commonmarker.parse('- ').first_child
+        node.insert_before(list_node)
+        list_node
+      end
 
-    private
+      def list_strings
+        entry_list
+          .filter_map(&:first_child)
+          .map { |item| item.first_child.string_content }
+          .map { |item| remove_tags_and_markers(item) }
+          .sort
+      end
 
-    def tokenize_dayplanner(line)
-      re_start = /(?<start>\d{2}:\d{2})/
-      re_stop = /(?<stop>\d{2}:\d{2})/
-      re_tick = /(?:(?<ticket>.*?):\s+)/
-      re_desc = /(?<description>.*?)/
-      re_tags = /(?:\s+--\s+(?<tags>.*)?)/
+      def list_tokens = list_strings.filter_map { |line| tokenize_dayplanner(line) }
 
-      regexp = /^#{re_start}\s*-\s*#{re_stop} #{re_tick}?#{re_desc}#{re_tags}?$/
-      line.match(regexp)
-    end
+      private
 
-    def remove_tags_and_markers(line)
-      line.gsub(/\s+#[a-z]+/, ' ').gsub(/\[\w+:: [^\]]+\]/, '').squeeze(' ').strip
+      def tokenize_dayplanner(line)
+        re_start = /(?<start>\d{2}:\d{2})/
+        re_stop = /(?<stop>\d{2}:\d{2})/
+        re_tick = /(?:(?<ticket>.*?):\s+)/
+        re_desc = /(?<description>.*?)/
+        re_tags = /(?:\s+--\s+(?<tags>.*)?)/
+
+        regexp = /^#{re_start}\s*-\s*#{re_stop} #{re_tick}?#{re_desc}#{re_tags}?$/
+        line.match(regexp)
+      end
+
+      def remove_tags_and_markers(line)
+        line.gsub(/\s+#[a-z]+/, ' ').gsub(/\[\w+:: [^\]]+\]/, '').squeeze(' ').strip
+      end
     end
   end
 end

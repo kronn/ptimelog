@@ -90,7 +90,7 @@ module Ptimelog
     def valid? = @start_time && duration.positive? && !hidden?
 
     # hide lunch and breaks
-    def hidden? = @description.to_s.end_with?('**')
+    def hidden? = @description.to_s.end_with?('**') || !publishable?
 
     # or something like @tags.to_a.include?('special-team'), still needs to be implemented...
     def selected? = true

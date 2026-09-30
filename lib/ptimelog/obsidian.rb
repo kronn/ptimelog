@@ -107,7 +107,7 @@ module Ptimelog
         ticket:      entry.ticket,
         description: entry.description,
         tags:        entry.tags.to_a.join(' ')
-      )
+      ).strip.delete_suffix(' --')
     end
 
     def tokenize_dayplanner(line)

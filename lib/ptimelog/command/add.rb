@@ -13,7 +13,7 @@ module Ptimelog
           Configuration.instance,
           NamedDate.new.named_date('today')
         )
-        @timelog = Ptimelog::Timelog.instance
+
         options.on('--debug', 'Show debugging output') { @debug = true }
       end
 

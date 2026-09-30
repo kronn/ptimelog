@@ -48,7 +48,7 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt or obsidia
   - [ ] time-account/billable/metadata lookup from a note
   - [x] support show-command: output the entries of a day
   - [x] support upload-command: send the entries of a day to ptime
-  - [ ] support add-command: add a new entry to the current day
+  - [x] support add-command: add a new entry to the current day
   - [ ] support edit-command: edit the metadata-lookup
   - [ ] support "last"-day for obsidian
 

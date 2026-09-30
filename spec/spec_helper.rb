@@ -24,6 +24,15 @@ RSpec.configure do |rspec|
 
   # allows to run `rspec --only-failures`
   rspec.example_status_persistence_file_path = "#{__dir__}/state.txt"
+
+  # When the verify_partial_doubles configuration option is set, the
+  # same argument and method existence checks that are performed for
+  # object_double are also performed on partial doubles. You should
+  # set this unless you have a good reason not to. It defaults to off
+  # only for backwards compatibility.
+  rspec.mock_with :rspec do |mocks|
+    mocks.verify_partial_doubles = true
+  end
 end
 
 RSpec.shared_context 'mocked timelog' do

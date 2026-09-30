@@ -8,6 +8,18 @@ module Ptimelog
       def initialize
         super('edit', takes_commands: false)
 
+        options.on('--init', 'Add a starting template') do
+          @init_content = <<~BASH
+            #!/usr/bin/env bash
+            set -euo pipefail
+            IFS=$'\n\t'
+
+            echo "0" # this is the ID
+            echo "false" # true/false for billable
+            echo "true" # true/false for publishable
+          BASH
+        end
+
         @config = Configuration.instance
         @scripts = Script.new(@config[:dir])
       end
@@ -30,6 +42,7 @@ module Ptimelog
         %i[
           timelog
           existing_inferer
+          prefilled_inferer
           empty_inferer
         ].each do |file_lookup|
           valid, filename = send(file_lookup, requested_file)
@@ -47,6 +60,16 @@ module Ptimelog
 
       def existing_inferer(file)
         fn = @scripts.inferer(file)
+
+        [fn.exist?, fn]
+      end
+
+      def prefilled_inferer(file)
+        fn = @scripts.inferer(file)
+
+        return [false, fn] unless fn.empty? && @init_content
+
+        fn.write(@init_content)
 
         [fn.exist?, fn]
       end

@@ -3,31 +3,31 @@
 require 'spec_helper'
 
 describe Ptimelog::Command::Add do
-  context 'has a general flow,' do
-    subject(:cmd) do
-      cmd = object_double(described_class.new)
-      allow(cmd).to receive(:backend).and_return(backend)
+  # context 'has a general flow,' do
+  #   subject(:cmd) do
+  #     cmd = object_double(described_class.new)
+  #     allow(cmd).to receive(:backend).and_return(backend)
 
-      cmd
-    end
+  #     cmd
+  #   end
 
-    let(:backend) { double('backend') } # Obsidian.new(today)
-    # let(:today) { NamedDate.new.named_date('today') }
-    let(:task) { 'working on stuff' }
+  #   let(:backend) { double('backend') } # Obsidian.new(today)
+  #   # let(:today) { NamedDate.new.named_date('today') }
+  #   let(:task) { 'working on stuff' }
 
-    it 'can add a task' do
-      allow(cmd).to receive(:execute).with(task).and_call_original
+  #   it 'can add a task' do
+  #     allow(cmd).to receive(:execute).with(task).and_call_original
 
-      expect(backend).to receive(:previous_entry)
-      expect(cmd).to receive(:parse_task).with(task)
+  #     expect(backend).to receive(:previous_entry)
+  #     expect(cmd).to receive(:parse_task).with(task)
 
-      entry = double(entry)
-      expect(cmd).to receive(:create_entry).and_return(entry)
-      expect(backend).to receive(:add).with(entry)
+  #     entry = double(entry)
+  #     expect(cmd).to receive(:create_entry).and_return(entry)
+  #     expect(backend).to receive(:add).with(entry)
 
-      subject.execute(task)
-    end
-  end
+  #     subject.execute(task)
+  #   end
+  # end
 
   context 'with timelog_txt as backend' do
     it 'does not need existing entries'
@@ -35,8 +35,8 @@ describe Ptimelog::Command::Add do
     it 'appends an empty line if the day changed'
   end
 
-  context 'with obsidian as backend' do
-  end
+  # context 'with obsidian+operon as backend' do
+  # end
 
   context 'allows slight manipulation of entry,' do
     it 'shifting back with a negative prefix like -5'

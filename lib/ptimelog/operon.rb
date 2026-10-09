@@ -22,6 +22,18 @@ module Ptimelog
       @configuration = Ptimelog::Configuration.instance
     end
 
+    # A missing vault would silently look like a day without any tracked time
+    class VaultNotFound < Ptimelog::Error
+      def initialize(path)
+        super(<<~MSG)
+          Could not find your Obsidian vault at #{path}
+
+          Please check 'obsidian_vault' in your ptimelog-config. It should
+          point to the folder which contains your '.obsidian'-directory.
+        MSG
+      end
+    end
+
     # A session belongs to the day it started on. Plans and running timers are no time yet
     def entries
       tasks.flat_map { |task| entries_of(task) }
@@ -45,7 +57,14 @@ module Ptimelog
 
     private
 
-    def vault = @configuration['obsidian_vault']
+    def vault
+      @vault ||= begin
+        path = @configuration['obsidian_vault']
+        raise VaultNotFound, path unless File.directory?(path)
+
+        path
+      end
+    end
 
     def markdown_files
       Dir.glob(vault.join('**/*.md')).reject { |fn| ignored?(fn) }

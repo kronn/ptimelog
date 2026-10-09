@@ -156,4 +156,18 @@ RSpec.describe Ptimelog::Operon do
       expect(operon.file.exist?).to be false
     end
   end
+
+  describe 'when the vault does not exist' do
+    before do
+      Ptimelog::Configuration.instance['obsidian_vault'] = fixtures_dir / 'nowhere'
+    end
+
+    it 'refuses, instead of reporting a day without any time' do
+      expect { operon.entries }.to raise_error(described_class::VaultNotFound, /nowhere/)
+    end
+
+    it 'refuses on every other question, too' do
+      expect { operon.previous_entry }.to raise_error(Ptimelog::Error)
+    end
+  end
 end

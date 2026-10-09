@@ -25,11 +25,9 @@ module Ptimelog
         return nil unless @configuration['obsidian']
 
         <<~TXT
-          Datasource: Obsidian
+          Datasource: Obsidian (Operon)
           --------------------
-          dir      #{@configuration['obsidian_daily_dir']}
-          heading  #{@configuration['dayplanner_heading_title']}
-          level    #{@configuration['dayplanner_heading_level']}
+          vault  #{@configuration['obsidian_vault']}
         TXT
       end
 

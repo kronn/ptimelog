@@ -25,12 +25,24 @@ module Ptimelog
       end
 
       def execute(file = nil)
-        @file = file
+        target = find_file(file)
 
-        launch_editor(find_file(@file))
+        return puts(no_file_hint) if target.is_a?(NullPathname)
+
+        launch_editor(target)
       end
 
       private
+
+      def no_file_hint
+        <<~MSG
+          No file to edit.
+
+          An entry can come from any note of the vault, so the Obsidian-Datasource
+          has no single file. Pass the name of an inferer-script instead,
+          e.g. 'ptimelog edit hit'.
+        MSG
+      end
 
       def launch_editor(file)
         editor = `which $EDITOR`.chomp

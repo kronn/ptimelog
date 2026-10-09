@@ -1,6 +1,6 @@
 # pTimeLog
 
-small tooling to transfer timelog-entries from gtimelog's timelog.txt or obsidian-notes to the PuzzleTime time-tracking web-application.
+small tooling to transfer timelog-entries from gtimelog's timelog.txt or the tasks of an Obsidian vault to the PuzzleTime time-tracking web-application.
 
 ## Approach
 
@@ -44,12 +44,11 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt or obsidia
 - [x] support Obsidian as datasource
   - [x] with explicit config
   - [ ] with reading the config from the Obsidian Vault
-  - [x] time-entries from dayplanner-section of a daily note
+  - [x] time-entries from the sessions Operon tracked on its tasks
   - [ ] time-account/billable/metadata lookup from a note
   - [x] support show-command: output the entries of a day
   - [x] support upload-command: send the entries of a day to ptime
-  - [x] support add-command: add a new entry to the current day
-  - [ ] support edit-command: edit the metadata-lookup
+  - [ ] support add-command: add a new entry to the current day
   - [ ] support "last"-day for obsidian
 
 ## Installation
@@ -94,7 +93,9 @@ When the action is "edit", the next argument is treated as script that should
 be edited.
 
 If nothing is passed, the main timelog.txt is loaded.
-:warn: How this works for the Obsidian-Datasource is not yet decided.
+:warn: The Obsidian-Datasource has no single file, because an entry can
+come from any note of the vault. Without an argument, this command only
+edits an inferer-script, which is the thing that can still be edited.
 
 Otherwise, a script to determine the time-account is loaded.
 
@@ -117,8 +118,8 @@ meeting').
 
     $ ptimelog add '-5 meeting: Discuss requirements -- client planning'
 
-:warn: How this works for the Obsidian-Datasource is not yet decided. Possibly
-the same, at some point.
+:warn: Not available for the Obsidian-Datasource. Tracked time belongs to
+a task in Operon, and only Operon may write it.
 
 ### Showing the Version
 
@@ -154,6 +155,30 @@ Since these scripts are called a lot, it is better to write them in a compiled
 language. If you only like ruby, take a look at crystal. For such simple
 scripts, the code is almost identical and "just" needs to be compiled.
 
+## Operon
+
+With `obsidian: true`, entries are read from the time-sessions
+[Operon](https://github.com/hasanyilmaz/operon) tracked on the tasks of your
+vault. Operon stores them on the task itself, so one entry comes from one
+session, not from one task:
+
+    {{trackers:: 2026-10-07T11:00:00/2026-10-07T12:00:00; 2026-10-07T14:00:00/2026-10-07T15:00:00}}
+
+Only tracked time is read. A running timer and a planned block
+(`datetimeStart`/`datetimeEnd`) are no time yet, so they are skipped. A
+session counts on the day it started on. Notes below `archive/` and Operons
+own documentation are skipped.
+
+Ticket and account-tags come from two custom keys, which you can create in
+**Settings → Operon → Core → Custom Keys**:
+
+    - [ ] HIT-12345: Zeug machen {{operonId:: …}} {{ticket:: HIT-12345}} {{ptimelog:: hit sac mv}}
+
+`ticket` is the text puzzletime is asked for. `ptimelog` is a single,
+space-separated string of tags, identical to what the dayplanner-entries used
+to carry after their `--`. The first tag selects the inferer-script, the rest
+are passed to it. A task without that key is still listed, but has no account.
+
 ## Configuration
 
 A config-file is read from `$HOME/.config/ptimelog/config`. It is expected
@@ -161,6 +186,11 @@ to be a YAML-file. Currently, it supports the following keys:
 
   - rounding: [integer or false, default 15]
   - base_url: [url to your puzzletime-installation, default https://time.puzzle.ch]
+  - obsidian: [boolean, default false, read from an Obsidian vault instead of timelog.txt]
+  - obsidian_vault: [path to that vault, default ~/Obsidian/Things]
+
+Operons tracked time is stored to the second, so set `rounding: false` to keep
+it exact.
 
 ## Development
 

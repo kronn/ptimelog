@@ -28,7 +28,6 @@ Gem::Specification.new do |spec|
   spec.metadata['rubygems_mfa_required'] = 'true'
 
   spec.add_dependency 'cmdparse' # as OptionParse-wrapper and cli-helper
-  spec.add_dependency 'commonmarker' # for parsing Obsidian files for dayplanner-entries
   spec.add_dependency 'naught' # for NullPathname
   spec.add_dependency 'rake' # for Rake::FileList and rake in development
 

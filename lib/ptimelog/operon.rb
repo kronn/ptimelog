@@ -24,8 +24,20 @@ module Ptimelog
 
     # A session belongs to the day it started on. Plans and running timers are no time yet
     def entries
-      markdown_files.flat_map { |file| entries_of(file) }
-                    .sort_by(&:start_time)
+      tasks.flat_map { |task| entries_of(task) }
+           .sort_by(&:start_time)
+    end
+
+    # What a new entry would continue from: a running timer, the last session, the start of the day
+    def previous_entry
+      start = running_timer || entries.last&.finish_time || @configuration['operon_start_time'] || '08:00'
+
+      Ptimelog::Entry.new.tap do |entry|
+        entry.date        = @day
+        entry.description = 'start **'
+        entry.start_time  = start
+        entry.finish_time = start
+      end
     end
 
     # An entry can come from any note of the vault, so there is no one file to point at
@@ -45,24 +57,26 @@ module Ptimelog
       SKIP_PATHS.any? { |path| relative.start_with?("#{path}/") }
     end
 
-    def entries_of(fn)
-      frontmatter, body = split_frontmatter(File.read(fn, encoding: 'UTF-8'))
+    # Every task of the vault, an inline one on its line, a file task in its frontmatter
+    def tasks
+      markdown_files.flat_map do |fn|
+        frontmatter, body = split_frontmatter(File.read(fn, encoding: 'UTF-8'))
 
-      file_task_entries(frontmatter, fn) + inline_entries(body)
+        file_tasks(frontmatter, fn) + inline_tasks(body)
+      end
     end
 
-    def file_task_entries(frontmatter, fn)
+    def file_tasks(frontmatter, fn)
       return [] unless frontmatter.is_a?(Hash)
 
-      entries_for(frontmatter['trackers'], File.basename(fn, '.md'), frontmatter['ptimelog'], frontmatter['ticket'])
+      [{ fields: frontmatter, description: File.basename(fn, '.md') }]
     end
 
-    def inline_entries(body)
-      body.each_line.flat_map do |line|
-        next [] unless line.match?(TASK_RE)
+    def inline_tasks(body)
+      body.each_line.filter_map do |line|
+        next unless line.match?(TASK_RE)
 
-        fields = fields_of(line)
-        entries_for(fields['trackers'], description_of(line), fields['ptimelog'], fields['ticket'])
+        { fields: fields_of(line), description: description_of(line) }
       end
     end
 
@@ -84,11 +98,11 @@ module Ptimelog
       [nil, text]
     end
 
-    def entries_for(sessions, description, tags, ticket)
-      session_list(sessions).filter_map do |session|
-        next unless started_on?(session)
+    def entries_of(task)
+      session_list(task[:fields]['trackers']).filter_map do |session|
+        next unless on_day?(session[:start])
 
-        entry_for(session, description, tags, ticket)
+        entry_for(session, task)
       end
     end
 
@@ -99,16 +113,25 @@ module Ptimelog
       list.filter_map { |session| RANGE_RE.match(session.to_s.strip) }
     end
 
-    def started_on?(session)
-      Time.parse(session[:start]).strftime('%F') == @day
+    # A running timer is no session yet, but it says where the work stopped
+    def running_timer
+      started = tasks.filter_map { |task| task[:fields]['activeTracker'] }.find { |at| on_day?(at) }
+
+      started && Time.parse(started).strftime('%R')
     end
 
-    def entry_for(session, description, tags, ticket)
+    def on_day?(datetime)
+      Time.parse(datetime).strftime('%F') == @day
+    end
+
+    def entry_for(session, task) # rubocop:disable Metrics/AbcSize
+      fields = task[:fields]
+
       Ptimelog::Entry.new.tap do |entry|
         entry.date        = @day
-        entry.ticket      = ticket
-        entry.description = description
-        entry.tags        = tags
+        entry.ticket      = fields['ticket'] # TODO: extract field-name into config setting
+        entry.description = task[:description]
+        entry.tags        = fields['ptimelog'] # TODO: extract field-name into config setting
         entry.start_time  = Time.parse(session[:start]).strftime('%R')
         entry.finish_time = Time.parse(session[:stop]).strftime('%R')
 

@@ -115,6 +115,42 @@ RSpec.describe Ptimelog::Operon do
     end
   end
 
+  describe '#previous_entry' do
+    subject(:previous) { operon.previous_entry }
+
+    context 'when a timer is running that day' do
+      it 'continues from the timer, which is later than the last session' do
+        expect(previous.finish_time).to eq '18:30'
+      end
+    end
+
+    context 'when only sessions were tracked that day' do
+      let(:operon) { described_class.new('2026-10-06') }
+
+      it 'continues from the last session' do
+        expect(previous.finish_time).to eq '15:00'
+      end
+    end
+
+    context 'when nothing was tracked that day' do
+      let(:operon) { described_class.new('2026-10-08') }
+
+      it 'starts at the start of the day' do
+        expect(previous.finish_time).to eq '08:00'
+      end
+
+      it 'starts at a configured time' do
+        Ptimelog::Configuration.instance['operon_start_time'] = '07:30'
+
+        expect(described_class.new('2026-10-08').previous_entry.finish_time).to eq '07:30'
+      end
+    end
+
+    it 'is hidden, so it is never uploaded' do
+      expect(previous).to be_hidden
+    end
+  end
+
   describe '#file' do
     it 'has no single file, an entry can come from any note of the vault' do
       expect(operon.file.exist?).to be false

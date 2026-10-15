@@ -13,9 +13,9 @@ module Ptimelog
         puts <<~TXT
           Configuration
           -------------
-          base_url  #{@configuration['base_url']}
-          rounding  #{@configuration['rounding']}
-          dir       #{@configuration['dir']}
+          base_url:  #{@configuration['base_url']}
+          rounding:  #{@configuration['rounding']}
+          dir:       #{@configuration['dir']}
 
           #{obsidian_config}#{timelog_config}
         TXT
@@ -25,11 +25,12 @@ module Ptimelog
         return nil unless @configuration['obsidian']
 
         <<~TXT
-          Datasource: Obsidian
-          --------------------
-          dir      #{@configuration['obsidian_daily_dir']}
-          heading  #{@configuration['dayplanner_heading_title']}
-          level    #{@configuration['dayplanner_heading_level']}
+          Datasource: Obsidian (Operon)
+          -----------------------------
+          vault:     #{@configuration['obsidian_vault']}
+          custom keys:
+            ticket:  #{Ptimelog::Operon.custom_keys['ticket']}
+            inferer: #{Ptimelog::Operon.custom_keys['inferer']}
         TXT
       end
 
@@ -37,9 +38,9 @@ module Ptimelog
         return nil unless @configuration['timelog']
 
         <<~TXT
-          Datasource: Timeout
+          Datasource: Timelog
           -------------------
-          file  #{@configuration['timelog_txt']}
+          file:      #{@configuration['timelog_txt']}
         TXT
       end
     end

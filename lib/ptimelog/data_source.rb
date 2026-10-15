@@ -2,7 +2,7 @@
 
 module Ptimelog
   # Facade around several datasources, currently intended to cover the
-  # timelog.txt and obsidian.md
+  # timelog.txt and the tasks of an Obsidian vault
   class DataSource
     def initialize(configuration, day)
       @configuration = configuration
@@ -35,7 +35,7 @@ module Ptimelog
 
     def backend
       @backend ||= case type
-                   when :obsidian then Obsidian.new(@day)
+                   when :obsidian then Operon.new(@day)
                    when :timelog then Timelog.instance
                    end
     end

@@ -19,7 +19,7 @@ module Ptimelog
   # datasources
 
   # obsidian
-  autoload :Obsidian, 'ptimelog/obsidian'
+  autoload :Operon, 'ptimelog/operon'
 
   # timelog.txt
   autoload :Day, 'ptimelog/day'

@@ -43,7 +43,7 @@ small tooling to transfer timelog-entries from gtimelog's timelog.txt or the tas
   - [x] use ~~commander~~ _cmd_parse_ for CLI
 - [x] support Obsidian as datasource
   - [x] with explicit config
-  - [ ] with reading the config from the Obsidian Vault
+  - [x] with reading the config from the Obsidian Vault
   - [x] time-entries from the sessions Operon tracked on its tasks
   - [ ] time-account/billable/metadata lookup from a note
   - [x] support show-command: output the entries of a day
@@ -61,16 +61,21 @@ Install it with:
 
     $ ptimelog ACTION DATE
 
+Maybe it's best to explore the commands with `ptimelog help` and going from
+there.
+
 ### Actions
 
 Currently supported actions are
 
 - show
 - upload
+- confirm
 - edit
 - add
 - version
 - help
+- info
 
 ### Date-Identifier
 
@@ -202,6 +207,9 @@ you :-)
 
 Operons tracked time is stored to the second, so set `rounding: false` to keep
 it exact.
+
+It might still work with the timelog.txt-config. I do not use it anymore, but
+I do not want to break things needlessly. So I left it in.
 
 ## Development
 

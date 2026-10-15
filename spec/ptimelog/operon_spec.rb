@@ -113,6 +113,29 @@ RSpec.describe Ptimelog::Operon do
         expect(invoice.account).to be_nil
       end
     end
+
+    context 'with custom keys' do
+      let(:zeug) { entries.find { |entry| entry.description == 'HIT-12345: Zeug machen' } }
+
+      it 'reads the ticket from the configured key' do
+        Ptimelog::Configuration.instance['operon_custom_keys'] = { 'ticket' => 'operonId' }
+
+        expect(zeug.ticket).to eq 'rmyporf'
+      end
+
+      it 'reads the tags for the inferer from the configured key' do
+        Ptimelog::Configuration.instance['operon_custom_keys'] = { 'inferer' => 'ticket' }
+
+        expect(zeug.tags).to eq ['HIT-1657']
+      end
+
+      it 'keeps the default of a key which is not configured' do
+        Ptimelog::Configuration.instance['operon_custom_keys'] = { 'ticket' => 'operonId' }
+        review = entries.find { |entry| entry.description == 'Anpassungen reviewen' }
+
+        expect(review.tags).to eq %w[hit sup sww]
+      end
+    end
   end
 
   describe '#previous_entry' do

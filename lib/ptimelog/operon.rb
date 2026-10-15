@@ -6,7 +6,7 @@ require 'yaml'
 
 module Ptimelog
   # Extract entries from the time-sessions Operon tracks on its tasks
-  class Operon
+  class Operon # rubocop:disable Metrics/ClassLength
     # Operon documents its own task-syntax as examples, and the archive is history
     SKIP_PATHS = ['Operon/Docs', 'archive'].freeze
 
@@ -148,14 +148,22 @@ module Ptimelog
 
       Ptimelog::Entry.new.tap do |entry|
         entry.date        = @day
-        entry.ticket      = fields['ticket'] # TODO: extract field-name into config setting
+        entry.ticket      = fields[custom_key('ticket')]
         entry.description = task[:description]
-        entry.tags        = fields['ptimelog'] # TODO: extract field-name into config setting
+        entry.tags        = fields[custom_key('inferer')]
         entry.start_time  = Time.parse(session[:start]).strftime('%R')
         entry.finish_time = Time.parse(session[:stop]).strftime('%R')
 
         entry.infer_ptime_settings
       end
+    end
+
+    # A config naming only one key must not lose the other
+    # TODO: determine if this can be done in the Ptimelog::Configuration
+    def custom_key(name)
+      Ptimelog::Configuration::CONFIGURATION_DEFAULTS['operon_custom_keys']
+        .merge(@configuration['operon_custom_keys'].to_h)
+        .fetch(name)
     end
   end
 end

@@ -179,6 +179,13 @@ space-separated string of tags, identical to what the dayplanner-entries used
 to carry after their `--`. The first tag selects the inferer-script, the rest
 are passed to it. A task without that key is still listed, but has no account.
 
+If your vault already uses other names for these keys, map them with
+`operon_custom_keys`. A key you leave out keeps its default:
+
+    operon_custom_keys:
+      ticket: issue
+      inferer: account
+
 ## Configuration
 
 A config-file is read from `$HOME/.config/ptimelog/config`. It is expected
@@ -188,6 +195,7 @@ to be a YAML-file. Currently, it supports the following keys:
   - base_url: [url to your puzzletime-installation, default https://time.puzzle.ch]
   - obsidian: [boolean, default false, read from an Obsidian vault instead of timelog.txt]
   - obsidian_vault: [path to that vault, default ~/path/to/obsidian-vault]
+  - operon_custom_keys: [hash, default { ticket: ticket, inferer: ptimelog }, names of the keys Operon stores ticket and tags in]
 
 If the default path of `obsidian_vault` works for you, I really want to talk to
 you :-)

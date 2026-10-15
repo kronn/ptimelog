@@ -10,13 +10,14 @@ module Ptimelog
     include Singleton
 
     CONFIGURATION_DEFAULTS = {
-      'base_url'       => 'https://time.puzzle.ch',
-      'rounding'       => 15,
-      'dir'            => '~/.config/ptimelog',
-      'timelog'        => true,
-      'timelog_txt'    => '~/.local/share/gtimelog/timelog.txt',
-      'obsidian'       => false,
-      'obsidian_vault' => '~/path/to/obsidian-vault',
+      'base_url'           => 'https://time.puzzle.ch',
+      'rounding'           => 15,
+      'dir'                => '~/.config/ptimelog',
+      'timelog'            => true,
+      'timelog_txt'        => '~/.local/share/gtimelog/timelog.txt',
+      'obsidian'           => false,
+      'obsidian_vault'     => '~/path/to/obsidian-vault',
+      'operon_custom_keys' => { 'ticket' => 'ticket', 'inferer' => 'ptimelog' }.freeze,
     }.freeze
 
     def initialize

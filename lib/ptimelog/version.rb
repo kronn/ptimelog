@@ -23,6 +23,6 @@
 # correct subtitle of this documentation-block would be "and a Banner not named
 # Bruce."
 module Ptimelog
-  VERSION = '0.11.0'
+  VERSION = '0.12.0'
   BANNER = 'Move time-entries from gTimelog or Obsidian to PuzzleTime'
 end

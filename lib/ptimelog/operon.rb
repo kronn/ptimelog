@@ -17,6 +17,13 @@ module Ptimelog
       (?<stop>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?)\z
     }x
 
+    # A config naming only one key must not lose the other
+    # TODO: determine if this can be done in the Ptimelog::Configuration
+    def self.custom_keys
+      Ptimelog::Configuration::CONFIGURATION_DEFAULTS['operon_custom_keys']
+        .merge(Ptimelog::Configuration.instance['operon_custom_keys'].to_h)
+    end
+
     def initialize(day)
       @day = day
       @configuration = Ptimelog::Configuration.instance
@@ -158,12 +165,6 @@ module Ptimelog
       end
     end
 
-    # A config naming only one key must not lose the other
-    # TODO: determine if this can be done in the Ptimelog::Configuration
-    def custom_key(name)
-      Ptimelog::Configuration::CONFIGURATION_DEFAULTS['operon_custom_keys']
-        .merge(@configuration['operon_custom_keys'].to_h)
-        .fetch(name)
-    end
+    def custom_key(name) = self.class.custom_keys.fetch(name)
   end
 end

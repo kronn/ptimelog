@@ -187,7 +187,10 @@ to be a YAML-file. Currently, it supports the following keys:
   - rounding: [integer or false, default 15]
   - base_url: [url to your puzzletime-installation, default https://time.puzzle.ch]
   - obsidian: [boolean, default false, read from an Obsidian vault instead of timelog.txt]
-  - obsidian_vault: [path to that vault, default ~/Obsidian/Things]
+  - obsidian_vault: [path to that vault, default ~/path/to/obsidian-vault]
+
+If the default path of `obsidian_vault` works for you, I really want to talk to
+you :-)
 
 Operons tracked time is stored to the second, so set `rounding: false` to keep
 it exact.
